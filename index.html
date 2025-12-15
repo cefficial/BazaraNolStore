@@ -317,7 +317,7 @@
             </div>
 
             <div class="version-text">
-                version 9.3<br><br>
+                version 9.4<br><br>
                 @KontoraStore_bot
             </div>
         </div>
@@ -365,7 +365,6 @@
         tg.expand();
 
         // 🟢 МАГИЯ ТЕЛЕГРАМА: Достаем имя и фото
-        // user может не быть, если открываем не из телеграма
         const user = tg.initDataUnsafe.user;
 
         if (user) {
@@ -373,8 +372,7 @@
             if (user.first_name) {
                 document.getElementById('user-name').innerText = user.first_name;
             }
-            
-            // 2. Ставим аватарку (если она есть у пользователя и открыта)
+            // 2. Ставим аватарку
             if (user.photo_url) {
                 document.getElementById('user-avatar').src = user.photo_url;
             }
@@ -382,12 +380,17 @@
 
         // Логика переключения вкладок
         function switchTab(tabName, element) {
+            // 1. Убираем синий цвет у всех кнопок
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            
+            // 2. Делаем нажатую кнопку синей
             element.classList.add('active');
 
+            // 3. Скрываем все страницы
             document.getElementById('main-view').classList.remove('active');
             document.getElementById('profile-view').classList.remove('active');
 
+            // 4. Показываем нужную страницу
             if (tabName === 'main') {
                 document.getElementById('main-view').classList.add('active');
             } else if (tabName === 'profile') {
