@@ -178,7 +178,7 @@
             margin-top: 20px;
         }
 
-        /* --- СТИЛИ ДЛЯ ИЗБРАННОГО (НОВОЕ) --- */
+        /* --- СТИЛИ ДЛЯ ИЗБРАННОГО --- */
         .favorites-header {
             padding: 20px 15px;
             font-size: 22px;
@@ -189,27 +189,23 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin-top: 50px;
+            margin-top: 30px;
             text-align: center;
         }
-        /* Анимация пульсации сердца */
-        @keyframes heartbeat {
-            0% { transform: scale(1); }
-            15% { transform: scale(1.15); }
-            30% { transform: scale(1); }
-            45% { transform: scale(1.15); }
-            60% { transform: scale(1); }
-            100% { transform: scale(1); }
+        
+        /* Стиль для GIF-сердца */
+        .heart-gif {
+            width: 120px; /* Размер сердца */
+            height: 120px;
+            object-fit: contain;
+            margin-bottom: 10px;
         }
-        .animated-heart {
-            font-size: 80px;
-            margin-bottom: 20px;
-            animation: heartbeat 2s infinite; /* Бесконечная анимация */
-        }
+
         .empty-text {
-            font-size: 18px;
+            font-size: 16px;
             color: #000;
             margin-bottom: 20px;
+            font-weight: 400;
         }
         .btn-blue-outline {
             background-color: #3390ec;
@@ -362,7 +358,7 @@
             </div>
 
             <div class="version-text">
-                version 9.5<br><br>
+                version 9.6<br><br>
                 @KontoraStore_bot
             </div>
         </div>
@@ -373,8 +369,10 @@
         <div class="favorites-header">Избранное</div>
         
         <div class="empty-state">
-            <div class="animated-heart">❤️</div>
+            <img src="https://media.tenor.com/On7kvXydF44AAAAi/heart-love.gif" class="heart-gif" alt="Heart">
+            
             <div class="empty-text">Здесь пока пусто</div>
+            
             <button class="btn-blue-outline" onclick="goToCatalog()">Перейти в каталог</button>
         </div>
     </div>
@@ -428,16 +426,11 @@
 
         // --- ЛОГИКА НАВИГАЦИИ ---
 
-        // Переключение главных вкладок (Главная / Профиль)
         function switchTab(tabName, element) {
-            // Сброс активных кнопок
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             element.classList.add('active');
-
-            // Скрытие всех страниц
             hideAllPages();
 
-            // Показ нужной
             if (tabName === 'main') {
                 document.getElementById('main-view').classList.add('active');
             } else if (tabName === 'profile') {
@@ -445,9 +438,7 @@
             }
         }
 
-        // Функция открытия Избранного (вызывается из меню профиля и нижней панели)
         function openFavorites() {
-            // Подсветка кнопки в нижнем меню
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             document.getElementById('nav-favorites').classList.add('active');
 
@@ -455,13 +446,10 @@
             document.getElementById('favorites-view').classList.add('active');
         }
 
-        // Функция кнопки "Перейти в каталог"
         function goToCatalog() {
-            // Имитируем нажатие на кнопку "Главная"
             document.getElementById('nav-main').click();
         }
 
-        // Вспомогательная функция, чтобы скрыть всё
         function hideAllPages() {
             document.getElementById('main-view').classList.remove('active');
             document.getElementById('profile-view').classList.remove('active');
