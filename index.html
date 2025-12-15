@@ -12,8 +12,10 @@
             padding: 0;
             background-color: #f5f5f5;
             color: #000;
-            padding-bottom: 100px; /* Увеличил отступ снизу, чтобы меню не перекрывало товары */
+            padding-bottom: 100px;
         }
+
+        /* --- Стили для товаров (без изменений) --- */
         .header-logo {
             background: white;
             padding: 20px;
@@ -66,7 +68,7 @@
             display: block;
             width: 90%;
             margin: 10px auto 0;
-            padding: 10px 0; /* Чуть больше кнопка */
+            padding: 10px 0;
             background-color: #3390ec;
             color: white;
             text-align: center;
@@ -76,7 +78,7 @@
             font-weight: 500;
         }
 
-        /* --- НОВЫЕ СТИЛИ ДЛЯ МЕНЮ --- */
+        /* --- НОВЫЕ СТИЛИ ДЛЯ МЕНЮ (SVG) --- */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -84,33 +86,45 @@
             width: 100%;
             background: white;
             display: flex;
-            justify-content: space-around; /* Равномерное распределение */
+            justify-content: space-between;
             align-items: center;
-            padding: 12px 0; /* Больше воздуха сверху и снизу */
-            border-top: 1px solid #eee;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05); /* Легкая тень вверх */
+            padding: 10px 0; /* Высота меню */
+            border-top: 1px solid #e0e0e0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.03);
             z-index: 100;
         }
         .nav-item {
             display: flex;
-            flex-direction: column; /* Иконка над текстом */
+            flex-direction: column;
             align-items: center;
             text-decoration: none;
-            color: #8e8e93; /* Цвет неактивной кнопки */
-            flex: 1; /* Чтобы кнопки занимали всю ширину */
+            color: #333333; /* Цвет обычных кнопок (темно-серый) */
+            flex: 1;
+            padding: 4px 0;
         }
+        /* Стиль иконок */
         .nav-icon {
-            font-size: 24px; /* КРУПНАЯ ИКОНКА */
+            width: 24px;
+            height: 24px;
             margin-bottom: 4px;
-            line-height: 1;
+            fill: none; /* Прозрачная заливка */
+            stroke: currentColor; /* Цвет линии берется из текста */
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
         .nav-text {
-            font-size: 11px; /* Читаемый текст */
-            font-weight: 500;
+            font-size: 10px; /* Размер текста как на скрине */
+            font-weight: 400;
         }
-        /* Активная кнопка (можно добавить класс active в html) */
+
+        /* АКТИВНАЯ КНОПКА (Синяя) */
         .nav-item.active {
-            color: #3390ec;
+            color: #3390ec; /* Фирменный синий цвет Телеграма */
+        }
+        .nav-item.active .nav-icon {
+            stroke: #3390ec;
+            /* Если захочешь залитую иконку, можно добавить fill */
         }
     </style>
 </head>
@@ -125,7 +139,6 @@
     </div>
 
     <div class="products-grid">
-        
         <div class="product-card">
             <img src="greypants.jpg" class="product-image" alt="Серые штаны">
             <div class="product-info">
@@ -134,7 +147,6 @@
                 <a href="#" class="btn-buy">Купить</a>
             </div>
         </div>
-
         <div class="product-card">
             <img src="bluepants.jpg" class="product-image" alt="Синие штаны">
             <div class="product-info">
@@ -143,7 +155,6 @@
                 <a href="#" class="btn-buy">Купить</a>
             </div>
         </div>
-
     </div>
 
     <div style="text-align: center; margin-top: 30px; color: #999; font-size: 12px;">
@@ -151,21 +162,49 @@
     </div>
 
     <div class="bottom-nav">
-        <div class="nav-item active"> <span class="nav-icon">🏠</span>
+        
+        <a href="#" class="nav-item active">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
             <span class="nav-text">Главная</span>
-        </div>
-        <div class="nav-item">
-            <span class="nav-icon">🔍</span>
-            <span class="nav-text">Поиск</span>
-        </div>
-        <div class="nav-item">
-            <span class="nav-icon">🛒</span>
+        </a>
+
+        <a href="#" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+            <span class="nav-text">Каталог</span>
+        </a>
+
+        <a href="#" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
             <span class="nav-text">Корзина</span>
-        </div>
-        <div class="nav-item">
-            <span class="nav-icon">👤</span>
+        </a>
+
+        <a href="#" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+            <span class="nav-text">Избранное</span>
+        </a>
+
+        <a href="#" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
             <span class="nav-text">Профиль</span>
-        </div>
+        </a>
+
     </div>
 
     <script>
