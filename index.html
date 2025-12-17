@@ -1,472 +1,472 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KONTORA STORE</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0; 
-            color: #000;
-            padding-bottom: 90px;
-            -webkit-tap-highlight-color: transparent;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KONTORA STORE</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0; 
+            color: #000;
+            padding-bottom: 90px;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-        /* --- СКРЫТИЕ/ПОКАЗ СТРАНИЦ --- */
-        .page {
-            display: none;
-            animation: fadeIn 0.3s;
-        }
-        .page.active {
-            display: block;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+        /* --- СКРЫТИЕ/ПОКАЗ СТРАНИЦ --- */
+        .page {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+        .page.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
 
-        /* --- СТИЛИ ГЛАВНОЙ --- */
-        .header-logo {
-            background: white;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .header-logo img {
-            max-width: 200px; 
-            height: auto;
-        }
-        .section-title {
-            padding: 0 15px;
-            margin-top: 20px;
-            margin-bottom: 10px;
-            font-weight: bold;
-            font-size: 20px;
-        }
-        .products-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            padding: 0 15px;
-        }
-        .product-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            padding-bottom: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .product-image {
-            width: 100%;
-            height: 180px; 
-            object-fit: cover;
-        }
-        .product-info {
-            padding: 8px;
-        }
-        .price {
-            font-weight: bold;
-            font-size: 16px;
-            color: #000;
-        }
-        .name {
-            font-size: 13px;
-            color: #666;
-            margin-top: 4px;
-        }
-        .btn-buy {
-            display: block;
-            width: 90%;
-            margin: 10px auto 0;
-            padding: 10px 0;
-            background-color: #3390ec;
-            color: white;
-            text-align: center;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-        }
+        /* --- СТИЛИ ГЛАВНОЙ --- */
+        .header-logo {
+            background: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .header-logo img {
+            max-width: 200px; 
+            height: auto;
+        }
+        .section-title {
+            padding: 0 15px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .products-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 0 15px;
+        }
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            padding-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .product-image {
+            width: 100%;
+            height: 180px; 
+            object-fit: cover;
+        }
+        .product-info {
+            padding: 8px;
+        }
+        .price {
+            font-weight: bold;
+            font-size: 16px;
+            color: #000;
+        }
+        .name {
+            font-size: 13px;
+            color: #666;
+            margin-top: 4px;
+        }
+        .btn-buy {
+            display: block;
+            width: 90%;
+            margin: 10px auto 0;
+            padding: 10px 0;
+            background-color: #3390ec;
+            color: white;
+            text-align: center;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
 
-        /* --- СТИЛИ ПРОФИЛЯ --- */
-        .profile-container {
-            padding: 15px;
-        }
-        .profile-header {
-            background: white;
-            border-radius: 15px;
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        }
-        .avatar-img {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-right: 15px;
-        }
-        .user-info h2 {
-            margin: 0;
-            font-size: 18px;
-            font-weight: 700;
-        }
-        .user-stats {
-            margin-top: 4px;
-            font-size: 13px;
-            color: #000;
-        }
-        .blue-text {
-            color: #3390ec;
-            font-weight: 500;
-        }
+        /* --- СТИЛИ ПРОФИЛЯ --- */
+        .profile-container {
+            padding: 15px;
+        }
+        .profile-header {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .avatar-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+        .user-info h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .user-stats {
+            margin-top: 4px;
+            font-size: 13px;
+            color: #000;
+        }
+        .blue-text {
+            color: #3390ec;
+            font-weight: 500;
+        }
 
-        /* Меню список */
-        .menu-list {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            margin-bottom: 15px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        }
-        .menu-item-row {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            text-decoration: none;
-            color: #000;
-            border-bottom: 1px solid #f0f0f0;
-            transition: background 0.1s;
-        }
-        .menu-item-row:last-child {
-            border-bottom: none;
-        }
-        .menu-item-row:active {
-            background-color: #f5f5f5;
-        }
-        .menu-icon-left {
-            width: 24px;
-            height: 24px;
-            margin-right: 15px;
-            color: #333;
-        }
-        .menu-text {
-            flex-grow: 1;
-            font-size: 15px;
-        }
-        .arrow-right {
-            color: #ccc;
-            font-size: 18px;
-        }
+        /* Меню список */
+        .menu-list {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .menu-item-row {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            text-decoration: none;
+            color: #000;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.1s;
+        }
+        .menu-item-row:last-child {
+            border-bottom: none;
+        }
+        .menu-item-row:active {
+            background-color: #f5f5f5;
+        }
+        .menu-icon-left {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+            color: #333;
+        }
+        .menu-text {
+            flex-grow: 1;
+            font-size: 15px;
+        }
+        .arrow-right {
+            color: #ccc;
+            font-size: 18px;
+        }
 
-        .footer-links {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-        .version-text {
-            text-align: center;
-            color: #999;
-            font-size: 12px;
-            margin-top: 20px;
-        }
+        .footer-links {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .version-text {
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+            margin-top: 20px;
+        }
 
-        /* --- СТИЛИ ДЛЯ ИЗБРАННОГО --- */
-        .favorites-header {
-            padding: 20px 15px;
-            font-size: 22px;
-            font-weight: bold;
-        }
-        .empty-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-top: 30px;
-            text-align: center;
-        }
-        
-        /* === ИСПРАВЛЕНИЕ: СТИЛЬ ДЛЯ PNG-СЕРДЦА === */
-        .heart-pulse-img {
-            width: 100px;  /* Размер как у большого смайла */
-            height: 100px;
-            object-fit: contain;
-            margin-bottom: 10px;
-            
-            /* Та самая анимация биения */
-            animation: heartBeat 1.5s infinite ease-in-out;
-        }
+        /* --- СТИЛИ ДЛЯ ИЗБРАННОГО --- */
+        .favorites-header {
+            padding: 20px 15px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        /* === ИСПРАВЛЕНИЕ: СТИЛЬ ДЛЯ PNG-СЕРДЦА === */
+        .heart-pulse-img {
+            width: 100px;  /* Размер как у большого смайла */
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 10px;
+            
+            /* Та самая анимация биения */
+            animation: heartBeat 1.5s infinite ease-in-out;
+        }
 
-        @keyframes heartBeat {
-            0% { transform: scale(1); }
-            14% { transform: scale(1.15); } /* Первый удар */
-            28% { transform: scale(1); }    /* Назад */
-            42% { transform: scale(1.15); } /* Второй удар */
-            70% { transform: scale(1); }    /* Пауза */
-        }
-        /* ========================================================== */
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.15); } /* Первый удар */
+            28% { transform: scale(1); }    /* Назад */
+            42% { transform: scale(1.15); } /* Второй удар */
+            70% { transform: scale(1); }    /* Пауза */
+        }
+        /* ========================================================== */
 
-        .empty-text {
-            font-size: 16px;
-            color: #000;
-            margin-bottom: 20px;
-            font-weight: 400;
-        }
-        .btn-blue-outline {
-            background-color: #3390ec;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-        }
+        .empty-text {
+            font-size: 16px;
+            color: #000;
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+        .btn-blue-outline {
+            background-color: #3390ec;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
 
-        /* --- НИЖНЕЕ МЕНЮ --- */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: white;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 10px 0;
-            border-top: 1px solid #e0e0e0;
-            z-index: 100;
-        }
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: #999;
-            flex: 1;
-            padding: 4px 0;
-            cursor: pointer;
-        }
-        .nav-icon {
-            width: 24px;
-            height: 24px;
-            margin-bottom: 4px;
-            fill: none;
-            stroke: currentColor;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-        .nav-text {
-            font-size: 10px;
-            font-weight: 400;
-        }
-        .nav-item.active {
-            color: #3390ec;
-        }
-        .nav-item.active .nav-icon {
-            stroke: #3390ec;
-        }
-    </style>
+        /* --- НИЖНЕЕ МЕНЮ --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0;
+            border-top: 1px solid #e0e0e0;
+            z-index: 100;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #999;
+            flex: 1;
+            padding: 4px 0;
+            cursor: pointer;
+        }
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 4px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .nav-text {
+            font-size: 10px;
+            font-weight: 400;
+        }
+        .nav-item.active {
+            color: #3390ec;
+        }
+        .nav-item.active .nav-icon {
+            stroke: #3390ec;
+        }
+    </style>
 </head>
 <body>
 
-    <div id="main-view" class="page active">
-        <div class="header-logo">
-            <img src="shoplogo.jpg" alt="Логотип KONTORA">
-        </div>
+    <div id="main-view" class="page active">
+        <div class="header-logo">
+            <img src="shoplogo.jpg" alt="Логотип KONTORA">
+        </div>
 
-        <div class="section-title">
-            В наличии
-        </div>
+        <div class="section-title">
+            В наличии
+        </div>
 
-        <div class="products-grid">
-            <div class="product-card">
-                <img src="greypants.jpg" class="product-image" alt="Серые штаны">
-                <div class="product-info">
-                    <div class="price">2 500 ₽</div>
-                    <div class="name">Штаны Grey Edition</div>
-                    <a href="#" class="btn-buy">Купить</a>
-                </div>
-            </div>
-            <div class="product-card">
-                <img src="bluepants.jpg" class="product-image" alt="Синие штаны">
-                <div class="product-info">
-                    <div class="price">3 200 ₽</div>
-                    <div class="name">Штаны Blue Classic</div>
-                    <a href="#" class="btn-buy">Купить</a>
-                </div>
-            </div>
-        </div>
-        
-        <div style="text-align: center; margin-top: 30px; color: #999; font-size: 12px;">
-            @KontoraStore_bot
-        </div>
-    </div>
-
-
-    <div id="profile-view" class="page">
-        <div class="profile-container">
-            
-            <div class="profile-header">
-                <img id="user-avatar" src="https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png" class="avatar-img" alt="Avatar"> 
-                <div class="user-info">
-                    <h2 id="user-name">Гость</h2>
-                    <div class="user-stats">
-                        Бонусы: 0 <span class="blue-text">✨</span><br>
-                        Персональная скидка: 0%
-                    </div>
-                </div>
-            </div>
-
-            <div class="menu-list">
-                <a href="#" class="menu-item-row" onclick="openFavorites()">
-                    <svg class="menu-icon-left" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                    </svg>
-                    <span class="menu-text">Избранное</span>
-                    <span class="arrow-right">›</span>
-                </a>
-
-                <a href="#" class="menu-item-row">
-                    <svg class="menu-icon-left" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                    </svg>
-                    <span class="menu-text">Мои заказы</span>
-                    <span class="arrow-right">›</span>
-                </a>
-                <a href="#" class="menu-item-row">
-                    <svg class="menu-icon-left" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <span class="menu-text">Депозиты</span>
-                    <span class="arrow-right">›</span>
-                </a>
-                <a href="#" class="menu-item-row">
-                    <svg class="menu-icon-left" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-                    </svg>
-                    <span class="menu-text">Бонусы</span>
-                    <span class="arrow-right">›</span>
-                </a>
-            </div>
-
-            <div class="footer-links">
-                <a href="#" class="menu-item-row">
-                    <span class="menu-text">Политика конфиденциальности</span>
-                    <span class="arrow-right">›</span>
-                </a>
-                <a href="#" class="menu-item-row">
-                    <span class="menu-text">Пользовательское соглашение</span>
-                    <span class="arrow-right">›</span>
-                </a>
-            </div>
-
-            <div class="version-text">
-                version 9.6<br><br>
-                @KontoraStore_bot
-            </div>
-        </div>
-    </div>
+        <div class="products-grid">
+            <div class="product-card">
+                <img src="greypants.jpg" class="product-image" alt="Серые штаны">
+                <div class="product-info">
+                    <div class="price">2 500 ₽</div>
+                    <div class="name">Штаны Grey Edition</div>
+                    <a href="#" class="btn-buy">Купить</a>
+                </div>
+            </div>
+            <div class="product-card">
+                <img src="bluepants.jpg" class="product-image" alt="Синие штаны">
+                <div class="product-info">
+                    <div class="price">3 200 ₽</div>
+                    <div class="name">Штаны Blue Classic</div>
+                    <a href="#" class="btn-buy">Купить</a>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px; color: #999; font-size: 12px;">
+            @KontoraStore_bot
+        </div>
+    </div>
 
 
-    <div id="favorites-view" class="page">
-        <div class="favorites-header">Избранное</div>
-        
-        <div class="empty-state">
-            <img src="https://em-content.zobj.net/source/apple/391/red-heart_2764-fe0f.png" class="heart-pulse-img" alt="Сердце">
-            
-            <div class="empty-text">Здесь пока пусто</div>
-            
-            <button class="btn-blue-outline" onclick="goToCatalog()">Перейти в каталог</button>
-        </div>
-    </div>
+    <div id="profile-view" class="page">
+        <div class="profile-container">
+            
+            <div class="profile-header">
+                <img id="user-avatar" src="https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png" class="avatar-img" alt="Avatar"> 
+                <div class="user-info">
+                    <h2 id="user-name">Гость</h2>
+                    <div class="user-stats">
+                        Бонусы: 0 <span class="blue-text">✨</span><br>
+                        Персональная скидка: 0%
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-list">
+                <a href="#" class="menu-item-row" onclick="openFavorites()">
+                    <svg class="menu-icon-left" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                    <span class="menu-text">Избранное</span>
+                    <span class="arrow-right">›</span>
+                </a>
+
+                <a href="#" class="menu-item-row">
+                    <svg class="menu-icon-left" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                    <span class="menu-text">Мои заказы</span>
+                    <span class="arrow-right">›</span>
+                </a>
+                <a href="#" class="menu-item-row">
+                    <svg class="menu-icon-left" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span class="menu-text">Депозиты</span>
+                    <span class="arrow-right">›</span>
+                </a>
+                <a href="#" class="menu-item-row">
+                    <svg class="menu-icon-left" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                    </svg>
+                    <span class="menu-text">Бонусы</span>
+                    <span class="arrow-right">›</span>
+                </a>
+            </div>
+
+            <div class="footer-links">
+                <a href="#" class="menu-item-row">
+                    <span class="menu-text">Политика конфиденциальности</span>
+                    <span class="arrow-right">›</span>
+                </a>
+                <a href="#" class="menu-item-row">
+                    <span class="menu-text">Пользовательское соглашение</span>
+                    <span class="arrow-right">›</span>
+                </a>
+            </div>
+
+            <div class="version-text">
+                version 9.6<br><br>
+                @KontoraStore_bot
+            </div>
+        </div>
+    </div>
 
 
-    <div class="bottom-nav">
-        <div id="nav-main" class="nav-item active" onclick="switchTab('main', this)">
-            <svg class="nav-icon" viewBox="0 0 24 24">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                <polyline points="9 22 9 12 15 12 15 22"></polyline>
-            </svg>
-            <span class="nav-text">Главная</span>
-        </div>
+    <div id="favorites-view" class="page">
+        <div class="favorites-header">Избранное</div>
+        
+        <div class="empty-state">
+            <img src="https://em-content.zobj.net/source/apple/391/red-heart_2764-fe0f.png" class="heart-pulse-img" alt="Сердце">
+            
+            <div class="empty-text">Здесь пока пусто</div>
+            
+            <button class="btn-blue-outline" onclick="goToCatalog()">Перейти в каталог</button>
+        </div>
+    </div>
 
-        <div class="nav-item" onclick="alert('Корзина пока пуста')">
-            <svg class="nav-icon" viewBox="0 0 24 24">
-                <circle cx="9" cy="21" r="1"></circle>
-                <circle cx="20" cy="21" r="1"></circle>
-                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-            </svg>
-            <span class="nav-text">Корзина</span>
-        </div>
 
-        <div id="nav-favorites" class="nav-item" onclick="openFavorites()">
-            <svg class="nav-icon" viewBox="0 0 24 24">
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-            </svg>
-            <span class="nav-text">Избранное</span>
-        </div>
+    <div class="bottom-nav">
+        <div id="nav-main" class="nav-item active" onclick="switchTab('main', this)">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            <span class="nav-text">Главная</span>
+        </div>
 
-        <div class="nav-item" onclick="switchTab('profile', this)">
-            <svg class="nav-icon" viewBox="0 0 24 24">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-            <span class="nav-text">Профиль</span>
-        </div>
-    </div>
+        <div class="nav-item" onclick="alert('Корзина пока пуста')">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+            <span class="nav-text">Корзина</span>
+        </div>
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
+        <div id="nav-favorites" class="nav-item" onclick="openFavorites()">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+            <span class="nav-text">Избранное</span>
+        </div>
 
-        // 🟢 Подтягиваем данные пользователя
-        const user = tg.initDataUnsafe.user;
-        if (user) {
-            if (user.first_name) document.getElementById('user-name').innerText = user.first_name;
-            if (user.photo_url) document.getElementById('user-avatar').src = user.photo_url;
-        }
+        <div class="nav-item" onclick="switchTab('profile', this)">
+            <svg class="nav-icon" viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span class="nav-text">Профиль</span>
+        </div>
+    </div>
 
-        // --- ЛОГИКА НАВИГАЦИИ ---
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
 
-        function switchTab(tabName, element) {
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            element.classList.add('active');
-            hideAllPages();
+        // 🟢 Подтягиваем данные пользователя
+        const user = tg.initDataUnsafe.user;
+        if (user) {
+            if (user.first_name) document.getElementById('user-name').innerText = user.first_name;
+            if (user.photo_url) document.getElementById('user-avatar').src = user.photo_url;
+        }
 
-            if (tabName === 'main') {
-                document.getElementById('main-view').classList.add('active');
-            } else if (tabName === 'profile') {
-                document.getElementById('profile-view').classList.add('active');
-            }
-        }
+        // --- ЛОГИКА НАВИГАЦИИ ---
 
-        function openFavorites() {
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            document.getElementById('nav-favorites').classList.add('active');
+        function switchTab(tabName, element) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            hideAllPages();
 
-            hideAllPages();
-            document.getElementById('favorites-view').classList.add('active');
-        }
+            if (tabName === 'main') {
+                document.getElementById('main-view').classList.add('active');
+            } else if (tabName === 'profile') {
+                document.getElementById('profile-view').classList.add('active');
+            }
+        }
 
-        function goToCatalog() {
-            document.getElementById('nav-main').click();
-        }
+        function openFavorites() {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById('nav-favorites').classList.add('active');
 
-        function hideAllPages() {
-            document.getElementById('main-view').classList.remove('active');
-            document.getElementById('profile-view').classList.remove('active');
-            document.getElementById('favorites-view').classList.remove('active');
-        }
-    </script>
+            hideAllPages();
+            document.getElementById('favorites-view').classList.add('active');
+        }
+
+        function goToCatalog() {
+            document.getElementById('nav-main').click();
+        }
+
+        function hideAllPages() {
+            document.getElementById('main-view').classList.remove('active');
+            document.getElementById('profile-view').classList.remove('active');
+            document.getElementById('favorites-view').classList.remove('active');
+        }
+    </script>
 </body>
 </html>
