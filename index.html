@@ -193,25 +193,25 @@
             text-align: center;
         }
         
-        /* 🔥 НОВАЯ АНИМАЦИЯ СЕРДЦА 🔥 */
-        .ios-pulse {
-            font-size: 100px; /* Размер сердца */
+        /* === ИСПРАВЛЕНИЕ: СТИЛЬ ДЛЯ PNG-СЕРДЦА === */
+        .heart-pulse-img {
+            width: 100px;  /* Размер как у большого смайла */
+            height: 100px;
+            object-fit: contain;
             margin-bottom: 10px;
-            display: inline-block;
-            cursor: default;
-            /* Анимация: имя, длительность, бесконечность, плавность */
+            
+            /* Та самая анимация биения */
             animation: heartBeat 1.5s infinite ease-in-out;
-            /* Чтобы на айфонах выглядело как нативный эмодзи */
-            font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
         }
 
         @keyframes heartBeat {
             0% { transform: scale(1); }
-            14% { transform: scale(1.2); } /* Увеличение (тук) */
-            28% { transform: scale(1); }   /* Возврат */
-            42% { transform: scale(1.2); } /* Увеличение (тук) */
-            70% { transform: scale(1); }   /* Пауза */
+            14% { transform: scale(1.15); } /* Первый удар */
+            28% { transform: scale(1); }    /* Назад */
+            42% { transform: scale(1.15); } /* Второй удар */
+            70% { transform: scale(1); }    /* Пауза */
         }
+        /* ========================================================== */
 
         .empty-text {
             font-size: 16px;
@@ -280,7 +280,7 @@
 
     <div id="main-view" class="page active">
         <div class="header-logo">
-            <h2 style="margin:0;">KONTORA</h2>
+            <img src="shoplogo.jpg" alt="Логотип KONTORA">
         </div>
 
         <div class="section-title">
@@ -289,7 +289,7 @@
 
         <div class="products-grid">
             <div class="product-card">
-                <div style="height:180px; background:#ddd;"></div>
+                <img src="greypants.jpg" class="product-image" alt="Серые штаны">
                 <div class="product-info">
                     <div class="price">2 500 ₽</div>
                     <div class="name">Штаны Grey Edition</div>
@@ -297,7 +297,7 @@
                 </div>
             </div>
             <div class="product-card">
-                 <div style="height:180px; background:#ddd;"></div>
+                <img src="bluepants.jpg" class="product-image" alt="Синие штаны">
                 <div class="product-info">
                     <div class="price">3 200 ₽</div>
                     <div class="name">Штаны Blue Classic</div>
@@ -342,9 +342,27 @@
                     <span class="menu-text">Мои заказы</span>
                     <span class="arrow-right">›</span>
                 </a>
+                <a href="#" class="menu-item-row">
+                    <svg class="menu-icon-left" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span class="menu-text">Депозиты</span>
+                    <span class="arrow-right">›</span>
+                </a>
+                <a href="#" class="menu-item-row">
+                    <svg class="menu-icon-left" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                    </svg>
+                    <span class="menu-text">Бонусы</span>
+                    <span class="arrow-right">›</span>
+                </a>
             </div>
 
             <div class="footer-links">
+                <a href="#" class="menu-item-row">
+                    <span class="menu-text">Политика конфиденциальности</span>
+                    <span class="arrow-right">›</span>
+                </a>
                 <a href="#" class="menu-item-row">
                     <span class="menu-text">Пользовательское соглашение</span>
                     <span class="arrow-right">›</span>
@@ -363,7 +381,7 @@
         <div class="favorites-header">Избранное</div>
         
         <div class="empty-state">
-            <div class="ios-pulse">❤️</div>
+            <img src="https://em-content.zobj.net/source/apple/391/red-heart_2764-fe0f.png" class="heart-pulse-img" alt="Сердце">
             
             <div class="empty-text">Здесь пока пусто</div>
             
