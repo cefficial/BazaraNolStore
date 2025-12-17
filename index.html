@@ -189,18 +189,30 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin-top: 30px;
+            margin-top: 40px;
             text-align: center;
         }
         
-        /* 🔥 ФИНАЛЬНОЕ РЕШЕНИЕ: GIF ВМЕСТО КОДА 🔥 */
-        /* Мы используем картинку, которая УЖЕ содержит нужную 3D анимацию */
-        .heart-gif-3d {
-            width: 140px;
-            height: 140px;
+        /* 🔥 НАДЕЖНЫЙ СТИЛЬ: 3D-Маятник 🔥 */
+        .heart-3d-stable {
+            /* Явно задаем размеры, чтобы блок не схлопывался */
+            width: 120px; 
+            height: 120px; 
             object-fit: contain;
             margin-bottom: 15px;
-            /* Убираем все CSS анимации, чтобы не портить GIF */
+            
+            /* Анимация маятника (Wiggle) */
+            animation: heartWiggle 2.5s infinite ease-in-out;
+            transform-origin: center bottom; /* Качаемся относительно низа, как неваляшка */
+        }
+
+        @keyframes heartWiggle {
+            0% { transform: scale(1) rotate(0deg); }
+            15% { transform: scale(1.15) rotate(-5deg); } /* Вдох + наклон влево */
+            30% { transform: scale(1) rotate(0deg); }      /* Выдох */
+            45% { transform: scale(1.15) rotate(5deg); }   /* Вдох + наклон вправо */
+            60% { transform: scale(1) rotate(0deg); }      /* Выдох */
+            100% { transform: scale(1) rotate(0deg); }     /* Пауза */
         }
 
         .empty-text {
@@ -371,7 +383,7 @@
         <div class="favorites-header">Избранное</div>
         
         <div class="empty-state">
-            <img src="https://media.tenor.com/fCdi1qZ3qQIAAAAi/red-heart-red-heart-sticker.gif" class="heart-gif-3d" alt="Сердце">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Heart_coraz%C3%B3n.svg/240px-Heart_coraz%C3%B3n.svg.png" class="heart-3d-stable" alt="Сердце">
             
             <div class="empty-text">Здесь пока пусто</div>
             
