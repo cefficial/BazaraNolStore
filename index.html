@@ -193,23 +193,31 @@
             text-align: center;
         }
         
-        /* === ИСПРАВЛЕНИЕ: СТИЛЬ ДЛЯ PNG-СЕРДЦА === */
+        /* === ИСПРАВЛЕНИЕ: СТИЛЬ ДЛЯ PNG-СЕРДЦА + ВРАЩЕНИЕ === */
         .heart-pulse-img {
-            width: 100px;  /* Размер как у большого смайла */
+            width: 100px;
             height: 100px;
             object-fit: contain;
             margin-bottom: 10px;
             
-            /* Та самая анимация биения */
-            animation: heartBeat 1.5s infinite ease-in-out;
+            /* 🔥🔥🔥 ИЗМЕНЕНИЕ ЗДЕСЬ 🔥🔥🔥 */
+            /* Применяем ДВЕ анимации через запятую: пульсация и вращение */
+            animation: heartBeat 1.5s infinite ease-in-out, spin 4s infinite linear;
         }
 
+        /* Старая анимация пульсации */
         @keyframes heartBeat {
             0% { transform: scale(1); }
-            14% { transform: scale(1.15); } /* Первый удар */
-            28% { transform: scale(1); }    /* Назад */
-            42% { transform: scale(1.15); } /* Второй удар */
-            70% { transform: scale(1); }    /* Пауза */
+            14% { transform: scale(1.15); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.15); }
+            70% { transform: scale(1); }
+        }
+
+        /* 🔥 Новая анимация вращения 🔥 */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
         /* ========================================================== */
 
