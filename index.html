@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KONTORA STORE</title>
-    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
@@ -190,11 +189,44 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin-top: 30px;
+            margin-top: 40px;
             text-align: center;
+            /* Важно для 3D эффекта */
+            perspective: 600px; 
         }
         
-        /* 🔥 МЫ УБРАЛИ ВСЕ СТРАННЫЕ KEYFRAMES. LOTTIE ДЕЛАЕТ ВСЁ САМ 🔥 */
+        /* 🔥 НОВЫЙ СТИЛЬ: 3D-МАЯТНИК 🔥 */
+        .heart-3d-motion {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            margin-bottom: 15px;
+            
+            /* Сложная анимация: и пульс, и покачивание */
+            animation: heartWiggle 3s infinite ease-in-out;
+            
+            /* Сглаживание краев при вращении */
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+        }
+
+        @keyframes heartWiggle {
+            0% { 
+                transform: scale(1) rotateY(0deg) rotateZ(0deg); 
+            }
+            25% { 
+                transform: scale(1.1) rotateY(-15deg) rotateZ(-2deg); /* Вдох + поворот влево */
+            }
+            50% { 
+                transform: scale(1) rotateY(0deg) rotateZ(0deg); /* Выдох */
+            }
+            75% { 
+                transform: scale(1.1) rotateY(15deg) rotateZ(2deg); /* Вдох + поворот вправо */
+            }
+            100% { 
+                transform: scale(1) rotateY(0deg) rotateZ(0deg); 
+            }
+        }
 
         .empty-text {
             font-size: 16px;
@@ -364,14 +396,7 @@
         <div class="favorites-header">Избранное</div>
         
         <div class="empty-state">
-            <lottie-player 
-                src="https://lottie.host/8040b263-6c89-498c-b362-e1d132338661/gS8vV4yT1B.json" 
-                background="transparent" 
-                speed="1" 
-                style="width: 150px; height: 150px; margin-bottom: 10px;" 
-                loop 
-                autoplay>
-            </lottie-player>
+            <img src="https://em-content.zobj.net/source/apple/391/red-heart_2764-fe0f.png" class="heart-3d-motion" alt="Сердце">
             
             <div class="empty-text">Здесь пока пусто</div>
             
