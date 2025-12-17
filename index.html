@@ -189,31 +189,29 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin-top: 40px;
+            margin-top: 30px;
             text-align: center;
         }
         
-        /* 🔥 НАДЕЖНЫЙ СТИЛЬ: 3D-Маятник 🔥 */
-        .heart-3d-stable {
-            /* Явно задаем размеры, чтобы блок не схлопывался */
-            width: 120px; 
-            height: 120px; 
+        /* === ИСПРАВЛЕНИЕ: СТИЛЬ ДЛЯ PNG-СЕРДЦА === */
+        .heart-pulse-img {
+            width: 100px;  /* Размер как у большого смайла */
+            height: 100px;
             object-fit: contain;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             
-            /* Анимация маятника (Wiggle) */
-            animation: heartWiggle 2.5s infinite ease-in-out;
-            transform-origin: center bottom; /* Качаемся относительно низа, как неваляшка */
+            /* Та самая анимация биения */
+            animation: heartBeat 1.5s infinite ease-in-out;
         }
 
-        @keyframes heartWiggle {
-            0% { transform: scale(1) rotate(0deg); }
-            15% { transform: scale(1.15) rotate(-5deg); } /* Вдох + наклон влево */
-            30% { transform: scale(1) rotate(0deg); }      /* Выдох */
-            45% { transform: scale(1.15) rotate(5deg); }   /* Вдох + наклон вправо */
-            60% { transform: scale(1) rotate(0deg); }      /* Выдох */
-            100% { transform: scale(1) rotate(0deg); }     /* Пауза */
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.15); } /* Первый удар */
+            28% { transform: scale(1); }    /* Назад */
+            42% { transform: scale(1.15); } /* Второй удар */
+            70% { transform: scale(1); }    /* Пауза */
         }
+        /* ========================================================== */
 
         .empty-text {
             font-size: 16px;
@@ -383,7 +381,7 @@
         <div class="favorites-header">Избранное</div>
         
         <div class="empty-state">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Heart_coraz%C3%B3n.svg/240px-Heart_coraz%C3%B3n.svg.png" class="heart-3d-stable" alt="Сердце">
+            <img src="https://em-content.zobj.net/source/apple/391/red-heart_2764-fe0f.png" class="heart-pulse-img" alt="Сердце">
             
             <div class="empty-text">Здесь пока пусто</div>
             
