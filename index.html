@@ -189,43 +189,18 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin-top: 40px;
+            margin-top: 30px;
             text-align: center;
-            /* Важно для 3D эффекта */
-            perspective: 600px; 
         }
         
-        /* 🔥 НОВЫЙ СТИЛЬ: 3D-МАЯТНИК 🔥 */
-        .heart-3d-motion {
-            width: 120px;
-            height: 120px;
+        /* 🔥 ФИНАЛЬНОЕ РЕШЕНИЕ: GIF ВМЕСТО КОДА 🔥 */
+        /* Мы используем картинку, которая УЖЕ содержит нужную 3D анимацию */
+        .heart-gif-3d {
+            width: 140px;
+            height: 140px;
             object-fit: contain;
             margin-bottom: 15px;
-            
-            /* Сложная анимация: и пульс, и покачивание */
-            animation: heartWiggle 3s infinite ease-in-out;
-            
-            /* Сглаживание краев при вращении */
-            backface-visibility: hidden;
-            transform-style: preserve-3d;
-        }
-
-        @keyframes heartWiggle {
-            0% { 
-                transform: scale(1) rotateY(0deg) rotateZ(0deg); 
-            }
-            25% { 
-                transform: scale(1.1) rotateY(-15deg) rotateZ(-2deg); /* Вдох + поворот влево */
-            }
-            50% { 
-                transform: scale(1) rotateY(0deg) rotateZ(0deg); /* Выдох */
-            }
-            75% { 
-                transform: scale(1.1) rotateY(15deg) rotateZ(2deg); /* Вдох + поворот вправо */
-            }
-            100% { 
-                transform: scale(1) rotateY(0deg) rotateZ(0deg); 
-            }
+            /* Убираем все CSS анимации, чтобы не портить GIF */
         }
 
         .empty-text {
@@ -396,7 +371,7 @@
         <div class="favorites-header">Избранное</div>
         
         <div class="empty-state">
-            <img src="https://em-content.zobj.net/source/apple/391/red-heart_2764-fe0f.png" class="heart-3d-motion" alt="Сердце">
+            <img src="https://media.tenor.com/fCdi1qZ3qQIAAAAi/red-heart-red-heart-sticker.gif" class="heart-gif-3d" alt="Сердце">
             
             <div class="empty-text">Здесь пока пусто</div>
             
