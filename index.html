@@ -72,25 +72,31 @@
         }
         .size-box.active { border: 2px solid #3390ec; color: #3390ec; }
 
-        /* 🔥 НОВЫЕ СТИЛИ ДЛЯ ОПИСАНИЯ 🔥 */
+        /* --- ОПИСАНИЕ И ХАРАКТЕРИСТИКИ --- */
         .stock-status {
             font-size: 14px; color: #000; margin-bottom: 20px;
         }
         .stock-count { color: #3390ec; font-weight: 500; }
 
         .desc-tabs {
-            display: flex; gap: 10px; margin-bottom: 15px;
+            display: flex; gap: 10px; margin-bottom: 20px;
         }
         .desc-tab-btn {
-            padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; border: none;
+            padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: background 0.1s;
         }
-        .tab-black { background-color: #333; color: white; }
-        .tab-gray { background-color: #f0f0f0; color: #333; }
+        .tab-black { background-color: #000; color: white; }
+        .tab-gray { background-color: #f0f0f0; color: #000; }
 
         .desc-content {
-            font-size: 14px; line-height: 1.6; color: #000;
+            font-size: 14px; line-height: 1.6; color: #333;
         }
-        .desc-line { margin-bottom: 2px; }
+        .desc-line { margin-bottom: 4px; }
+        
+        .char-row {
+            display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px dashed #eee; padding-bottom: 4px;
+        }
+        .char-label { color: #888; }
+        .char-val { font-weight: 500; color: #000; }
 
 
         /* --- ПЛАВАЮЩИЕ КНОПКИ --- */
@@ -257,17 +263,26 @@
             <div class="stock-status">В наличии: <span class="stock-count">1 шт</span></div>
             
             <div class="desc-tabs">
-                <button class="desc-tab-btn tab-black">Описание</button>
-                <button class="desc-tab-btn tab-gray">Характеристики</button>
+                <button id="btn-tab-desc" class="desc-tab-btn tab-black" onclick="switchDescTab('desc')">Описание</button>
+                <button id="btn-tab-chars" class="desc-tab-btn tab-gray" onclick="switchDescTab('chars')">Характеристики</button>
             </div>
 
-            <div class="desc-content">
-                <div class="desc-line">-Lacoste</div>
-                <div class="desc-line">-Размер L-XL</div>
-                <div class="desc-line">-Состояние отличное!</div>
-                <div class="desc-line">-Цена 5.490р</div>
+            <div id="content-desc" class="desc-content" style="display: block;">
+                <div class="desc-line">- Lacoste</div>
+                <div class="desc-line">- Размер L-XL</div>
+                <div class="desc-line">- Состояние отличное!</div>
+                <div class="desc-line">- Цена 5.490р</div>
             </div>
+
+            <div id="content-chars" class="desc-content" style="display: none;">
+                <div class="char-row"><span class="char-label">Бренд</span><span class="char-val">Original</span></div>
+                <div class="char-row"><span class="char-label">Состояние</span><span class="char-val">9/10</span></div>
+                <div class="char-row"><span class="char-label">Материал</span><span class="char-val">Хлопок</span></div>
+                <div class="char-row"><span class="char-label">Пол</span><span class="char-val">Мужской</span></div>
+                <div class="char-row"><span class="char-label">Сезон</span><span class="char-val">Мульти</span></div>
             </div>
+
+        </div>
     </div>
 
     <div id="floating-actions" class="floating-actions">
@@ -296,7 +311,7 @@
                     <span style="flex-grow:1">Мои заказы</span><span>›</span>
                 </a>
             </div>
-             <div class="version-text">version 10.7</div>
+             <div class="version-text">version 10.8</div>
         </div>
     </div>
 
@@ -395,9 +410,9 @@
 
         // Хранение данных
         let favorites = [];
-        let cart = {}; // Ключи теперь сложные: "id_size", например "grey_L"
+        let cart = {}; 
         let currentOpenProductId = null;
-        let currentSelectedSize = 'L'; // Размер по умолчанию
+        let currentSelectedSize = 'L'; 
 
         // --- ЛОГИКА ТОВАРА ---
         function openProduct(id) {
@@ -421,6 +436,9 @@
             Array.from(document.querySelectorAll('.size-box')).find(el => el.innerText === 'L').classList.add('active');
             document.querySelector('.size-label span').innerText = 'L';
 
+            // Сброс вкладки на Описание
+            switchDescTab('desc');
+
             updateHeartButtonState();
             updateActionBarState(); 
             
@@ -432,6 +450,26 @@
             document.getElementById('floating-actions').classList.remove('visible');
             document.getElementById('main-nav').classList.remove('hidden');
             goToCatalog();
+        }
+
+        // --- УПРАВЛЕНИЕ ВКЛАДКАМИ (ОПИСАНИЕ / ХАРАКТЕРИСТИКИ) ---
+        function switchDescTab(tab) {
+            const btnDesc = document.getElementById('btn-tab-desc');
+            const btnChars = document.getElementById('btn-tab-chars');
+            const contentDesc = document.getElementById('content-desc');
+            const contentChars = document.getElementById('content-chars');
+
+            if (tab === 'desc') {
+                btnDesc.className = 'desc-tab-btn tab-black';
+                btnChars.className = 'desc-tab-btn tab-gray';
+                contentDesc.style.display = 'block';
+                contentChars.style.display = 'none';
+            } else {
+                btnDesc.className = 'desc-tab-btn tab-gray';
+                btnChars.className = 'desc-tab-btn tab-black';
+                contentDesc.style.display = 'none';
+                contentChars.style.display = 'block';
+            }
         }
 
         // --- УПРАВЛЕНИЕ РАЗМЕРАМИ ---
