@@ -26,8 +26,18 @@
             background: white; padding: 15px; text-align: center;
             position: sticky; top: 0; z-index: 100;
             border-bottom: 1px solid #f0f0f0;
+            min-height: 21px; /* Чтобы хедер не скакал */
         }
         .header-logo h2 { margin: 0; font-size: 17px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Кнопка очистки (Мусорка) */
+        .header-action-btn {
+            position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
+            cursor: pointer; color: #ff3b30; /* Красный цвет */
+            display: none; /* Скрыта по умолчанию! Показывается JS только если есть товары */
+            padding: 5px;
+        }
+        .header-action-btn:active { opacity: 0.6; }
 
         .section-title { padding: 20px 15px 10px; font-weight: 700; font-size: 22px; }
         
@@ -186,9 +196,7 @@
             margin-bottom: 10px; display: flex; align-items: center;
             box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
-        /* ДОБАВЛЕНО cursor: pointer */
         .cart-thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; margin-right: 15px; cursor: pointer; }
-        
         .cart-details { flex-grow: 1; }
         .cart-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
         .cart-size { font-size: 12px; color: #888; margin-bottom: 4px; }
@@ -320,7 +328,7 @@
                     <span style="flex-grow:1">Мои заказы</span><span>›</span>
                 </a>
             </div>
-             <div class="version-text">version 11.5</div>
+             <div class="version-text">version 11.7</div>
         </div>
     </div>
 
@@ -335,7 +343,16 @@
     </div>
 
     <div id="cart-view" class="page">
-        <div class="header-logo"><h2>Корзина</h2></div>
+        <div class="header-logo" style="position: relative;">
+            <h2>Корзина</h2>
+            <div id="btn-clear-cart" class="header-action-btn" onclick="clearCart()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+            </div>
+        </div>
+        
         <div id="cart-empty" class="empty-state">
             <img src="https://em-content.zobj.net/source/apple/391/shopping-cart_1f6d2.png" class="animate-pulse">
             <div class="empty-text">Корзина пуста</div>
@@ -577,15 +594,20 @@
             const listContainer = document.getElementById('cart-list-container');
             const itemsWrapper = document.getElementById('cart-items-wrapper');
             const totalPriceEl = document.getElementById('cart-total-price');
+            const clearBtn = document.getElementById('btn-clear-cart');
 
             if (Object.keys(cart).length === 0) {
                 emptyState.style.display = 'flex';
                 listContainer.style.display = 'none';
+                clearBtn.style.display = 'none'; // Скрываем мусорку
                 return;
             }
 
+            // Показываем контент и кнопку
             emptyState.style.display = 'none';
             listContainer.style.display = 'block';
+            clearBtn.style.display = 'block'; 
+            
             itemsWrapper.innerHTML = '';
 
             let totalSum = 0;
@@ -626,6 +648,17 @@
             updateGlobalCartBadges();
             renderCartPage(); 
             if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
+        }
+
+        // --- НОВАЯ ФУНКЦИЯ: ОЧИСТКА КОРЗИНЫ ---
+        function clearCart() {
+            if (confirm('Очистить корзину?')) {
+                cart = {};
+                saveData();
+                updateGlobalCartBadges();
+                renderCartPage();
+                if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+            }
         }
 
         function goToCartFromProduct() {
