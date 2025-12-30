@@ -62,7 +62,7 @@
 
         .size-label { font-size: 15px; color: #000; margin-bottom: 10px; font-weight: 400; }
         .size-label span { font-weight: 600; } 
-        .size-grid { display: flex; gap: 10px; margin-bottom: 15px; }
+        .size-grid { display: flex; gap: 10px; margin-bottom: 25px; }
         .size-box {
             width: 50px; height: 35px;
             border: 1px solid #e0e0e0; border-radius: 8px;
@@ -153,7 +153,6 @@
 
         .btn-go-cart {
             flex: 1.2; height: 100%;
-            /* ИЗМЕНЕНО: Цвет фона на голубой, цвет текста на белый */
             background-color: #3390ec; 
             color: white; 
             border-radius: 12px;
@@ -187,7 +186,9 @@
             margin-bottom: 10px; display: flex; align-items: center;
             box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
-        .cart-thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; margin-right: 15px; }
+        /* ДОБАВЛЕНО cursor: pointer */
+        .cart-thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; margin-right: 15px; cursor: pointer; }
+        
         .cart-details { flex-grow: 1; }
         .cart-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
         .cart-size { font-size: 12px; color: #888; margin-bottom: 4px; }
@@ -319,7 +320,7 @@
                     <span style="flex-grow:1">Мои заказы</span><span>›</span>
                 </a>
             </div>
-             <div class="version-text">version 11.4</div>
+             <div class="version-text">version 11.5</div>
         </div>
     </div>
 
@@ -600,7 +601,7 @@
                 const row = document.createElement('div');
                 row.className = 'cart-item-row';
                 row.innerHTML = `
-                    <img src="${product.img}" class="cart-thumb">
+                    <img src="${product.img}" class="cart-thumb" onclick="openProduct('${productId}')">
                     <div class="cart-details">
                         <div class="cart-title">${product.name}</div>
                         <div class="cart-size">Размер: ${size}</div>
