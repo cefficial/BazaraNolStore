@@ -26,15 +26,14 @@
             background: white; padding: 15px; text-align: center;
             position: sticky; top: 0; z-index: 100;
             border-bottom: 1px solid #f0f0f0;
-            min-height: 21px; /* Чтобы хедер не скакал */
+            min-height: 21px;
         }
         .header-logo h2 { margin: 0; font-size: 17px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* Кнопка очистки (Мусорка) */
         .header-action-btn {
             position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
-            cursor: pointer; color: #ff3b30; /* Красный цвет */
-            display: none; /* Скрыта по умолчанию! Показывается JS только если есть товары */
+            cursor: pointer; color: #ff3b30; 
+            display: none; 
             padding: 5px;
         }
         .header-action-btn:active { opacity: 0.6; }
@@ -82,32 +81,19 @@
         }
         .size-box.active { border: 2px solid #3390ec; color: #3390ec; }
 
-        /* --- ОПИСАНИЕ И ХАРАКТЕРИСТИКИ --- */
-        .stock-status {
-            font-size: 14px; color: #000; margin-bottom: 20px;
-        }
+        .stock-status { font-size: 14px; color: #000; margin-bottom: 20px; }
         .stock-count { color: #3390ec; font-weight: 500; }
 
-        .desc-tabs {
-            display: flex; gap: 10px; margin-bottom: 20px;
-        }
-        .desc-tab-btn {
-            padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: background 0.1s;
-        }
+        .desc-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .desc-tab-btn { padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: background 0.1s; }
         .tab-black { background-color: #000; color: white; }
         .tab-gray { background-color: #f0f0f0; color: #000; }
 
-        .desc-content {
-            font-size: 14px; line-height: 1.6; color: #333;
-        }
+        .desc-content { font-size: 14px; line-height: 1.6; color: #333; }
         .desc-line { margin-bottom: 4px; }
-        
-        .char-row {
-            display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px dashed #eee; padding-bottom: 4px;
-        }
+        .char-row { display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px dashed #eee; padding-bottom: 4px; }
         .char-label { color: #888; }
         .char-val { font-weight: 500; color: #000; }
-
 
         /* --- ПЛАВАЮЩИЕ КНОПКИ --- */
         .floating-actions {
@@ -123,10 +109,12 @@
             cursor: pointer;
         }
         .float-btn:active { transform: scale(0.95); }
-        .float-btn svg { width: 24px; height: 24px; stroke: #000; stroke-width: 1.5; fill: none; }
+        .float-btn svg { width: 24px; height: 24px; stroke: #000; stroke-width: 1.5; fill: none; transition: all 0.2s; }
+        
+        /* Исправленный класс active для красного сердца */
         .float-btn.active svg { fill: #ff3b30; stroke: #ff3b30; }
 
-        /* --- НИЖНЯЯ ПАНЕЛЬ ТОВАРА --- */
+        /* --- НИЖНЯЯ ПАНЕЛЬ --- */
         .product-action-bar {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: white;
@@ -163,8 +151,7 @@
 
         .btn-go-cart {
             flex: 1.2; height: 100%;
-            background-color: #3390ec; 
-            color: white; 
+            background-color: #3390ec; color: white; 
             border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
             font-size: 16px; font-weight: 600; cursor: pointer; gap: 8px;
@@ -190,7 +177,7 @@
         }
         .badge.visible { display: flex; }
 
-        /* --- СПИСОК В КОРЗИНЕ --- */
+        /* --- КОРЗИНА --- */
         .cart-item-row {
             background: white; border-radius: 12px; padding: 10px;
             margin-bottom: 10px; display: flex; align-items: center;
@@ -233,10 +220,7 @@
         .animate-pulse { width: 100px; height: 100px; object-fit: contain; margin-bottom: 15px; animation: pulseBeat 1.5s infinite ease-in-out; }
         @keyframes pulseBeat { 0% { transform: scale(1); } 14% { transform: scale(1.15); } 28% { transform: scale(1); } 42% { transform: scale(1.15); } 70% { transform: scale(1); } }
         
-        #cart-badge-nav {
-            top: 2px;
-            right: 25px; 
-        }
+        #cart-badge-nav { top: 2px; right: 25px; }
 
     </style>
 </head>
@@ -291,7 +275,7 @@
             <div id="content-desc" class="desc-content" style="display: block;">
                 <div class="desc-line">- Lacoste</div>
                 <div class="desc-line">- Размер L-XL</div>
-                </div>
+            </div>
 
             <div id="content-chars" class="desc-content" style="display: none;">
                 <div class="char-row"><span class="char-label">Материал</span><span class="char-val">Хлопок</span></div>
@@ -328,7 +312,7 @@
                     <span style="flex-grow:1">Мои заказы</span><span>›</span>
                 </a>
             </div>
-             <div class="version-text">version 11.7</div>
+             <div class="version-text">version 11.8</div>
         </div>
     </div>
 
@@ -434,14 +418,14 @@
             'blue': { name: 'Штаны Blue Classic', priceVal: 3200, price: '3 200 ₽', img: 'bluepants.jpg' }
         };
 
-        // --- ЗАГРУЗКА ИЗ ПАМЯТИ ТЕЛЕФОНА (LocalStorage) ---
-        let favorites = JSON.parse(localStorage.getItem('bazara_favorites')) || [];
+        // --- ЗАГРУЗКА ИЗ ПАМЯТИ ---
+        // Удаляем null из массива, если вдруг попали
+        let favorites = (JSON.parse(localStorage.getItem('bazara_favorites')) || []).filter(item => item !== null);
         let cart = JSON.parse(localStorage.getItem('bazara_cart')) || {}; 
         
         let currentOpenProductId = null;
         let currentSelectedSize = 'L'; 
 
-        // Инициализация бейджиков при старте
         updateGlobalCartBadges();
 
         function saveData() {
@@ -453,7 +437,6 @@
         function openProduct(id) {
             currentOpenProductId = id; 
             currentSelectedSize = 'L';
-            
             const product = productsData[id];
 
             document.getElementById('main-nav').classList.add('hidden');
@@ -472,9 +455,10 @@
 
             switchDescTab('desc');
 
+            // ВАЖНО: Обновляем состояние кнопки сердечка при открытии
             updateHeartButtonState();
-            updateActionBarState(); 
             
+            updateActionBarState(); 
             window.scrollTo(0, 0);
         }
 
@@ -485,7 +469,6 @@
             goToCatalog();
         }
 
-        // --- УПРАВЛЕНИЕ ВКЛАДКАМИ ---
         function switchDescTab(tab) {
             const btnDesc = document.getElementById('btn-tab-desc');
             const btnChars = document.getElementById('btn-tab-chars');
@@ -505,33 +488,24 @@
             }
         }
 
-        // --- УПРАВЛЕНИЕ РАЗМЕРАМИ ---
         function selectSize(element) {
             document.querySelectorAll('.size-box').forEach(el => el.classList.remove('active'));
             element.classList.add('active');
-            
             currentSelectedSize = element.innerText;
             document.querySelector('.size-label span').innerText = currentSelectedSize;
-            
             if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
-            
             updateActionBarState();
         }
 
-        // --- ЛОГИКА КОРЗИНЫ ---
+        // --- КОРЗИНА ---
         function getCartKey() {
             return `${currentOpenProductId}_${currentSelectedSize}`;
         }
 
         function firstAddToCart() {
             const key = getCartKey();
-            if (!cart[key]) {
-                cart[key] = 1;
-            } else {
-                cart[key]++;
-            }
+            if (!cart[key]) cart[key] = 1; else cart[key]++;
             if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-            
             saveData();
             updateActionBarState();
             updateGlobalCartBadges();
@@ -540,13 +514,9 @@
         function changeQuantity(delta) {
             const key = getCartKey();
             if (!cart[key]) return;
-
             cart[key] += delta;
-            if (cart[key] <= 0) {
-                delete cart[key];
-            }
+            if (cart[key] <= 0) delete cart[key];
             if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
-
             saveData();
             updateActionBarState();
             updateGlobalCartBadges();
@@ -556,7 +526,6 @@
             const btnInitial = document.getElementById('btn-initial');
             const splitControls = document.getElementById('split-controls');
             const qtyDisplay = document.getElementById('qty-display');
-
             const key = getCartKey();
             const qty = cart[key] || 0;
 
@@ -572,20 +541,14 @@
 
         function updateGlobalCartBadges() {
             let total = 0;
-            for (let key in cart) {
-                total += cart[key];
-            }
+            for (let key in cart) total += cart[key];
             const badgeProd = document.getElementById('cart-badge-prod');
             const badgeNav = document.getElementById('cart-badge-nav');
-
             if (total > 0) {
-                badgeProd.innerText = total;
-                badgeProd.classList.add('visible');
-                badgeNav.innerText = total;
-                badgeNav.classList.add('visible');
+                badgeProd.innerText = total; badgeProd.classList.add('visible');
+                badgeNav.innerText = total; badgeNav.classList.add('visible');
             } else {
-                badgeProd.classList.remove('visible');
-                badgeNav.classList.remove('visible');
+                badgeProd.classList.remove('visible'); badgeNav.classList.remove('visible');
             }
         }
 
@@ -599,23 +562,19 @@
             if (Object.keys(cart).length === 0) {
                 emptyState.style.display = 'flex';
                 listContainer.style.display = 'none';
-                clearBtn.style.display = 'none'; // Скрываем мусорку
+                clearBtn.style.display = 'none';
                 return;
             }
 
-            // Показываем контент и кнопку
             emptyState.style.display = 'none';
             listContainer.style.display = 'block';
-            clearBtn.style.display = 'block'; 
-            
+            clearBtn.style.display = 'block';
             itemsWrapper.innerHTML = '';
 
             let totalSum = 0;
-
             for (let key in cart) {
                 const qty = cart[key];
                 const [productId, size] = key.split('_'); 
-                
                 const product = productsData[productId];
                 const itemSum = product.priceVal * qty;
                 totalSum += itemSum;
@@ -643,14 +602,12 @@
         function updateCartItemByKey(key, delta) {
             cart[key] += delta;
             if (cart[key] <= 0) delete cart[key];
-            
             saveData();
             updateGlobalCartBadges();
             renderCartPage(); 
             if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
         }
 
-        // --- НОВАЯ ФУНКЦИЯ: ОЧИСТКА КОРЗИНЫ ---
         function clearCart() {
             if (confirm('Очистить корзину?')) {
                 cart = {};
@@ -666,9 +623,10 @@
             document.getElementById('nav-cart').click();
         }
 
-        // --- ИЗБРАННОЕ ---
+        // --- ИЗБРАННОЕ (ФИКС) ---
         function updateHeartButtonState() {
             const btn = document.getElementById('fav-btn');
+            // Проверка строго по данным из LocalStorage
             if (favorites.includes(currentOpenProductId)) {
                 btn.classList.add('active'); 
             } else {
@@ -678,15 +636,16 @@
 
         function toggleFavorite() {
             const btn = document.getElementById('fav-btn');
+            
             if (favorites.includes(currentOpenProductId)) {
                 favorites = favorites.filter(id => id !== currentOpenProductId);
-                btn.classList.remove('active');
             } else {
                 favorites.push(currentOpenProductId);
-                btn.classList.add('active');
                 if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
             }
+            
             saveData();
+            updateHeartButtonState(); // Обновляем визуал после изменения данных
         }
 
         function renderFavorites() {
@@ -694,13 +653,16 @@
             const emptyState = document.getElementById('favorites-empty');
             listContainer.innerHTML = ''; 
 
-            if (favorites.length === 0) {
+            // Фильтруем favorites на случай мусора
+            const validFavorites = favorites.filter(id => productsData[id]);
+
+            if (validFavorites.length === 0) {
                 emptyState.style.display = 'flex';
                 listContainer.style.display = 'none';
             } else {
                 emptyState.style.display = 'none';
                 listContainer.style.display = 'grid';
-                favorites.forEach(id => {
+                validFavorites.forEach(id => {
                     const product = productsData[id];
                     const card = document.createElement('div');
                     card.className = 'product-card';
@@ -717,10 +679,17 @@
             }
         }
 
-        // --- УТИЛИТЫ ---
+        function openFavorites() {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById('nav-favorites').classList.add('active');
+            renderFavorites();
+            hideAllPages();
+            document.getElementById('favorites-view').classList.add('active');
+        }
+
+        // --- ОБЩАЯ НАВИГАЦИЯ ---
         function openContact() { tg.openTelegramLink('https://t.me/dummest'); }
 
-        // --- НАВИГАЦИЯ ---
         function switchTab(tabName, element) {
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             element.classList.add('active');
@@ -734,14 +703,6 @@
                 document.getElementById('cart-view').classList.add('active');
                 renderCartPage(); 
             }
-        }
-
-        function openFavorites() {
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            document.getElementById('nav-favorites').classList.add('active');
-            renderFavorites();
-            hideAllPages();
-            document.getElementById('favorites-view').classList.add('active');
         }
 
         function goToCatalog() {
