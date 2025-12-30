@@ -1,850 +1,529 @@
- <!DOCTYPE html>
-
+<!DOCTYPE html>
 <html lang="ru">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-<title>BAZARA NOL</title>
-
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-<style>
-
-body {
-
-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-
-margin: 0;
-
-padding: 0;
-
-background-color: #f0f0f0;
-
-color: #000;
-
-padding-bottom: 90px;
-
--webkit-tap-highlight-color: transparent;
-
-}
-
-
-/* --- АНИМАЦИИ --- */
-
-.page { display: none; animation: fadeIn 0.2s; }
-
-.page.active { display: block; }
-
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-
-/* --- ШАПКА --- */
-
-.header-logo {
-
-background: white; padding: 15px; text-align: center;
-
-box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100;
-
-}
-
-.header-logo h2 { margin: 0; font-size: 18px; font-weight: 700; text-transform: uppercase; }
-
-
-/* --- СЕТКА ТОВАРОВ --- */
-
-.section-title { padding: 0 15px; margin-top: 15px; margin-bottom: 10px; font-weight: 700; font-size: 20px; }
-
-.products-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 10px; }
-
-.product-card {
-
-background: white; border-radius: 12px; overflow: hidden; padding-bottom: 12px;
-
-box-shadow: 0 1px 2px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.1s;
-
-}
-
-.product-card:active { transform: scale(0.98); }
-
-.product-image { width: 100%; height: 180px; object-fit: cover; display: block; }
-
-.product-info { padding: 8px 10px 0 10px; }
-
-.grid-price { font-weight: 800; font-size: 15px; color: #000; margin-bottom: 4px; }
-
-.grid-name { font-size: 13px; color: #888; line-height: 1.2; }
-
-
-/* --- ДЕТАЛЬНАЯ СТРАНИЦА --- */
-
-.detail-header {
-
-background: white; padding: 10px 15px; display: flex; align-items: center;
-
-position: sticky; top: 0; z-index: 101;
-
-}
-
-.back-btn { font-size: 24px; margin-right: 15px; cursor: pointer; color: #333; }
-
-.detail-title-small { font-weight: 600; font-size: 16px; }
-
-.detail-image { width: 100%; height: auto; display: block; }
-
-.detail-info-container { background: white; padding: 15px; margin-bottom: 100px; }
-
-.detail-product-title { font-size: 20px; font-weight: 700; margin-bottom: 15px; line-height: 1.3; }
-
-/* Выбор размера (Квадратные кнопки) */
-
-.size-label { font-size: 14px; color: #888; margin-bottom: 10px; }
-
-.size-grid { display: flex; gap: 10px; margin-bottom: 20px; }
-
-.size-option {
-
-width: 45px; height: 45px;
-
-border: 1px solid #e0e0e0; border-radius: 10px;
-
-display: flex; align-items: center; justify-content: center;
-
-font-size: 14px; font-weight: 600; cursor: pointer; color: #333;
-
-transition: all 0.1s;
-
-}
-
-.size-option.active {
-
-border-color: #3390ec; background-color: #3390ec; color: white;
-
-}
-
-
-/* --- ПЛАВАЮЩИЕ КНОПКИ (Справа) --- */
-
-.floating-actions {
-
-position: fixed; bottom: 110px; /* Поднял выше, чтобы не перекрывать панель */
-
-right: 15px; z-index: 201;
-
-display: flex; flex-direction: column; gap: 12px;
-
-display: none;
-
-}
-
-.floating-actions.visible { display: flex; }
-
-
-.float-btn {
-
-width: 44px; height: 44px; background: white; border-radius: 50%;
-
-box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-
-display: flex; align-items: center; justify-content: center;
-
-cursor: pointer; transition: transform 0.1s;
-
-}
-
-.float-btn:active { transform: scale(0.95); }
-
-.float-btn svg { width: 22px; height: 22px; stroke: #000; fill: none; stroke-width: 1.8; }
-
-.float-btn.active svg { fill: #ff3b30; stroke: #ff3b30; }
-
-
-/* --- 🔥 НИЖНЯЯ ПАНЕЛЬ ТОВАРА (КОПИЯ РЕФЕРЕНСА) 🔥 --- */
-
-.product-action-bar {
-
-position: fixed; bottom: 0; left: 0; width: 100%; background: white;
-
-padding: 10px 12px; box-sizing: border-box;
-
-display: none; align-items: stretch; gap: 10px;
-
-border-top: 1px solid #f0f0f0; z-index: 200;
-
-padding-bottom: 25px; /* Учет safe-area на iPhone */
-
-}
-
-.product-action-bar.visible { display: flex; }
-
-
-/* Большая синяя кнопка */
-
-.btn-add-cart-large {
-
-flex-grow: 1;
-
-background-color: #3390ec;
-
-color: white;
-
-border: none;
-
-border-radius: 12px;
-
-padding: 0 10px;
-
-display: flex;
-
-flex-direction: column;
-
-align-items: center;
-
-justify-content: center;
-
-cursor: pointer;
-
-}
-
-.btn-sub-text { font-size: 11px; opacity: 0.9; margin-bottom: 2px; }
-
-.btn-price-text { font-size: 18px; font-weight: 700; }
-
-
-/* Маленькие белые кнопки */
-
-.action-icon-btn {
-
-width: 60px; /* Ширина как на скрине */
-
-background: #ffffff;
-
-border: 1px solid #f0f0f0;
-
-border-radius: 12px;
-
-display: flex;
-
-flex-direction: column;
-
-align-items: center;
-
-justify-content: center;
-
-color: #000;
-
-cursor: pointer;
-
-position: relative;
-
-box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-
-}
-
-.action-icon-btn svg { width: 22px; height: 22px; margin-bottom: 2px; stroke-width: 1.8; stroke: #333; }
-
-.action-label { font-size: 10px; font-weight: 500; color: #888; margin-top: 1px; }
-
-
-/* Бейджик (цифра 0) */
-
-.cart-badge {
-
-position: absolute; top: 5px; right: 5px;
-
-background-color: #3390ec; color: white;
-
-font-size: 10px; width: 16px; height: 16px;
-
-border-radius: 50%; display: flex; align-items: center; justify-content: center;
-
-font-weight: 700; border: 1px solid white;
-
-}
-
-
-/* --- МЕНЮ "ЕЩЕ" --- */
-
-.modal-overlay {
-
-position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-
-background: rgba(0,0,0,0.4); z-index: 300; display: none; opacity: 0; transition: opacity 0.3s;
-
-}
-
-.modal-sheet {
-
-position: fixed; bottom: -100%; left: 0; width: 100%;
-
-background: white; border-radius: 16px 16px 0 0; padding: 20px; box-sizing: border-box; z-index: 301; transition: bottom 0.3s ease-out;
-
-}
-
-.modal-overlay.open { display: block; opacity: 1; }
-
-.modal-sheet.open { bottom: 0; }
-
-.sheet-item {
-
-display: flex; align-items: center; padding: 15px 0; border-bottom: 1px solid #f0f0f0; color: #333; font-size: 16px; cursor: pointer;
-
-}
-
-.sheet-icon { width: 24px; height: 24px; margin-right: 15px; color: #333; }
-
-
-/* --- ПРОЧЕЕ --- */
-
-.profile-container { padding: 15px; }
-
-.profile-header { background: white; border-radius: 15px; padding: 15px; display: flex; align-items: center; margin-bottom: 15px; }
-
-.avatar-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
-
-.menu-list { background: white; border-radius: 15px; overflow: hidden; margin-bottom: 15px; }
-
-.menu-item-row { display: flex; align-items: center; padding: 15px; text-decoration: none; color: #000; border-bottom: 1px solid #f0f0f0; }
-
-.empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 30px; text-align: center; }
-
-.btn-blue-outline { background-color: #3390ec; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 500; }
-
-.animate-pulse { width: 100px; height: 100px; object-fit: contain; margin-bottom: 10px; animation: pulseBeat 1.5s infinite ease-in-out; }
-
-@keyframes pulseBeat { 0% { transform: scale(1); } 14% { transform: scale(1.15); } 28% { transform: scale(1); } 42% { transform: scale(1.15); } 70% { transform: scale(1); } }
-
-
-/* --- ГЛАВНОЕ НИЖНЕЕ МЕНЮ --- */
-
-.bottom-nav {
-
-position: fixed; bottom: 0; left: 0; width: 100%; background: white;
-
-display: flex; justify-content: space-around; align-items: center;
-
-padding: 10px 0; border-top: 1px solid #e0e0e0; z-index: 100; padding-bottom: 20px;
-
-}
-
-.nav-item { display: flex; flex-direction: column; align-items: center; color: #999; flex: 1; padding: 4px 0; cursor: pointer; }
-
-.nav-item.active { color: #3390ec; }
-
-.nav-icon { width: 24px; height: 24px; margin-bottom: 4px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-
-.nav-text { font-size: 10px; }
-
-.bottom-nav.hidden { display: none; }
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BAZARA NOL</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #000;
+            padding-bottom: 90px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* --- АНИМАЦИИ --- */
+        .page { display: none; animation: fadeIn 0.2s; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- ШАПКА --- */
+        .header-logo {
+            background: white; padding: 15px; text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100;
+        }
+        .header-logo h2 { margin: 0; font-size: 18px; font-weight: 700; text-transform: uppercase; }
+
+        /* --- СЕТКА ТОВАРОВ --- */
+        .section-title { padding: 0 15px; margin-top: 15px; margin-bottom: 10px; font-weight: 700; font-size: 20px; }
+        .products-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 10px; }
+        .product-card {
+            background: white; border-radius: 12px; overflow: hidden; padding-bottom: 12px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.1s;
+        }
+        .product-card:active { transform: scale(0.98); }
+        .product-image { width: 100%; height: 180px; object-fit: cover; display: block; }
+        .product-info { padding: 8px 10px 0 10px; }
+        .grid-price { font-weight: 800; font-size: 15px; color: #000; margin-bottom: 4px; }
+        .grid-name { font-size: 13px; color: #888; line-height: 1.2; }
+
+        /* --- ДЕТАЛЬНАЯ СТРАНИЦА --- */
+        .detail-header {
+            background: white; padding: 10px 15px; display: flex; align-items: center;
+            position: sticky; top: 0; z-index: 101;
+        }
+        .back-btn { font-size: 24px; margin-right: 15px; cursor: pointer; color: #333; }
+        .detail-title-small { font-weight: 600; font-size: 16px; }
+        .detail-image { width: 100%; height: auto; display: block; }
+        
+        .detail-info-container { background: white; padding: 15px; margin-bottom: 100px; }
+        .detail-product-title { font-size: 20px; font-weight: 700; margin-bottom: 15px; line-height: 1.3; }
+        
+        /* Выбор размера (Квадратные кнопки) */
+        .size-label { font-size: 14px; color: #888; margin-bottom: 10px; }
+        .size-grid { display: flex; gap: 10px; margin-bottom: 20px; }
+        .size-option {
+            width: 45px; height: 45px;
+            border: 1px solid #e0e0e0; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: 600; cursor: pointer; color: #333;
+            transition: all 0.1s;
+        }
+        .size-option.active {
+            border-color: #3390ec; background-color: #3390ec; color: white;
+        }
+
+        /* --- ПЛАВАЮЩИЕ КНОПКИ (Справа) --- */
+        .floating-actions {
+            position: fixed; bottom: 110px;
+            right: 15px; z-index: 201;
+            display: flex; flex-direction: column; gap: 12px;
+            display: none; 
+        }
+        .floating-actions.visible { display: flex; }
+
+        .float-btn {
+            width: 44px; height: 44px; background: white; border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: transform 0.1s;
+        }
+        .float-btn:active { transform: scale(0.95); }
+        .float-btn svg { width: 22px; height: 22px; stroke: #000; fill: none; stroke-width: 1.8; }
+        
+        /* Активное сердце (красное) */
+        .float-btn.active svg { fill: #ff3b30; stroke: #ff3b30; }
+
+        /* --- НИЖНЯЯ ПАНЕЛЬ ТОВАРА --- */
+        .product-action-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%; background: white;
+            padding: 10px 12px; box-sizing: border-box; 
+            display: none; align-items: stretch; gap: 10px;
+            border-top: 1px solid #f0f0f0; z-index: 200; 
+            padding-bottom: 25px; /* Учет safe-area на iPhone */
+        }
+        .product-action-bar.visible { display: flex; }
+
+        /* Большая синяя кнопка */
+        .btn-add-cart-large {
+            flex-grow: 1; 
+            background-color: #3390ec; 
+            color: white; 
+            border: none; 
+            border-radius: 12px;
+            padding: 0 10px;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer;
+        }
+        .btn-sub-text { font-size: 11px; opacity: 0.9; margin-bottom: 2px; }
+        .btn-price-text { font-size: 18px; font-weight: 700; }
+
+        /* Маленькие белые кнопки */
+        .action-icon-btn {
+            width: 60px; /* Ширина как на скрине */
+            background: #ffffff; 
+            border: 1px solid #f0f0f0;
+            border-radius: 12px;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            color: #000; 
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .action-icon-btn svg { width: 22px; height: 22px; margin-bottom: 2px; stroke-width: 1.8; stroke: #333; }
+        .action-label { font-size: 10px; font-weight: 500; color: #888; margin-top: 1px; }
+
+        /* Бейджик (цифра 0) */
+        .cart-badge {
+            position: absolute; top: 5px; right: 5px;
+            background-color: #3390ec; color: white;
+            font-size: 10px; width: 16px; height: 16px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 700; border: 1px solid white;
+        }
+
+        /* --- МЕНЮ "ЕЩЕ" --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4); z-index: 300; display: none; opacity: 0; transition: opacity 0.3s;
+        }
+        .modal-sheet {
+            position: fixed; bottom: -100%; left: 0; width: 100%;
+            background: white; border-radius: 16px 16px 0 0; padding: 20px; box-sizing: border-box; z-index: 301; transition: bottom 0.3s ease-out;
+        }
+        .modal-overlay.open { display: block; opacity: 1; }
+        .modal-sheet.open { bottom: 0; }
+        .sheet-item {
+            display: flex; align-items: center; padding: 15px 0; border-bottom: 1px solid #f0f0f0; color: #333; font-size: 16px; cursor: pointer;
+        }
+        .sheet-icon { width: 24px; height: 24px; margin-right: 15px; color: #333; }
+
+        /* --- ПРОЧЕЕ --- */
+        .profile-container { padding: 15px; }
+        .profile-header { background: white; border-radius: 15px; padding: 15px; display: flex; align-items: center; margin-bottom: 15px; }
+        .avatar-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
+        .menu-list { background: white; border-radius: 15px; overflow: hidden; margin-bottom: 15px; }
+        .menu-item-row { display: flex; align-items: center; padding: 15px; text-decoration: none; color: #000; border-bottom: 1px solid #f0f0f0; }
+        
+        /* Стили для пустого состояния */
+        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 30px; text-align: center; }
+        .btn-blue-outline { background-color: #3390ec; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 500; }
+        .animate-pulse { width: 100px; height: 100px; object-fit: contain; margin-bottom: 10px; animation: pulseBeat 1.5s infinite ease-in-out; }
+        @keyframes pulseBeat { 0% { transform: scale(1); } 14% { transform: scale(1.15); } 28% { transform: scale(1); } 42% { transform: scale(1.15); } 70% { transform: scale(1); } }
+
+        /* --- ГЛАВНОЕ НИЖНЕЕ МЕНЮ --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; background: white;
+            display: flex; justify-content: space-around; align-items: center;
+            padding: 10px 0; border-top: 1px solid #e0e0e0; z-index: 100; padding-bottom: 20px;
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #999; flex: 1; padding: 4px 0; cursor: pointer; }
+        .nav-item.active { color: #3390ec; }
+        .nav-icon { width: 24px; height: 24px; margin-bottom: 4px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .nav-text { font-size: 10px; }
+        .bottom-nav.hidden { display: none; }
+    </style>
 </head>
-
 <body>
 
-
-<div id="main-view" class="page active">
-
-<div class="header-logo"><h2>БАЗАРА НОЛЬ</h2></div>
-
-<div class="section-title">В наличии</div>
-
-<div class="products-grid">
-
-<div class="product-card" onclick="openProduct('grey')">
-
-<img src="greypants.jpg" class="product-image" alt="Серые штаны">
-
-<div class="product-info">
-
-<div class="grid-price">2 500 ₽</div>
-
-<div class="grid-name">Штаны Grey Edition</div>
-
-</div>
-
-</div>
-
-<div class="product-card" onclick="openProduct('blue')">
-
-<img src="bluepants.jpg" class="product-image" alt="Синие штаны">
-
-<div class="product-info">
-
-<div class="grid-price">3 200 ₽</div>
-
-<div class="grid-name">Штаны Blue Classic</div>
-
-</div>
-
-</div>
-
-</div>
-
-<div style="text-align: center; margin-top: 30px; color: #999; font-size: 12px; margin-bottom: 20px;">@BazaraNolBot</div>
-
-</div>
-
-
-<div id="product-detail-view" class="page">
-
-<div class="detail-header">
-
-<div class="back-btn" onclick="closeProduct()">&#8592;</div>
-
-<div class="detail-title-small">BAZARA NOL</div>
-
-</div>
-
-<img id="detail-img" src="greypants.jpg" class="detail-image" alt="Товар">
-
-<div class="detail-info-container">
-
-<div id="detail-title" class="detail-product-title">Штаны Grey Edition</div>
-
-<div class="size-label">Размер:</div>
-
-<div class="size-grid">
-
-<div class="size-option" onclick="selectSize(this)">S</div>
-
-<div class="size-option" onclick="selectSize(this)">M</div>
-
-<div class="size-option active" onclick="selectSize(this)">L</div>
-
-<div class="size-option" onclick="selectSize(this)">XL</div>
-
-</div>
-
-<p style="color: #666; font-size: 14px; margin-top: 15px; line-height: 1.5;">
-
-Оригинальные карго штаны. Плотный хлопок, множество карманов. Состояние отличное, без дефектов.
-
-</p>
-
-</div>
-
-</div>
-
-
-<div id="floating-actions" class="floating-actions">
-
-<div class="float-btn" onclick="openContact()">
-
-<svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-
-<line x1="22" y1="2" x2="11" y2="13"></line>
-
-<polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-
-</svg>
-
-</div>
-
-<div class="float-btn" id="fav-btn" onclick="toggleFavorite()">
-
-<svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-
-<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-
-</svg>
-
-</div>
-
-</div>
-
-
-<div id="profile-view" class="page">
-
-<div class="profile-container">
-
-<div class="profile-header">
-
-<img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png" class="avatar-img" alt="Avatar">
-
-<div class="user-info">
-
-<h2 id="user-name">Гость</h2>
-
-<div class="user-stats">Бонусы: 0 <span style="color:#3390ec">✨</span><br>Скидка: 0%</div>
-
-</div>
-
-</div>
-
-<div class="menu-list">
-
-<a href="#" class="menu-item-row" onclick="openFavorites()">
-
-<span style="flex-grow:1">Избранное</span><span>›</span>
-
-</a>
-
-<a href="#" class="menu-item-row">
-
-<span style="flex-grow:1">Мои заказы</span><span>›</span>
-
-</a>
-
-</div>
-
-<div class="version-text">version 10.0</div>
-
-</div>
-
-</div>
-
-
-<div id="favorites-view" class="page">
-
-<div class="header-logo"><h2>Избранное</h2></div>
-
-<div class="empty-state">
-
-<img src="https://em-content.zobj.net/source/apple/391/red-heart_2764-fe0f.png" class="animate-pulse" alt="Сердце">
-
-<div class="empty-text">Здесь пока пусто</div>
-
-<button class="btn-blue-outline" onclick="goToCatalog()">Перейти в каталог</button>
-
-</div>
-
-</div>
-
-
-<div id="cart-view" class="page">
-
-<div class="header-logo"><h2>Корзина</h2></div>
-
-<div class="empty-state">
-
-<img src="https://em-content.zobj.net/source/apple/391/shopping-cart_1f6d2.png" class="animate-pulse" alt="Корзина">
-
-<div class="empty-text">Корзина пуста</div>
-
-<button class="btn-blue-outline" onclick="goToCatalog()">Перейти в каталог</button>
-
-</div>
-
-</div>
-
-
-<div id="product-actions" class="product-action-bar">
-
-<button class="btn-add-cart-large" onclick="alert('Добавлено в корзину!')">
-
-<span class="btn-sub-text">В корзину</span>
-
-<span id="detail-price-btn" class="btn-price-text">2 500 ₽</span>
-
-</button>
-
-<div class="action-icon-btn" onclick="goToCartFromProduct()">
-
-<span class="cart-badge">0</span>
-
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-
-<path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 110 4 2 2 0 010-4z" />
-
-</svg>
-
-<span class="action-label">Корзина</span>
-
-</div>
-
-
-<div class="action-icon-btn" onclick="toggleMoreSheet()">
-
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-
-<path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7" />
-
-</svg>
-
-<span class="action-label">Еще</span>
-
-</div>
-
-</div>
-
-
-<div class="modal-overlay" id="more-overlay" onclick="toggleMoreSheet()"></div>
-
-<div class="modal-sheet" id="more-sheet">
-
-<div style="font-weight:700; font-size:18px; margin-bottom:15px;">Действия</div>
-
-<div class="sheet-item" onclick="openContact()">
-
-<svg class="sheet-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-
-Поделиться
-
-</div>
-
-<div class="sheet-item" onclick="alert('Жалоба отправлена')">
-
-<svg class="sheet-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-
-Пожаловаться
-
-</div>
-
-<div class="sheet-item" onclick="toggleMoreSheet()" style="color: #ff3b30;">
-
-<svg class="sheet-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-
-Отмена
-
-</div>
-
-</div>
-
-
-<div id="main-nav" class="bottom-nav">
-
-<div id="nav-main" class="nav-item active" onclick="switchTab('main', this)">
-
-<svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-
-<span class="nav-text">Главная</span>
-
-</div>
-
-<div id="nav-cart" class="nav-item" onclick="switchTab('cart', this)">
-
-<svg class="nav-icon" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-
-<span class="nav-text">Корзина</span>
-
-</div>
-
-<div id="nav-favorites" class="nav-item" onclick="openFavorites()">
-
-<svg class="nav-icon" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-
-<span class="nav-text">Избранное</span>
-
-</div>
-
-<div id="nav-profile" class="nav-item" onclick="switchTab('profile', this)">
-
-<svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-
-<span class="nav-text">Профиль</span>
-
-</div>
-
-</div>
-
-
-<script>
-
-const tg = window.Telegram.WebApp;
-
-tg.ready(); tg.expand();
-
-
-const user = tg.initDataUnsafe.user;
-
-if (user && user.first_name) document.getElementById('user-name').innerText = user.first_name;
-
-
-// --- ФУНКЦИИ ТОВАРА ---
-
-function openProduct(type) {
-
-document.getElementById('main-nav').classList.add('hidden');
-
-hideAllPages();
-
-document.getElementById('product-detail-view').classList.add('active');
-
-document.getElementById('product-actions').classList.add('visible');
-
-document.getElementById('floating-actions').classList.add('visible');
-
-
-// Сброс
-
-document.getElementById('fav-btn').classList.remove('active');
-
-if (type === 'grey') {
-
-document.getElementById('detail-img').src = 'greypants.jpg';
-
-document.getElementById('detail-title').innerText = 'Штаны Grey Edition';
-
-document.getElementById('detail-price-btn').innerText = '2 500 ₽';
-
-} else {
-
-document.getElementById('detail-img').src = 'bluepants.jpg';
-
-document.getElementById('detail-title').innerText = 'Штаны Blue Classic';
-
-document.getElementById('detail-price-btn').innerText = '3 200 ₽';
-
-}
-
-window.scrollTo(0, 0);
-
-}
-
-
-function closeProduct() {
-
-document.getElementById('product-actions').classList.remove('visible');
-
-document.getElementById('floating-actions').classList.remove('visible');
-
-document.getElementById('main-nav').classList.remove('hidden');
-
-document.getElementById('more-overlay').classList.remove('open');
-
-document.getElementById('more-sheet').classList.remove('open');
-
-goToCatalog();
-
-}
-
-
-function toggleFavorite() {
-
-const btn = document.getElementById('fav-btn');
-
-btn.classList.toggle('active');
-
-if(btn.classList.contains('active')) {
-
-if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-
-}
-
-}
-
-
-function openContact() {
-
-tg.openTelegramLink('https://t.me/dummest');
-
-}
-
-
-function toggleMoreSheet() {
-
-const overlay = document.getElementById('more-overlay');
-
-const sheet = document.getElementById('more-sheet');
-
-if (sheet.classList.contains('open')) {
-
-sheet.classList.remove('open');
-
-overlay.classList.remove('open');
-
-} else {
-
-sheet.classList.add('open');
-
-overlay.classList.add('open');
-
-}
-
-}
-
-
-function selectSize(element) {
-
-document.querySelectorAll('.size-option').forEach(el => el.classList.remove('active'));
-
-element.classList.add('active');
-
-if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
-
-}
-
-
-function goToCartFromProduct() {
-
-closeProduct();
-
-document.getElementById('nav-cart').click();
-
-}
-
-
-// --- НАВИГАЦИЯ ---
-
-
-function switchTab(tabName, element) {
-
-document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-
-element.classList.add('active');
-
-hideAllPages();
-
-
-if (tabName === 'main') {
-
-document.getElementById('main-view').classList.add('active');
-
-} else if (tabName === 'profile') {
-
-document.getElementById('profile-view').classList.add('active');
-
-} else if (tabName === 'cart') {
-
-document.getElementById('cart-view').classList.add('active');
-
-}
-
-}
-
-
-function openFavorites() {
-
-document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-
-document.getElementById('nav-favorites').classList.add('active');
-
-hideAllPages();
-
-document.getElementById('favorites-view').classList.add('active');
-
-}
-
-
-function goToCatalog() {
-
-document.getElementById('nav-main').click();
-
-}
-
-
-function hideAllPages() {
-
-document.getElementById('main-view').classList.remove('active');
-
-document.getElementById('profile-view').classList.remove('active');
-
-document.getElementById('favorites-view').classList.remove('active');
-
-document.getElementById('cart-view').classList.remove('active');
-
-document.getElementById('product-detail-view').classList.remove('active');
-
-}
-
-</script>
-
+    <div id="main-view" class="page active">
+        <div class="header-logo"><h2>БАЗАРА НОЛЬ</h2></div>
+        <div class="section-title">В наличии</div>
+        <div class="products-grid">
+            <div class="product-card" onclick="openProduct('grey')">
+                <img src="greypants.jpg" class="product-image" alt="Серые штаны">
+                <div class="product-info">
+                    <div class="grid-price">2 500 ₽</div>
+                    <div class="grid-name">Штаны Grey Edition</div>
+                </div>
+            </div>
+            <div class="product-card" onclick="openProduct('blue')">
+                <img src="bluepants.jpg" class="product-image" alt="Синие штаны">
+                <div class="product-info">
+                    <div class="grid-price">3 200 ₽</div>
+                    <div class="grid-name">Штаны Blue Classic</div>
+                </div>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 30px; color: #999; font-size: 12px; margin-bottom: 20px;">@BazaraNolBot</div>
+    </div>
+
+    <div id="product-detail-view" class="page">
+        <div class="detail-header">
+            <div class="back-btn" onclick="closeProduct()">&#8592;</div>
+            <div class="detail-title-small">BAZARA NOL</div>
+        </div>
+        <img id="detail-img" src="greypants.jpg" class="detail-image" alt="Товар">
+        
+        <div class="detail-info-container">
+            <div id="detail-title" class="detail-product-title">Штаны Grey Edition</div>
+            
+            <div class="size-label">Размер:</div>
+            <div class="size-grid">
+                <div class="size-option" onclick="selectSize(this)">S</div>
+                <div class="size-option" onclick="selectSize(this)">M</div>
+                <div class="size-option active" onclick="selectSize(this)">L</div>
+                <div class="size-option" onclick="selectSize(this)">XL</div>
+            </div>
+            
+            <p style="color: #666; font-size: 14px; margin-top: 15px; line-height: 1.5;">
+                Оригинальные карго штаны. Плотный хлопок, множество карманов. Состояние отличное, без дефектов.
+            </p>
+        </div>
+    </div>
+
+    <div id="floating-actions" class="floating-actions">
+        <div class="float-btn" onclick="openContact()">
+            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+        </div>
+        <div class="float-btn" id="fav-btn" onclick="toggleFavorite()">
+            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+        </div>
+    </div>
+
+    <div id="profile-view" class="page">
+        <div class="profile-container">
+            <div class="profile-header">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png" class="avatar-img" alt="Avatar"> 
+                <div class="user-info">
+                    <h2 id="user-name">Гость</h2>
+                    <div class="user-stats">Бонусы: 0 <span style="color:#3390ec">✨</span><br>Скидка: 0%</div>
+                </div>
+            </div>
+            <div class="menu-list">
+                <a href="#" class="menu-item-row" onclick="openFavorites()">
+                    <span style="flex-grow:1">Избранное</span><span>›</span>
+                </a>
+                <a href="#" class="menu-item-row">
+                    <span style="flex-grow:1">Мои заказы</span><span>›</span>
+                </a>
+            </div>
+             <div class="version-text">version 10.1</div>
+        </div>
+    </div>
+
+    <div id="favorites-view" class="page">
+        <div class="header-logo"><h2>Избранное</h2></div>
+        
+        <div id="favorites-empty" class="empty-state">
+            <img src="https://em-content.zobj.net/source/apple/391/red-heart_2764-fe0f.png" class="animate-pulse" alt="Сердце">
+            <div class="empty-text">Здесь пока пусто</div>
+            <button class="btn-blue-outline" onclick="goToCatalog()">Перейти в каталог</button>
+        </div>
+
+        <div id="favorites-list" class="products-grid" style="display: none; padding-top:15px;">
+            </div>
+    </div>
+
+    <div id="cart-view" class="page">
+        <div class="header-logo"><h2>Корзина</h2></div>
+        <div class="empty-state">
+            <img src="https://em-content.zobj.net/source/apple/391/shopping-cart_1f6d2.png" class="animate-pulse" alt="Корзина">
+            <div class="empty-text">Корзина пуста</div>
+            <button class="btn-blue-outline" onclick="goToCatalog()">Перейти в каталог</button>
+        </div>
+    </div>
+
+    <div id="product-actions" class="product-action-bar">
+        <button class="btn-add-cart-large" onclick="alert('Добавлено в корзину!')">
+            <span class="btn-sub-text">В корзину</span>
+            <span id="detail-price-btn" class="btn-price-text">2 500 ₽</span>
+        </button>
+        
+        <div class="action-icon-btn" onclick="goToCartFromProduct()">
+            <span class="cart-badge">0</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 110 4 2 2 0 010-4z" />
+            </svg>
+            <span class="action-label">Корзина</span>
+        </div>
+
+        <div class="action-icon-btn" onclick="toggleMoreSheet()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7" />
+            </svg>
+            <span class="action-label">Еще</span>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="more-overlay" onclick="toggleMoreSheet()"></div>
+    <div class="modal-sheet" id="more-sheet">
+        <div style="font-weight:700; font-size:18px; margin-bottom:15px;">Действия</div>
+        <div class="sheet-item" onclick="openContact()">
+            <svg class="sheet-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            Поделиться
+        </div>
+        <div class="sheet-item" onclick="alert('Жалоба отправлена')">
+            <svg class="sheet-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            Пожаловаться
+        </div>
+        <div class="sheet-item" onclick="toggleMoreSheet()" style="color: #ff3b30;">
+            <svg class="sheet-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            Отмена
+        </div>
+    </div>
+
+    <div id="main-nav" class="bottom-nav">
+        <div id="nav-main" class="nav-item active" onclick="switchTab('main', this)">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            <span class="nav-text">Главная</span>
+        </div>
+        <div id="nav-cart" class="nav-item" onclick="switchTab('cart', this)">
+            <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+            <span class="nav-text">Корзина</span>
+        </div>
+        <div id="nav-favorites" class="nav-item" onclick="openFavorites()">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            <span class="nav-text">Избранное</span>
+        </div>
+        <div id="nav-profile" class="nav-item" onclick="switchTab('profile', this)">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span class="nav-text">Профиль</span>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready(); tg.expand();
+
+        const user = tg.initDataUnsafe.user;
+        if (user && user.first_name) document.getElementById('user-name').innerText = user.first_name;
+
+        // --- ДАННЫЕ О ТОВАРАХ ---
+        const productsData = {
+            'grey': {
+                name: 'Штаны Grey Edition',
+                price: '2 500 ₽',
+                img: 'greypants.jpg'
+            },
+            'blue': {
+                name: 'Штаны Blue Classic',
+                price: '3 200 ₽',
+                img: 'bluepants.jpg'
+            }
+        };
+
+        // Хранилище избранного (массив ID)
+        let favorites = [];
+        let currentOpenProductId = null;
+
+        // --- ЛОГИКА ТОВАРА ---
+        
+        function openProduct(id) {
+            currentOpenProductId = id; // Запоминаем, какой товар открыт
+            const product = productsData[id];
+
+            document.getElementById('main-nav').classList.add('hidden');
+            hideAllPages();
+            document.getElementById('product-detail-view').classList.add('active');
+            document.getElementById('product-actions').classList.add('visible');
+            document.getElementById('floating-actions').classList.add('visible');
+
+            // Обновляем UI
+            document.getElementById('detail-img').src = product.img;
+            document.getElementById('detail-title').innerText = product.name;
+            document.getElementById('detail-price-btn').innerText = product.price;
+
+            // Проверяем избранное
+            updateHeartButtonState();
+            
+            window.scrollTo(0, 0);
+        }
+
+        function closeProduct() {
+            document.getElementById('product-actions').classList.remove('visible');
+            document.getElementById('floating-actions').classList.remove('visible');
+            document.getElementById('main-nav').classList.remove('hidden');
+            document.getElementById('more-overlay').classList.remove('open');
+            document.getElementById('more-sheet').classList.remove('open');
+            goToCatalog();
+        }
+
+        function updateHeartButtonState() {
+            const btn = document.getElementById('fav-btn');
+            if (favorites.includes(currentOpenProductId)) {
+                btn.classList.add('active'); // Красное
+            } else {
+                btn.classList.remove('active'); // Белое
+            }
+        }
+
+        function toggleFavorite() {
+            const btn = document.getElementById('fav-btn');
+            
+            if (favorites.includes(currentOpenProductId)) {
+                // Удаляем
+                favorites = favorites.filter(id => id !== currentOpenProductId);
+                btn.classList.remove('active');
+            } else {
+                // Добавляем
+                favorites.push(currentOpenProductId);
+                btn.classList.add('active');
+                if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+            }
+        }
+
+        function renderFavorites() {
+            const listContainer = document.getElementById('favorites-list');
+            const emptyState = document.getElementById('favorites-empty');
+
+            listContainer.innerHTML = ''; // Очищаем список
+
+            if (favorites.length === 0) {
+                emptyState.style.display = 'flex';
+                listContainer.style.display = 'none';
+            } else {
+                emptyState.style.display = 'none';
+                listContainer.style.display = 'grid';
+
+                favorites.forEach(id => {
+                    const product = productsData[id];
+                    // Создаем карточку товара
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    card.onclick = () => openProduct(id);
+                    card.innerHTML = `
+                        <img src="${product.img}" class="product-image">
+                        <div class="product-info">
+                            <div class="grid-price">${product.price}</div>
+                            <div class="grid-name">${product.name}</div>
+                        </div>
+                    `;
+                    listContainer.appendChild(card);
+                });
+            }
+        }
+
+        function openContact() {
+            tg.openTelegramLink('https://t.me/dummest');
+        }
+
+        function toggleMoreSheet() {
+            const overlay = document.getElementById('more-overlay');
+            const sheet = document.getElementById('more-sheet');
+            if (sheet.classList.contains('open')) {
+                sheet.classList.remove('open');
+                overlay.classList.remove('open');
+            } else {
+                sheet.classList.add('open');
+                overlay.classList.add('open');
+            }
+        }
+
+        function selectSize(element) {
+            document.querySelectorAll('.size-option').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
+        }
+
+        function goToCartFromProduct() {
+            closeProduct();
+            document.getElementById('nav-cart').click();
+        }
+
+        // --- НАВИГАЦИЯ ---
+
+        function switchTab(tabName, element) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            hideAllPages();
+
+            if (tabName === 'main') {
+                document.getElementById('main-view').classList.add('active');
+            } else if (tabName === 'profile') {
+                document.getElementById('profile-view').classList.add('active');
+            } else if (tabName === 'cart') {
+                document.getElementById('cart-view').classList.add('active');
+            }
+        }
+
+        function openFavorites() {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById('nav-favorites').classList.add('active');
+            
+            // Рендерим список перед показом
+            renderFavorites();
+
+            hideAllPages();
+            document.getElementById('favorites-view').classList.add('active');
+        }
+
+        function goToCatalog() {
+            document.getElementById('nav-main').click();
+        }
+
+        function hideAllPages() {
+            document.getElementById('main-view').classList.remove('active');
+            document.getElementById('profile-view').classList.remove('active');
+            document.getElementById('favorites-view').classList.remove('active');
+            document.getElementById('cart-view').classList.remove('active');
+            document.getElementById('product-detail-view').classList.remove('active');
+        }
+    </script>
 </body>
-
-</html> 
+</html>
