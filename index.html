@@ -91,61 +91,78 @@
         .float-btn svg { width: 24px; height: 24px; stroke: #000; stroke-width: 1.5; fill: none; }
         .float-btn.active svg { fill: #ff3b30; stroke: #ff3b30; }
 
-        /* --- НИЖНЯЯ ПАНЕЛЬ ТОВАРА (НОВАЯ ЛОГИКА) --- */
+        /* --- НИЖНЯЯ ПАНЕЛЬ ТОВАРА --- */
         .product-action-bar {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: white;
             padding: 10px 15px; box-sizing: border-box;
-            display: none; align-items: center; gap: 12px; /* Чуть больше зазор */
+            display: none; align-items: center; gap: 12px;
             border-top: 1px solid #f0f0f0; z-index: 200;
             padding-bottom: 25px; 
         }
         .product-action-bar.visible { display: flex; }
 
-        /* Начальная кнопка "В корзину" (синяя, во всю ширину) */
+        /* Контейнер действий */
+        .action-main-btn-container {
+            flex-grow: 1; height: 50px;
+        }
+
+        /* 1. Кнопка "В корзину" */
         .btn-initial-add {
-            width: 100%; height: 50px;
+            width: 100%; height: 100%;
             background-color: #3390ec; color: white;
             border: none; border-radius: 12px;
             font-size: 16px; font-weight: 600;
             cursor: pointer; display: flex; align-items: center; justify-content: center;
         }
 
-        /* Контейнер для раздельного режима (Счетчик + Кнопка) */
+        /* 2. Раздельный режим */
         .split-actions-container {
-            width: 100%; display: none; /* Скрыт по умолчанию */
-            gap: 12px;
+            width: 100%; height: 100%; display: none; gap: 12px;
         }
         
-        /* Блок счетчика (Серый, как на скрине) */
         .counter-block {
-            flex: 1; height: 50px;
-            background-color: #f0f0f0; /* Серый фон */
-            border-radius: 12px;
+            flex: 1; height: 100%;
+            background-color: #f0f0f0; border-radius: 12px;
             display: flex; align-items: center; justify-content: space-between;
-            padding: 0 5px;
-            color: #000;
+            padding: 0 5px; color: #000;
         }
         .cnt-btn {
-            width: 40px; height: 100%;
-            display: flex; align-items: center; justify-content: center;
+            width: 40px; height: 100%; display: flex; align-items: center; justify-content: center;
             font-size: 24px; cursor: pointer; color: #000; user-select: none;
         }
-        .cnt-val {
-            font-size: 18px; font-weight: 600;
-        }
+        .cnt-val { font-size: 18px; font-weight: 600; }
 
-        /* Правая кнопка "В корзину" (в режиме счетчика) */
         .btn-go-cart {
-            flex: 1.2; height: 50px;
-            background-color: #3390ec; /* Оставил синий для стиля, можно поменять на желтый #ffcc00 */
-            color: white; border-radius: 12px;
+            flex: 1.2; height: 100%;
+            background-color: #ffcc00; /* Желтый как на скрине */
+            color: #000; border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 16px; font-weight: 600; cursor: pointer;
-            gap: 8px;
+            font-size: 16px; font-weight: 600; cursor: pointer; gap: 8px;
         }
 
-        /* --- КОРЗИНА И ПРОЧЕЕ --- */
+        /* Карточка Корзины справа (внизу) */
+        .action-card-btn {
+            width: 64px; height: 56px;
+            background: white; border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; position: relative;
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+        .action-card-btn svg { width: 22px; height: 22px; margin-bottom: 4px; stroke: #000; stroke-width: 1.8; }
+        .action-label { font-size: 10px; color: #999; font-weight: 500; }
+
+        .badge {
+            position: absolute; top: -5px; right: -5px;
+            background-color: #3390ec; color: white;
+            font-size: 11px; width: 18px; height: 18px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 700; border: 2px solid white; display: none;
+        }
+        .badge.visible { display: flex; }
+
+        /* --- СПИСОК В КОРЗИНЕ --- */
         .cart-item-row {
             background: white; border-radius: 12px; padding: 10px;
             margin-bottom: 10px; display: flex; align-items: center;
@@ -154,12 +171,14 @@
         .cart-thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; margin-right: 15px; }
         .cart-details { flex-grow: 1; }
         .cart-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+        .cart-size { font-size: 12px; color: #888; margin-bottom: 4px; }
         .cart-price { font-weight: 700; font-size: 14px; }
         .cart-controls { display: flex; align-items: center; background: #f0f0f0; border-radius: 8px; padding: 2px; }
         .cart-ctrl-btn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; cursor: pointer; }
         .cart-qty { font-size: 14px; font-weight: 600; padding: 0 8px; }
         .cart-total-block { background: white; padding: 20px; border-radius: 12px; margin-top: 20px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 18px; }
 
+        /* Навигация и прочее */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; display: flex; justify-content: space-around; align-items: center; padding: 10px 0; border-top: 1px solid #e0e0e0; z-index: 100; padding-bottom: 20px; }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: #999; flex: 1; padding: 4px 0; cursor: pointer; }
         .nav-item.active { color: #3390ec; }
@@ -254,7 +273,7 @@
                     <span style="flex-grow:1">Мои заказы</span><span>›</span>
                 </a>
             </div>
-             <div class="version-text">version 10.5</div>
+             <div class="version-text">version 10.6</div>
         </div>
     </div>
 
@@ -288,24 +307,34 @@
     </div>
 
     <div id="product-actions" class="product-action-bar">
-        
-        <button id="btn-initial" class="btn-initial-add" onclick="firstAddToCart()">
-            В корзину &nbsp;·&nbsp; <span id="btn-price-display">2 500 ₽</span>
-        </button>
+        <div class="action-main-btn-container">
+            <button id="btn-initial" class="btn-initial-add" onclick="firstAddToCart()">
+                В корзину &nbsp;·&nbsp; <span id="btn-price-display">2 500 ₽</span>
+            </button>
 
-        <div id="split-controls" class="split-actions-container">
-            <div class="counter-block">
-                <div class="cnt-btn" onclick="changeQuantity(-1)">−</div>
-                <div class="cnt-val" id="qty-display">1</div>
-                <div class="cnt-btn" onclick="changeQuantity(1)">+</div>
-            </div>
-            
-            <div class="btn-go-cart" onclick="goToCartFromProduct()">
-                <span>Корзина</span>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <div id="split-controls" class="split-actions-container">
+                <div class="counter-block">
+                    <div class="cnt-btn" onclick="changeQuantity(-1)">−</div>
+                    <div class="cnt-val" id="qty-display">1</div>
+                    <div class="cnt-btn" onclick="changeQuantity(1)">+</div>
+                </div>
+                
+                <div class="btn-go-cart" onclick="goToCartFromProduct()">
+                    <span>Корзина</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </div>
             </div>
         </div>
-
+        
+        <div class="action-card-btn" onclick="goToCartFromProduct()">
+            <div id="cart-badge-prod" class="badge">0</div> 
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+            <span class="action-label">Корзина</span>
+        </div>
     </div>
 
     <div id="main-nav" class="bottom-nav">
@@ -314,7 +343,7 @@
             <span class="nav-text">Главная</span>
         </div>
         <div id="nav-cart" class="nav-item" onclick="switchTab('cart', this)">
-            <div id="cart-badge-nav" class="badge">0</div>
+            <div id="cart-badge-nav" class="badge" style="top: 0; right: 25px;">0</div>
             <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
             <span class="nav-text">Корзина</span>
         </div>
@@ -335,20 +364,24 @@
         const user = tg.initDataUnsafe.user;
         if (user && user.first_name) document.getElementById('user-name').innerText = user.first_name;
 
-        // --- ДАННЫЕ О ТОВАРАХ ---
+        // ДАННЫЕ О ТОВАРАХ
         const productsData = {
             'grey': { name: 'Штаны Grey Edition', priceVal: 2500, price: '2 500 ₽', img: 'greypants.jpg' },
             'blue': { name: 'Штаны Blue Classic', priceVal: 3200, price: '3 200 ₽', img: 'bluepants.jpg' }
         };
 
-        // СОСТОЯНИЕ
+        // Хранение данных
         let favorites = [];
-        let cart = {}; // { 'grey': 2 }
+        let cart = {}; // Ключи теперь сложные: "id_size", например "grey_L"
         let currentOpenProductId = null;
+        let currentSelectedSize = 'L'; // Размер по умолчанию
 
         // --- ЛОГИКА ТОВАРА ---
         function openProduct(id) {
             currentOpenProductId = id; 
+            // Сбрасываем размер на дефолтный при открытии
+            currentSelectedSize = 'L';
+            
             const product = productsData[id];
 
             document.getElementById('main-nav').classList.add('hidden');
@@ -359,8 +392,13 @@
 
             document.getElementById('detail-img').src = product.img;
             document.getElementById('detail-title').innerText = product.name;
-            // Обновляем цену на кнопке
-            document.getElementById('btn-price-display').innerText = product.price;
+            document.getElementById('detail-price-btn').innerText = product.price;
+
+            // Визуальный сброс выбора размера
+            document.querySelectorAll('.size-box').forEach(el => el.classList.remove('active'));
+            // Ищем кнопку L и делаем активной
+            Array.from(document.querySelectorAll('.size-box')).find(el => el.innerText === 'L').classList.add('active');
+            document.querySelector('.size-label span').innerText = 'L';
 
             updateHeartButtonState();
             updateActionBarState(); 
@@ -375,14 +413,32 @@
             goToCatalog();
         }
 
-        // --- ЛОГИКА КОРЗИНЫ И КНОПОК ---
-        
+        // --- УПРАВЛЕНИЕ РАЗМЕРАМИ ---
+        function selectSize(element) {
+            document.querySelectorAll('.size-box').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            
+            currentSelectedSize = element.innerText;
+            document.querySelector('.size-label span').innerText = currentSelectedSize;
+            
+            if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
+            
+            // При смене размера нужно обновить кнопку (вдруг этого размера нет в корзине, или наоборот есть)
+            updateActionBarState();
+        }
+
+        // --- ЛОГИКА КОРЗИНЫ ---
+        // Формируем уникальный ключ для корзины: IDтовара_РАЗМЕР
+        function getCartKey() {
+            return `${currentOpenProductId}_${currentSelectedSize}`;
+        }
+
         function firstAddToCart() {
-            // Первое нажатие на синюю кнопку
-            if (!cart[currentOpenProductId]) {
-                cart[currentOpenProductId] = 1;
+            const key = getCartKey();
+            if (!cart[key]) {
+                cart[key] = 1;
             } else {
-                cart[currentOpenProductId]++;
+                cart[key]++;
             }
             if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
             
@@ -391,15 +447,13 @@
         }
 
         function changeQuantity(delta) {
-            // Нажатие на + или - в сером блоке
-            if (!cart[currentOpenProductId]) return;
+            const key = getCartKey();
+            if (!cart[key]) return;
 
-            cart[currentOpenProductId] += delta;
-            
-            if (cart[currentOpenProductId] <= 0) {
-                delete cart[currentOpenProductId];
+            cart[key] += delta;
+            if (cart[key] <= 0) {
+                delete cart[key];
             }
-            
             if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
 
             updateActionBarState();
@@ -411,15 +465,14 @@
             const splitControls = document.getElementById('split-controls');
             const qtyDisplay = document.getElementById('qty-display');
 
-            const qty = cart[currentOpenProductId] || 0;
+            const key = getCartKey();
+            const qty = cart[key] || 0;
 
             if (qty > 0) {
-                // Товар есть -> показываем раздельный режим
                 btnInitial.style.display = 'none';
                 splitControls.style.display = 'flex';
                 qtyDisplay.innerText = qty;
             } else {
-                // Товара нет -> показываем большую кнопку
                 btnInitial.style.display = 'flex';
                 splitControls.style.display = 'none';
             }
@@ -430,11 +483,16 @@
             for (let key in cart) {
                 total += cart[key];
             }
+            const badgeProd = document.getElementById('cart-badge-prod');
             const badgeNav = document.getElementById('cart-badge-nav');
+
             if (total > 0) {
+                badgeProd.innerText = total;
+                badgeProd.classList.add('visible');
                 badgeNav.innerText = total;
                 badgeNav.classList.add('visible');
             } else {
+                badgeProd.classList.remove('visible');
                 badgeNav.classList.remove('visible');
             }
         }
@@ -457,9 +515,12 @@
 
             let totalSum = 0;
 
-            for (let id in cart) {
-                const qty = cart[id];
-                const product = productsData[id];
+            // Перебираем ключи корзины (например "grey_L", "grey_M")
+            for (let key in cart) {
+                const qty = cart[key];
+                const [productId, size] = key.split('_'); // Разбиваем ключ обратно
+                
+                const product = productsData[productId];
                 const itemSum = product.priceVal * qty;
                 totalSum += itemSum;
 
@@ -469,12 +530,13 @@
                     <img src="${product.img}" class="cart-thumb">
                     <div class="cart-details">
                         <div class="cart-title">${product.name}</div>
+                        <div class="cart-size">Размер: ${size}</div>
                         <div class="cart-price">${product.price}</div>
                     </div>
                     <div class="cart-controls">
-                        <div class="cart-ctrl-btn" onclick="updateCartItem('${id}', -1)">−</div>
+                        <div class="cart-ctrl-btn" onclick="updateCartItemByKey('${key}', -1)">−</div>
                         <div class="cart-qty">${qty}</div>
-                        <div class="cart-ctrl-btn" onclick="updateCartItem('${id}', 1)">+</div>
+                        <div class="cart-ctrl-btn" onclick="updateCartItemByKey('${key}', 1)">+</div>
                     </div>
                 `;
                 itemsWrapper.appendChild(row);
@@ -482,9 +544,10 @@
             totalPriceEl.innerText = totalSum.toLocaleString() + ' ₽';
         }
 
-        function updateCartItem(id, delta) {
-            cart[id] += delta;
-            if (cart[id] <= 0) delete cart[id];
+        function updateCartItemByKey(key, delta) {
+            cart[key] += delta;
+            if (cart[key] <= 0) delete cart[key];
+            
             updateGlobalCartBadges();
             renderCartPage(); 
             if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
@@ -547,12 +610,6 @@
 
         // --- УТИЛИТЫ ---
         function openContact() { tg.openTelegramLink('https://t.me/dummest'); }
-        function selectSize(element) {
-            document.querySelectorAll('.size-box').forEach(el => el.classList.remove('active'));
-            element.classList.add('active');
-            document.querySelector('.size-label span').innerText = element.innerText;
-            if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
-        }
 
         // --- НАВИГАЦИЯ ---
         function switchTab(tabName, element) {
