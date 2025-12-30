@@ -195,9 +195,17 @@
         .cart-qty { font-size: 14px; font-weight: 600; padding: 0 8px; }
         .cart-total-block { background: white; padding: 20px; border-radius: 12px; margin-top: 20px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 18px; }
 
-        /* Навигация и прочее */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; display: flex; justify-content: space-around; align-items: center; padding: 10px 0; border-top: 1px solid #e0e0e0; z-index: 100; padding-bottom: 20px; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #999; flex: 1; padding: 4px 0; cursor: pointer; }
+        /* НАВИГАЦИЯ */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; background: white;
+            display: flex; justify-content: space-around; align-items: center;
+            padding: 10px 0; border-top: 1px solid #e0e0e0; z-index: 100; padding-bottom: 20px;
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center;
+            color: #999; flex: 1; padding: 4px 0; cursor: pointer;
+            position: relative; /* ДОБАВЛЕНО: Чтобы бейджик позиционировался относительно кнопки */
+        }
         .nav-item.active { color: #3390ec; }
         .nav-icon { width: 24px; height: 24px; margin-bottom: 4px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
         .nav-text { font-size: 10px; }
@@ -214,8 +222,11 @@
         .animate-pulse { width: 100px; height: 100px; object-fit: contain; margin-bottom: 15px; animation: pulseBeat 1.5s infinite ease-in-out; }
         @keyframes pulseBeat { 0% { transform: scale(1); } 14% { transform: scale(1.15); } 28% { transform: scale(1); } 42% { transform: scale(1.15); } 70% { transform: scale(1); } }
         
-        .badge { position: absolute; top: 0; right: 25px; background-color: #3390ec; color: white; font-size: 11px; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; border: 2px solid white; display: none; }
-        .badge.visible { display: flex; }
+        /* Исправленный бейджик навигации */
+        #cart-badge-nav {
+            top: 2px;
+            right: 25px; /* Позиция внутри кнопки */
+        }
 
     </style>
 </head>
@@ -270,13 +281,9 @@
             <div id="content-desc" class="desc-content" style="display: block;">
                 <div class="desc-line">- Lacoste</div>
                 <div class="desc-line">- Размер L-XL</div>
-                <div class="desc-line">- Состояние отличное!</div>
-                <div class="desc-line">- Цена 5.490р</div>
-            </div>
+                </div>
 
             <div id="content-chars" class="desc-content" style="display: none;">
-                <div class="char-row"><span class="char-label">Бренд</span><span class="char-val">Original</span></div>
-                <div class="char-row"><span class="char-label">Состояние</span><span class="char-val">9/10</span></div>
                 <div class="char-row"><span class="char-label">Материал</span><span class="char-val">Хлопок</span></div>
                 <div class="char-row"><span class="char-label">Пол</span><span class="char-val">Мужской</span></div>
                 <div class="char-row"><span class="char-label">Сезон</span><span class="char-val">Мульти</span></div>
@@ -311,7 +318,7 @@
                     <span style="flex-grow:1">Мои заказы</span><span>›</span>
                 </a>
             </div>
-             <div class="version-text">version 11.0 (Saved)</div>
+             <div class="version-text">version 11.3</div>
         </div>
     </div>
 
@@ -381,7 +388,7 @@
             <span class="nav-text">Главная</span>
         </div>
         <div id="nav-cart" class="nav-item" onclick="switchTab('cart', this)">
-            <div id="cart-badge-nav" class="badge" style="top: 0; right: 25px;">0</div>
+            <div id="cart-badge-nav" class="badge">0</div>
             <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
             <span class="nav-text">Корзина</span>
         </div>
@@ -440,12 +447,10 @@
             document.getElementById('detail-title').innerText = product.name;
             document.getElementById('detail-price-btn').innerText = product.price;
 
-            // Сброс размера на L
             document.querySelectorAll('.size-box').forEach(el => el.classList.remove('active'));
             Array.from(document.querySelectorAll('.size-box')).find(el => el.innerText === 'L').classList.add('active');
             document.querySelector('.size-label span').innerText = 'L';
 
-            // Сброс вкладки на Описание
             switchDescTab('desc');
 
             updateHeartButtonState();
