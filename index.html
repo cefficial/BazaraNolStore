@@ -62,7 +62,7 @@
 
         .size-label { font-size: 15px; color: #000; margin-bottom: 10px; font-weight: 400; }
         .size-label span { font-weight: 600; } 
-        .size-grid { display: flex; gap: 10px; margin-bottom: 25px; }
+        .size-grid { display: flex; gap: 10px; margin-bottom: 15px; }
         .size-box {
             width: 50px; height: 35px;
             border: 1px solid #e0e0e0; border-radius: 8px;
@@ -72,7 +72,26 @@
         }
         .size-box.active { border: 2px solid #3390ec; color: #3390ec; }
 
-        .description-text { color: #666; font-size: 14px; line-height: 1.5; }
+        /* 🔥 НОВЫЕ СТИЛИ ДЛЯ ОПИСАНИЯ 🔥 */
+        .stock-status {
+            font-size: 14px; color: #000; margin-bottom: 20px;
+        }
+        .stock-count { color: #3390ec; font-weight: 500; }
+
+        .desc-tabs {
+            display: flex; gap: 10px; margin-bottom: 15px;
+        }
+        .desc-tab-btn {
+            padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; border: none;
+        }
+        .tab-black { background-color: #333; color: white; }
+        .tab-gray { background-color: #f0f0f0; color: #333; }
+
+        .desc-content {
+            font-size: 14px; line-height: 1.6; color: #000;
+        }
+        .desc-line { margin-bottom: 2px; }
+
 
         /* --- ПЛАВАЮЩИЕ КНОПКИ --- */
         .floating-actions {
@@ -102,12 +121,8 @@
         }
         .product-action-bar.visible { display: flex; }
 
-        /* Контейнер действий */
-        .action-main-btn-container {
-            flex-grow: 1; height: 50px;
-        }
+        .action-main-btn-container { flex-grow: 1; height: 50px; }
 
-        /* 1. Кнопка "В корзину" */
         .btn-initial-add {
             width: 100%; height: 100%;
             background-color: #3390ec; color: white;
@@ -116,10 +131,7 @@
             cursor: pointer; display: flex; align-items: center; justify-content: center;
         }
 
-        /* 2. Раздельный режим */
-        .split-actions-container {
-            width: 100%; height: 100%; display: none; gap: 12px;
-        }
+        .split-actions-container { width: 100%; height: 100%; display: none; gap: 12px; }
         
         .counter-block {
             flex: 1; height: 100%;
@@ -135,13 +147,12 @@
 
         .btn-go-cart {
             flex: 1.2; height: 100%;
-            background-color: #ffcc00; /* Желтый как на скрине */
+            background-color: #ffcc00; 
             color: #000; border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
             font-size: 16px; font-weight: 600; cursor: pointer; gap: 8px;
         }
 
-        /* Карточка Корзины справа (внизу) */
         .action-card-btn {
             width: 64px; height: 56px;
             background: white; border-radius: 12px;
@@ -234,6 +245,7 @@
         <img id="detail-img" src="" class="detail-image">
         <div class="detail-info-container">
             <div id="detail-title" class="detail-product-title"></div>
+            
             <div class="size-label">Размер: <span>L</span></div>
             <div class="size-grid">
                 <div class="size-box" onclick="selectSize(this)">S</div>
@@ -241,10 +253,21 @@
                 <div class="size-box active" onclick="selectSize(this)">L</div>
                 <div class="size-box" onclick="selectSize(this)">XL</div>
             </div>
-            <div class="description-text">
-                Оригинальные карго штаны. Плотный хлопок, множество карманов. Состояние отличное, без дефектов.
+
+            <div class="stock-status">В наличии: <span class="stock-count">1 шт</span></div>
+            
+            <div class="desc-tabs">
+                <button class="desc-tab-btn tab-black">Описание</button>
+                <button class="desc-tab-btn tab-gray">Характеристики</button>
             </div>
-        </div>
+
+            <div class="desc-content">
+                <div class="desc-line">-Lacoste</div>
+                <div class="desc-line">-Размер L-XL</div>
+                <div class="desc-line">-Состояние отличное!</div>
+                <div class="desc-line">-Цена 5.490р</div>
+            </div>
+            </div>
     </div>
 
     <div id="floating-actions" class="floating-actions">
@@ -273,7 +296,7 @@
                     <span style="flex-grow:1">Мои заказы</span><span>›</span>
                 </a>
             </div>
-             <div class="version-text">version 10.6</div>
+             <div class="version-text">version 10.7</div>
         </div>
     </div>
 
@@ -379,7 +402,6 @@
         // --- ЛОГИКА ТОВАРА ---
         function openProduct(id) {
             currentOpenProductId = id; 
-            // Сбрасываем размер на дефолтный при открытии
             currentSelectedSize = 'L';
             
             const product = productsData[id];
@@ -394,9 +416,8 @@
             document.getElementById('detail-title').innerText = product.name;
             document.getElementById('detail-price-btn').innerText = product.price;
 
-            // Визуальный сброс выбора размера
+            // Сброс размера на L
             document.querySelectorAll('.size-box').forEach(el => el.classList.remove('active'));
-            // Ищем кнопку L и делаем активной
             Array.from(document.querySelectorAll('.size-box')).find(el => el.innerText === 'L').classList.add('active');
             document.querySelector('.size-label span').innerText = 'L';
 
@@ -423,12 +444,10 @@
             
             if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
             
-            // При смене размера нужно обновить кнопку (вдруг этого размера нет в корзине, или наоборот есть)
             updateActionBarState();
         }
 
         // --- ЛОГИКА КОРЗИНЫ ---
-        // Формируем уникальный ключ для корзины: IDтовара_РАЗМЕР
         function getCartKey() {
             return `${currentOpenProductId}_${currentSelectedSize}`;
         }
@@ -515,10 +534,9 @@
 
             let totalSum = 0;
 
-            // Перебираем ключи корзины (например "grey_L", "grey_M")
             for (let key in cart) {
                 const qty = cart[key];
-                const [productId, size] = key.split('_'); // Разбиваем ключ обратно
+                const [productId, size] = key.split('_'); 
                 
                 const product = productsData[productId];
                 const itemSum = product.priceVal * qty;
