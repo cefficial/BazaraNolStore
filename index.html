@@ -60,7 +60,6 @@
             font-size: 22px; font-weight: 700; margin-bottom: 20px; line-height: 1.2;
         }
 
-        /* Размеры */
         .size-label { font-size: 15px; color: #000; margin-bottom: 10px; font-weight: 400; }
         .size-label span { font-weight: 600; } 
         .size-grid { display: flex; gap: 10px; margin-bottom: 25px; }
@@ -92,73 +91,61 @@
         .float-btn svg { width: 24px; height: 24px; stroke: #000; stroke-width: 1.5; fill: none; }
         .float-btn.active svg { fill: #ff3b30; stroke: #ff3b30; }
 
-        /* --- НИЖНЯЯ ПАНЕЛЬ ТОВАРА --- */
+        /* --- НИЖНЯЯ ПАНЕЛЬ ТОВАРА (НОВАЯ ЛОГИКА) --- */
         .product-action-bar {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: white;
             padding: 10px 15px; box-sizing: border-box;
-            display: none; align-items: center; gap: 10px;
+            display: none; align-items: center; gap: 12px; /* Чуть больше зазор */
             border-top: 1px solid #f0f0f0; z-index: 200;
             padding-bottom: 25px; 
         }
         .product-action-bar.visible { display: flex; }
 
-        /* Контейнер кнопок (для смены состояний) */
-        .action-main-btn-container {
-            flex-grow: 1; height: 56px;
-        }
-
-        /* 1. Кнопка "В корзину" (начальное состояние) */
-        .btn-add-cart-large {
-            width: 100%; height: 100%;
+        /* Начальная кнопка "В корзину" (синяя, во всю ширину) */
+        .btn-initial-add {
+            width: 100%; height: 50px;
             background-color: #3390ec; color: white;
             border: none; border-radius: 12px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer;
+            font-size: 16px; font-weight: 600;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
         }
-        .btn-sub-text { font-size: 11px; opacity: 0.8; margin-bottom: 2px; font-weight: 500; }
-        .btn-price-text { font-size: 17px; font-weight: 700; }
 
-        /* 2. Контроллер количества (состояние после нажатия) */
-        .quantity-controls {
-            width: 100%; height: 100%;
-            background-color: #3390ec; color: white;
+        /* Контейнер для раздельного режима (Счетчик + Кнопка) */
+        .split-actions-container {
+            width: 100%; display: none; /* Скрыт по умолчанию */
+            gap: 12px;
+        }
+        
+        /* Блок счетчика (Серый, как на скрине) */
+        .counter-block {
+            flex: 1; height: 50px;
+            background-color: #f0f0f0; /* Серый фон */
             border-radius: 12px;
-            display: none; /* Скрыто по умолчанию */
-            align-items: center; justify-content: space-between;
-            padding: 0 10px; box-sizing: border-box;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 5px;
+            color: #000;
         }
-        .qty-btn {
-            width: 40px; height: 40px;
+        .cnt-btn {
+            width: 40px; height: 100%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 24px; font-weight: 300; cursor: pointer;
+            font-size: 24px; cursor: pointer; color: #000; user-select: none;
         }
-        .qty-val {
-            font-size: 18px; font-weight: 700;
+        .cnt-val {
+            font-size: 18px; font-weight: 600;
         }
 
-        /* Маленькая белая карточка (Корзина) */
-        .action-card-btn {
-            width: 64px; height: 56px;
-            background: white; border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; position: relative;
-            border: 1px solid rgba(0,0,0,0.03);
+        /* Правая кнопка "В корзину" (в режиме счетчика) */
+        .btn-go-cart {
+            flex: 1.2; height: 50px;
+            background-color: #3390ec; /* Оставил синий для стиля, можно поменять на желтый #ffcc00 */
+            color: white; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; font-weight: 600; cursor: pointer;
+            gap: 8px;
         }
-        .action-card-btn svg { width: 22px; height: 22px; margin-bottom: 4px; stroke: #000; stroke-width: 1.8; }
-        .action-label { font-size: 10px; color: #999; font-weight: 500; }
 
-        .badge {
-            position: absolute; top: -5px; right: -5px;
-            background-color: #3390ec; color: white;
-            font-size: 11px; width: 18px; height: 18px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-weight: 700; border: 2px solid white; display: none; /* Скрыт если 0 */
-        }
-        .badge.visible { display: flex; }
-
-        /* --- СПИСОК В КОРЗИНЕ --- */
+        /* --- КОРЗИНА И ПРОЧЕЕ --- */
         .cart-item-row {
             background: white; border-radius: 12px; padding: 10px;
             margin-bottom: 10px; display: flex; align-items: center;
@@ -168,47 +155,31 @@
         .cart-details { flex-grow: 1; }
         .cart-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
         .cart-price { font-weight: 700; font-size: 14px; }
-        .cart-controls {
-            display: flex; align-items: center; background: #f0f0f0; border-radius: 8px; padding: 2px;
-        }
-        .cart-ctrl-btn {
-            width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
-            font-size: 18px; font-weight: 600; cursor: pointer;
-        }
+        .cart-controls { display: flex; align-items: center; background: #f0f0f0; border-radius: 8px; padding: 2px; }
+        .cart-ctrl-btn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; cursor: pointer; }
         .cart-qty { font-size: 14px; font-weight: 600; padding: 0 8px; }
-        .cart-total-block {
-            background: white; padding: 20px; border-radius: 12px; margin-top: 20px;
-            display: flex; justify-content: space-between; align-items: center;
-            font-weight: 700; font-size: 18px;
-        }
+        .cart-total-block { background: white; padding: 20px; border-radius: 12px; margin-top: 20px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 18px; }
 
-        /* --- ГЛАВНОЕ НИЖНЕЕ МЕНЮ --- */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: white;
-            display: flex; justify-content: space-around; align-items: center;
-            padding: 10px 0; border-top: 1px solid #e0e0e0; z-index: 100;
-            padding-bottom: 20px;
-        }
-        .nav-item {
-            display: flex; flex-direction: column; align-items: center;
-            color: #999; flex: 1; padding: 4px 0; cursor: pointer;
-        }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; display: flex; justify-content: space-around; align-items: center; padding: 10px 0; border-top: 1px solid #e0e0e0; z-index: 100; padding-bottom: 20px; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #999; flex: 1; padding: 4px 0; cursor: pointer; }
         .nav-item.active { color: #3390ec; }
         .nav-icon { width: 24px; height: 24px; margin-bottom: 4px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
         .nav-text { font-size: 10px; }
         .bottom-nav.hidden { display: none; }
 
-        /* Прочее */
         .profile-container { padding: 15px; }
         .profile-header { background: white; border-radius: 15px; padding: 15px; display: flex; align-items: center; margin-bottom: 15px; }
         .avatar-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
         .menu-list { background: white; border-radius: 15px; overflow: hidden; margin-bottom: 15px; }
         .menu-item-row { display: flex; align-items: center; padding: 15px; text-decoration: none; color: #000; border-bottom: 1px solid #f0f0f0; }
         .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 50px; text-align: center; }
-        .animate-pulse { width: 100px; height: 100px; object-fit: contain; margin-bottom: 15px; animation: pulseBeat 1.5s infinite ease-in-out; }
-        @keyframes pulseBeat { 0% { transform: scale(1); } 14% { transform: scale(1.15); } 28% { transform: scale(1); } 42% { transform: scale(1.15); } 70% { transform: scale(1); } }
         .empty-text { font-size: 16px; color: #000; margin-bottom: 30px; font-weight: 400; }
         .btn-blue-outline { background-color: #3390ec; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 500; cursor: pointer;}
+        .animate-pulse { width: 100px; height: 100px; object-fit: contain; margin-bottom: 15px; animation: pulseBeat 1.5s infinite ease-in-out; }
+        @keyframes pulseBeat { 0% { transform: scale(1); } 14% { transform: scale(1.15); } 28% { transform: scale(1); } 42% { transform: scale(1.15); } 70% { transform: scale(1); } }
+        
+        .badge { position: absolute; top: 0; right: 25px; background-color: #3390ec; color: white; font-size: 11px; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; border: 2px solid white; display: none; }
+        .badge.visible { display: flex; }
 
     </style>
 </head>
@@ -283,7 +254,7 @@
                     <span style="flex-grow:1">Мои заказы</span><span>›</span>
                 </a>
             </div>
-             <div class="version-text">version 10.4</div>
+             <div class="version-text">version 10.5</div>
         </div>
     </div>
 
@@ -299,13 +270,11 @@
 
     <div id="cart-view" class="page">
         <div class="header-logo"><h2>Корзина</h2></div>
-        
         <div id="cart-empty" class="empty-state">
             <img src="https://em-content.zobj.net/source/apple/391/shopping-cart_1f6d2.png" class="animate-pulse">
             <div class="empty-text">Корзина пуста</div>
             <button class="btn-blue-outline" onclick="goToCatalog()">Перейти в каталог</button>
         </div>
-
         <div id="cart-list-container" style="display: none; padding: 15px;">
             <div id="cart-items-wrapper"></div>
             <div class="cart-total-block">
@@ -313,34 +282,30 @@
                 <span id="cart-total-price">0 ₽</span>
             </div>
             <div style="margin-top: 15px;">
-                <button class="btn-add-cart-large" style="height: 50px; font-weight: 700; font-size: 16px;">Оформить заказ</button>
+                <button class="btn-add-cart-large" style="height: 50px; width:100%; border-radius:12px; background:#3390ec; color:white; border:none; font-weight: 700; font-size: 16px;">Оформить заказ</button>
             </div>
         </div>
     </div>
 
     <div id="product-actions" class="product-action-bar">
-        <div class="action-main-btn-container">
-            <button id="btn-add-to-cart" class="btn-add-cart-large" onclick="addToCart()">
-                <span class="btn-sub-text">В корзину</span>
-                <span id="detail-price-btn" class="btn-price-text">2 500 ₽</span>
-            </button>
+        
+        <button id="btn-initial" class="btn-initial-add" onclick="firstAddToCart()">
+            В корзину &nbsp;·&nbsp; <span id="btn-price-display">2 500 ₽</span>
+        </button>
+
+        <div id="split-controls" class="split-actions-container">
+            <div class="counter-block">
+                <div class="cnt-btn" onclick="changeQuantity(-1)">−</div>
+                <div class="cnt-val" id="qty-display">1</div>
+                <div class="cnt-btn" onclick="changeQuantity(1)">+</div>
+            </div>
             
-            <div id="btn-quantity-ctrl" class="quantity-controls">
-                <div class="qty-btn" onclick="changeQuantity(-1)">−</div>
-                <div class="qty-val" id="qty-display">1</div>
-                <div class="qty-btn" onclick="changeQuantity(1)">+</div>
+            <div class="btn-go-cart" onclick="goToCartFromProduct()">
+                <span>Корзина</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </div>
         </div>
-        
-        <div class="action-card-btn" onclick="goToCartFromProduct()">
-            <div id="cart-badge-prod" class="badge">0</div> 
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="9" cy="21" r="1"></circle>
-                <circle cx="20" cy="21" r="1"></circle>
-                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-            </svg>
-            <span class="action-label">Корзина</span>
-        </div>
+
     </div>
 
     <div id="main-nav" class="bottom-nav">
@@ -349,7 +314,7 @@
             <span class="nav-text">Главная</span>
         </div>
         <div id="nav-cart" class="nav-item" onclick="switchTab('cart', this)">
-            <div id="cart-badge-nav" class="badge" style="top: 0; right: 25px;">0</div>
+            <div id="cart-badge-nav" class="badge">0</div>
             <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
             <span class="nav-text">Корзина</span>
         </div>
@@ -378,7 +343,7 @@
 
         // СОСТОЯНИЕ
         let favorites = [];
-        let cart = {}; // { 'grey': 2, 'blue': 1 }
+        let cart = {}; // { 'grey': 2 }
         let currentOpenProductId = null;
 
         // --- ЛОГИКА ТОВАРА ---
@@ -394,10 +359,11 @@
 
             document.getElementById('detail-img').src = product.img;
             document.getElementById('detail-title').innerText = product.name;
-            document.getElementById('detail-price-btn').innerText = product.price;
+            // Обновляем цену на кнопке
+            document.getElementById('btn-price-display').innerText = product.price;
 
             updateHeartButtonState();
-            updateProductActionBar(); // Обновляем состояние кнопки "В корзину"
+            updateActionBarState(); 
             
             window.scrollTo(0, 0);
         }
@@ -409,71 +375,66 @@
             goToCatalog();
         }
 
-        // --- ЛОГИКА КОРЗИНЫ (ГЛАВНАЯ ФИШКА) ---
+        // --- ЛОГИКА КОРЗИНЫ И КНОПОК ---
         
-        function addToCart() {
-            // Нажали большую синюю кнопку
+        function firstAddToCart() {
+            // Первое нажатие на синюю кнопку
             if (!cart[currentOpenProductId]) {
-                cart[currentOpenProductId] = 0;
+                cart[currentOpenProductId] = 1;
+            } else {
+                cart[currentOpenProductId]++;
             }
-            cart[currentOpenProductId]++;
             if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
             
-            updateProductActionBar();
+            updateActionBarState();
             updateGlobalCartBadges();
         }
 
         function changeQuantity(delta) {
-            // Нажали + или -
+            // Нажатие на + или - в сером блоке
             if (!cart[currentOpenProductId]) return;
 
             cart[currentOpenProductId] += delta;
+            
             if (cart[currentOpenProductId] <= 0) {
                 delete cart[currentOpenProductId];
             }
+            
             if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
 
-            updateProductActionBar();
+            updateActionBarState();
             updateGlobalCartBadges();
         }
 
-        function updateProductActionBar() {
-            const btnAdd = document.getElementById('btn-add-to-cart');
-            const ctrlQty = document.getElementById('btn-quantity-ctrl');
+        function updateActionBarState() {
+            const btnInitial = document.getElementById('btn-initial');
+            const splitControls = document.getElementById('split-controls');
             const qtyDisplay = document.getElementById('qty-display');
 
             const qty = cart[currentOpenProductId] || 0;
 
             if (qty > 0) {
-                // Показываем контроллер количества
-                btnAdd.style.display = 'none';
-                ctrlQty.style.display = 'flex';
+                // Товар есть -> показываем раздельный режим
+                btnInitial.style.display = 'none';
+                splitControls.style.display = 'flex';
                 qtyDisplay.innerText = qty;
             } else {
-                // Показываем кнопку "В корзину"
-                btnAdd.style.display = 'flex';
-                ctrlQty.style.display = 'none';
+                // Товара нет -> показываем большую кнопку
+                btnInitial.style.display = 'flex';
+                splitControls.style.display = 'none';
             }
         }
 
         function updateGlobalCartBadges() {
-            // Считаем общее кол-во товаров
             let total = 0;
             for (let key in cart) {
                 total += cart[key];
             }
-
-            const badgeProd = document.getElementById('cart-badge-prod');
             const badgeNav = document.getElementById('cart-badge-nav');
-
             if (total > 0) {
-                badgeProd.innerText = total;
-                badgeProd.classList.add('visible');
-                
                 badgeNav.innerText = total;
                 badgeNav.classList.add('visible');
             } else {
-                badgeProd.classList.remove('visible');
                 badgeNav.classList.remove('visible');
             }
         }
@@ -484,7 +445,6 @@
             const itemsWrapper = document.getElementById('cart-items-wrapper');
             const totalPriceEl = document.getElementById('cart-total-price');
 
-            // Проверяем пустая ли корзина
             if (Object.keys(cart).length === 0) {
                 emptyState.style.display = 'flex';
                 listContainer.style.display = 'none';
@@ -519,17 +479,20 @@
                 `;
                 itemsWrapper.appendChild(row);
             }
-            
             totalPriceEl.innerText = totalSum.toLocaleString() + ' ₽';
         }
 
         function updateCartItem(id, delta) {
             cart[id] += delta;
             if (cart[id] <= 0) delete cart[id];
-            
             updateGlobalCartBadges();
-            renderCartPage(); // Перерисовываем страницу корзины
+            renderCartPage(); 
             if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
+        }
+
+        function goToCartFromProduct() {
+            closeProduct();
+            document.getElementById('nav-cart').click();
         }
 
         // --- ИЗБРАННОЕ ---
@@ -584,17 +547,11 @@
 
         // --- УТИЛИТЫ ---
         function openContact() { tg.openTelegramLink('https://t.me/dummest'); }
-        
         function selectSize(element) {
             document.querySelectorAll('.size-box').forEach(el => el.classList.remove('active'));
             element.classList.add('active');
             document.querySelector('.size-label span').innerText = element.innerText;
             if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
-        }
-
-        function goToCartFromProduct() {
-            closeProduct();
-            document.getElementById('nav-cart').click();
         }
 
         // --- НАВИГАЦИЯ ---
@@ -609,7 +566,7 @@
                 document.getElementById('profile-view').classList.add('active');
             } else if (tabName === 'cart') {
                 document.getElementById('cart-view').classList.add('active');
-                renderCartPage(); // Рисуем корзину при открытии
+                renderCartPage(); 
             }
         }
 
