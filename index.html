@@ -270,9 +270,13 @@
             <div id="content-desc" class="desc-content" style="display: block;">
                 <div class="desc-line">- Lacoste</div>
                 <div class="desc-line">- Размер L-XL</div>
+                <div class="desc-line">- Состояние отличное!</div>
+                <div class="desc-line">- Цена 5.490р</div>
             </div>
 
             <div id="content-chars" class="desc-content" style="display: none;">
+                <div class="char-row"><span class="char-label">Бренд</span><span class="char-val">Original</span></div>
+                <div class="char-row"><span class="char-label">Состояние</span><span class="char-val">9/10</span></div>
                 <div class="char-row"><span class="char-label">Материал</span><span class="char-val">Хлопок</span></div>
                 <div class="char-row"><span class="char-label">Пол</span><span class="char-val">Мужской</span></div>
                 <div class="char-row"><span class="char-label">Сезон</span><span class="char-val">Мульти</span></div>
@@ -307,7 +311,7 @@
                     <span style="flex-grow:1">Мои заказы</span><span>›</span>
                 </a>
             </div>
-             <div class="version-text">version 10.8</div>
+             <div class="version-text">version 11.0 (Saved)</div>
         </div>
     </div>
 
@@ -404,11 +408,20 @@
             'blue': { name: 'Штаны Blue Classic', priceVal: 3200, price: '3 200 ₽', img: 'bluepants.jpg' }
         };
 
-        // Хранение данных
-        let favorites = [];
-        let cart = {}; 
+        // --- ЗАГРУЗКА ИЗ ПАМЯТИ ТЕЛЕФОНА (LocalStorage) ---
+        let favorites = JSON.parse(localStorage.getItem('bazara_favorites')) || [];
+        let cart = JSON.parse(localStorage.getItem('bazara_cart')) || {}; 
+        
         let currentOpenProductId = null;
         let currentSelectedSize = 'L'; 
+
+        // Инициализация бейджиков при старте
+        updateGlobalCartBadges();
+
+        function saveData() {
+            localStorage.setItem('bazara_favorites', JSON.stringify(favorites));
+            localStorage.setItem('bazara_cart', JSON.stringify(cart));
+        }
 
         // --- ЛОГИКА ТОВАРА ---
         function openProduct(id) {
@@ -448,7 +461,7 @@
             goToCatalog();
         }
 
-        // --- УПРАВЛЕНИЕ ВКЛАДКАМИ (ОПИСАНИЕ / ХАРАКТЕРИСТИКИ) ---
+        // --- УПРАВЛЕНИЕ ВКЛАДКАМИ ---
         function switchDescTab(tab) {
             const btnDesc = document.getElementById('btn-tab-desc');
             const btnChars = document.getElementById('btn-tab-chars');
@@ -495,6 +508,7 @@
             }
             if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
             
+            saveData();
             updateActionBarState();
             updateGlobalCartBadges();
         }
@@ -509,6 +523,7 @@
             }
             if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
 
+            saveData();
             updateActionBarState();
             updateGlobalCartBadges();
         }
@@ -600,6 +615,7 @@
             cart[key] += delta;
             if (cart[key] <= 0) delete cart[key];
             
+            saveData();
             updateGlobalCartBadges();
             renderCartPage(); 
             if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
@@ -630,6 +646,7 @@
                 btn.classList.add('active');
                 if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
             }
+            saveData();
         }
 
         function renderFavorites() {
@@ -701,4 +718,3 @@
     </script>
 </body>
 </html>
-
