@@ -111,7 +111,6 @@
         .float-btn:active { transform: scale(0.95); }
         .float-btn svg { width: 24px; height: 24px; stroke: #000; stroke-width: 1.5; fill: none; transition: all 0.2s; }
         
-        /* Исправленный класс active для красного сердца */
         .float-btn.active svg { fill: #ff3b30; stroke: #ff3b30; }
 
         /* --- НИЖНЯЯ ПАНЕЛЬ --- */
@@ -312,7 +311,7 @@
                     <span style="flex-grow:1">Мои заказы</span><span>›</span>
                 </a>
             </div>
-             <div class="version-text">version 11.8</div>
+             <div class="version-text">version 11.9</div>
         </div>
     </div>
 
@@ -419,8 +418,8 @@
         };
 
         // --- ЗАГРУЗКА ИЗ ПАМЯТИ ---
-        // Удаляем null из массива, если вдруг попали
-        let favorites = (JSON.parse(localStorage.getItem('bazara_favorites')) || []).filter(item => item !== null);
+        // Фильтруем null и пустые значения
+        let favorites = (JSON.parse(localStorage.getItem('bazara_favorites')) || []).filter(item => item && productsData[item]);
         let cart = JSON.parse(localStorage.getItem('bazara_cart')) || {}; 
         
         let currentOpenProductId = null;
@@ -435,6 +434,9 @@
 
         // --- ЛОГИКА ТОВАРА ---
         function openProduct(id) {
+            // 1. Сброс состояния кнопки перед любой логикой
+            document.getElementById('fav-btn').classList.remove('active');
+            
             currentOpenProductId = id; 
             currentSelectedSize = 'L';
             const product = productsData[id];
@@ -455,7 +457,7 @@
 
             switchDescTab('desc');
 
-            // ВАЖНО: Обновляем состояние кнопки сердечка при открытии
+            // 2. Принудительное обновление состояния сердца
             updateHeartButtonState();
             
             updateActionBarState(); 
@@ -463,6 +465,8 @@
         }
 
         function closeProduct() {
+            // Очищаем текущий ID, чтобы не было конфликтов
+            currentOpenProductId = null;
             document.getElementById('product-actions').classList.remove('visible');
             document.getElementById('floating-actions').classList.remove('visible');
             document.getElementById('main-nav').classList.remove('hidden');
@@ -626,7 +630,7 @@
         // --- ИЗБРАННОЕ (ФИКС) ---
         function updateHeartButtonState() {
             const btn = document.getElementById('fav-btn');
-            // Проверка строго по данным из LocalStorage
+            // Проверка: есть ли ID в массиве favorites
             if (favorites.includes(currentOpenProductId)) {
                 btn.classList.add('active'); 
             } else {
@@ -637,6 +641,9 @@
         function toggleFavorite() {
             const btn = document.getElementById('fav-btn');
             
+            // Если ID нет (например, баг), ничего не делаем
+            if (!currentOpenProductId) return;
+
             if (favorites.includes(currentOpenProductId)) {
                 favorites = favorites.filter(id => id !== currentOpenProductId);
             } else {
@@ -644,8 +651,8 @@
                 if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
             }
             
-            saveData();
-            updateHeartButtonState(); // Обновляем визуал после изменения данных
+            saveData(); // Сразу сохраняем
+            updateHeartButtonState(); // Обновляем визуал
         }
 
         function renderFavorites() {
@@ -653,7 +660,6 @@
             const emptyState = document.getElementById('favorites-empty');
             listContainer.innerHTML = ''; 
 
-            // Фильтруем favorites на случай мусора
             const validFavorites = favorites.filter(id => productsData[id]);
 
             if (validFavorites.length === 0) {
