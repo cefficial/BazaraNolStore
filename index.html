@@ -107,10 +107,12 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             display: flex; align-items: center; justify-content: center;
             cursor: pointer;
+            transition: transform 0.1s;
         }
         .float-btn:active { transform: scale(0.95); }
         .float-btn svg { width: 24px; height: 24px; stroke: #000; stroke-width: 1.5; fill: none; transition: all 0.2s; }
         
+        /* КРАСНОЕ СЕРДЦЕ */
         .float-btn.active svg { fill: #ff3b30; stroke: #ff3b30; }
 
         /* --- НИЖНЯЯ ПАНЕЛЬ --- */
@@ -311,7 +313,7 @@
                     <span style="flex-grow:1">Мои заказы</span><span>›</span>
                 </a>
             </div>
-             <div class="version-text">version 11.9</div>
+             <div class="version-text">version 12.0</div>
         </div>
     </div>
 
@@ -418,8 +420,8 @@
         };
 
         // --- ЗАГРУЗКА ИЗ ПАМЯТИ ---
-        // Фильтруем null и пустые значения
-        let favorites = (JSON.parse(localStorage.getItem('bazara_favorites')) || []).filter(item => item && productsData[item]);
+        // Надежная загрузка без лишних фильтров, которые могли удалять данные
+        let favorites = JSON.parse(localStorage.getItem('bazara_favorites')) || [];
         let cart = JSON.parse(localStorage.getItem('bazara_cart')) || {}; 
         
         let currentOpenProductId = null;
@@ -434,9 +436,6 @@
 
         // --- ЛОГИКА ТОВАРА ---
         function openProduct(id) {
-            // 1. Сброс состояния кнопки перед любой логикой
-            document.getElementById('fav-btn').classList.remove('active');
-            
             currentOpenProductId = id; 
             currentSelectedSize = 'L';
             const product = productsData[id];
@@ -451,22 +450,32 @@
             document.getElementById('detail-title').innerText = product.name;
             document.getElementById('detail-price-btn').innerText = product.price;
 
+            // Сброс выбора размера
             document.querySelectorAll('.size-box').forEach(el => el.classList.remove('active'));
             Array.from(document.querySelectorAll('.size-box')).find(el => el.innerText === 'L').classList.add('active');
             document.querySelector('.size-label span').innerText = 'L';
 
             switchDescTab('desc');
 
-            // 2. Принудительное обновление состояния сердца
-            updateHeartButtonState();
+            // --- ЖЕЛЕЗОБЕТОННАЯ ЛОГИКА СЕРДЦА ---
+            const heartBtn = document.getElementById('fav-btn');
+            // 1. Сначала полностью очищаем состояние
+            heartBtn.classList.remove('active');
+            
+            // 2. Проверяем базу данных
+            if (favorites.includes(id)) {
+                heartBtn.classList.add('active'); 
+            }
+            // -------------------------------------
             
             updateActionBarState(); 
             window.scrollTo(0, 0);
         }
 
         function closeProduct() {
-            // Очищаем текущий ID, чтобы не было конфликтов
+            // Очищаем переменную ID, чтобы не было конфликтов при быстром переходе
             currentOpenProductId = null;
+            
             document.getElementById('product-actions').classList.remove('visible');
             document.getElementById('floating-actions').classList.remove('visible');
             document.getElementById('main-nav').classList.remove('hidden');
@@ -627,32 +636,25 @@
             document.getElementById('nav-cart').click();
         }
 
-        // --- ИЗБРАННОЕ (ФИКС) ---
-        function updateHeartButtonState() {
-            const btn = document.getElementById('fav-btn');
-            // Проверка: есть ли ID в массиве favorites
-            if (favorites.includes(currentOpenProductId)) {
-                btn.classList.add('active'); 
-            } else {
-                btn.classList.remove('active'); 
-            }
-        }
-
+        // --- ИЗБРАННОЕ ---
         function toggleFavorite() {
             const btn = document.getElementById('fav-btn');
             
-            // Если ID нет (например, баг), ничего не делаем
+            // Защита от дурака: если ID нет, выходим
             if (!currentOpenProductId) return;
 
             if (favorites.includes(currentOpenProductId)) {
+                // Удаляем
                 favorites = favorites.filter(id => id !== currentOpenProductId);
+                btn.classList.remove('active');
             } else {
+                // Добавляем
                 favorites.push(currentOpenProductId);
+                btn.classList.add('active');
                 if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
             }
-            
-            saveData(); // Сразу сохраняем
-            updateHeartButtonState(); // Обновляем визуал
+            // Мгновенное сохранение
+            saveData();
         }
 
         function renderFavorites() {
@@ -660,6 +662,7 @@
             const emptyState = document.getElementById('favorites-empty');
             listContainer.innerHTML = ''; 
 
+            // Показываем только те товары, которые реально существуют в productsData
             const validFavorites = favorites.filter(id => productsData[id]);
 
             if (validFavorites.length === 0) {
