@@ -52,7 +52,7 @@
         .grid-price { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
         .grid-name { font-size: 13px; color: #888; line-height: 1.2; }
 
-        /* --- ДЕТАЛЬНАЯ СТРАНИЦА И СТРАНИЦА ДОКУМЕНТОВ --- */
+        /* --- ДЕТАЛЬНАЯ СТРАНИЦА --- */
         .detail-header {
             background: white; padding: 12px 15px; display: flex; align-items: center;
             position: sticky; top: 0; z-index: 101; border-bottom: 1px solid #f5f5f5;
@@ -118,6 +118,8 @@
         }
         .float-btn:active { transform: scale(0.95); }
         .float-btn svg { width: 24px; height: 24px; stroke: #000; stroke-width: 1.5; fill: none; transition: all 0.2s; }
+        
+        /* ЦВЕТ АКТИВНОГО СЕРДЦА */
         .float-btn.active svg { fill: #ff3b30; stroke: #ff3b30; }
 
         /* --- НИЖНЯЯ ПАНЕЛЬ ТОВАРА --- */
@@ -337,7 +339,7 @@
                 </div>
             </div>
 
-             <div class="version-text">version 12.0</div>
+             <div class="version-text">version 12.1</div>
         </div>
     </div>
 
@@ -467,30 +469,12 @@
 
         // --- БАЗА ДАННЫХ ДОКУМЕНТОВ ---
         const legalDocs = {
-            'privacy': {
-                title: 'Политика конфиденциальности',
-                text: '1. Общие положения\nНастоящая политика обработки персональных данных составлена в соответствии с требованиями Федерального закона от 27.07.2006. №152-ФЗ «О персональных данных».\n\n2. Цели обработки\nМы собираем данные (имя, телефон) исключительно для обработки и доставки заказов.\n\n3. Безопасность\nМы принимаем все необходимые меры для защиты ваших данных от несанкционированного доступа.'
-            },
-            'personal': {
-                title: 'Согласие на обработку данных',
-                text: 'Оставляя заявку на сайте, вы даете согласие на обработку своих персональных данных:\n- Имя\n- Номер телефона\n- Адрес доставки\n\nЦель: регистрация, авторизация, оформление заказа и информирование о статусе доставки.'
-            },
-            'offer': {
-                title: 'Публичная оферта',
-                text: '1. Предмет договора\nПродавец обязуется передать товар в собственность Покупателя, а Покупатель обязуется принять и оплатить товар.\n\n2. Оформление заказа\nЗаказ оформляется через корзину Telegram Mini App.\n\n3. Оплата и доставка\nУсловия оплаты и доставки согласовываются при подтверждении заказа.'
-            },
-            'agreement': {
-                title: 'Пользовательское соглашение',
-                text: '1. Использование сервиса\nИспользуя данный сервис, вы соглашаетесь соблюдать правила и не нарушать законодательство РФ.\n\n2. Контент\nПользователи могут оставлять отзывы и комментарии, соблюдая нормы приличия.\n\n3. Ответственность\nАдминистрация не несет ответственности за сбои в работе сторонних сервисов.'
-            },
-            'cookies': {
-                title: 'Политика Cookies',
-                text: 'Мы используем файлы cookie для улучшения работы сервиса и аналитики (Яндекс.Метрика и др.).\nПродолжая пользоваться сервисом, вы соглашаетесь на использование cookie.'
-            },
-            'requisites': {
-                title: 'Реквизиты компании',
-                text: 'Название: ООО "БАЗАРА НОЛЬ"\nИНН: 1234567890\nОГРН: 112233445566\nАдрес: г. Москва, ул. Примерная, д. 1\nEmail: support@bazara0.ru'
-            }
+            'privacy': { title: 'Политика конфиденциальности', text: 'Текст политики...' },
+            'personal': { title: 'Согласие на обработку данных', text: 'Текст согласия...' },
+            'offer': { title: 'Публичная оферта', text: 'Текст оферты...' },
+            'agreement': { title: 'Пользовательское соглашение', text: 'Текст соглашения...' },
+            'cookies': { title: 'Политика Cookies', text: 'Текст cookies...' },
+            'requisites': { title: 'Реквизиты компании', text: 'Реквизиты...' }
         };
 
         // --- ЗАГРУЗКА ИЗ ПАМЯТИ ---
@@ -499,7 +483,7 @@
         
         let currentOpenProductId = null;
         let currentSelectedSize = 'L'; 
-        let lastPageBeforeLegal = 'profile'; // Запоминаем откуда пришли в документы
+        let lastPageBeforeLegal = 'profile';
 
         updateGlobalCartBadges();
 
@@ -512,25 +496,17 @@
         function openLegal(docKey, fromPage) {
             const doc = legalDocs[docKey];
             if (!doc) return;
-
-            // Запоминаем, откуда пришли, чтобы кнопка "Назад" вернула куда надо
             lastPageBeforeLegal = fromPage;
-
             document.getElementById('legal-title').innerText = doc.title;
             document.getElementById('legal-text').innerText = doc.text;
-
             hideAllPages();
             document.getElementById('legal-view').classList.add('active');
-            
-            // Скрываем меню, если оно было
             document.getElementById('main-nav').classList.add('hidden');
             window.scrollTo(0, 0);
         }
 
         function closeLegal() {
             document.getElementById('legal-view').classList.remove('active');
-            
-            // Возвращаемся туда, откуда пришли
             if (lastPageBeforeLegal === 'profile') {
                 document.getElementById('nav-profile').click();
                 document.getElementById('main-nav').classList.remove('hidden');
@@ -540,9 +516,8 @@
             }
         }
 
-        // --- ЛОГИКА ТОВАРА ---
+        // --- ЛОГИКА ТОВАРА (ФИКС СЕРДЦА) ---
         function openProduct(id) {
-            document.getElementById('fav-btn').classList.remove('active');
             currentOpenProductId = id; 
             currentSelectedSize = 'L';
             const product = productsData[id];
@@ -562,7 +537,10 @@
             document.querySelector('.size-label span').innerText = 'L';
 
             switchDescTab('desc');
+
+            // --- ВАЖНО: Принудительное обновление сердца ---
             updateHeartButtonState();
+            
             updateActionBarState(); 
             window.scrollTo(0, 0);
         }
@@ -732,6 +710,7 @@
         // --- ИЗБРАННОЕ ---
         function updateHeartButtonState() {
             const btn = document.getElementById('fav-btn');
+            // Простая и надежная проверка
             if (favorites.includes(currentOpenProductId)) {
                 btn.classList.add('active'); 
             } else {
@@ -750,7 +729,7 @@
                 if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
             }
             saveData();
-            updateHeartButtonState();
+            updateHeartButtonState(); // Сразу обновляем вид
         }
 
         function renderFavorites() {
@@ -819,7 +798,7 @@
             document.getElementById('favorites-view').classList.remove('active');
             document.getElementById('cart-view').classList.remove('active');
             document.getElementById('product-detail-view').classList.remove('active');
-            document.getElementById('legal-view').classList.remove('active'); // Скрываем и новую страницу
+            document.getElementById('legal-view').classList.remove('active');
         }
     </script>
 </body>
