@@ -52,7 +52,7 @@
         .grid-price { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
         .grid-name { font-size: 13px; color: #888; line-height: 1.2; }
 
-        /* --- ДЕТАЛЬНАЯ СТРАНИЦА --- */
+        /* --- ДЕТАЛЬНАЯ СТРАНИЦА И СТРАНИЦА ДОКУМЕНТОВ --- */
         .detail-header {
             background: white; padding: 12px 15px; display: flex; align-items: center;
             position: sticky; top: 0; z-index: 101; border-bottom: 1px solid #f5f5f5;
@@ -95,6 +95,13 @@
         .char-label { color: #888; }
         .char-val { font-weight: 500; color: #000; }
 
+        /* --- СТРАНИЦА ДОКУМЕНТОВ --- */
+        .legal-content-area {
+            background: white; padding: 20px 15px; margin-bottom: 100px;
+            font-size: 14px; line-height: 1.6; color: #333; white-space: pre-wrap;
+        }
+        .legal-link { color: #999; text-decoration: underline; cursor: pointer; }
+
         /* --- ПЛАВАЮЩИЕ КНОПКИ --- */
         .floating-actions {
             position: fixed; bottom: 100px; right: 15px; z-index: 201;
@@ -111,11 +118,9 @@
         }
         .float-btn:active { transform: scale(0.95); }
         .float-btn svg { width: 24px; height: 24px; stroke: #000; stroke-width: 1.5; fill: none; transition: all 0.2s; }
-        
-        /* КРАСНОЕ СЕРДЦЕ */
         .float-btn.active svg { fill: #ff3b30; stroke: #ff3b30; }
 
-        /* --- НИЖНЯЯ ПАНЕЛЬ --- */
+        /* --- НИЖНЯЯ ПАНЕЛЬ ТОВАРА --- */
         .product-action-bar {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: white;
@@ -193,6 +198,8 @@
         .cart-ctrl-btn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; cursor: pointer; }
         .cart-qty { font-size: 14px; font-weight: 600; padding: 0 8px; }
         .cart-total-block { background: white; padding: 20px; border-radius: 12px; margin-top: 20px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 18px; }
+        
+        .legal-note { margin-top: 15px; font-size: 11px; color: #999; text-align: center; line-height: 1.4; padding: 0 20px; }
 
         /* НАВИГАЦИЯ */
         .bottom-nav {
@@ -214,7 +221,9 @@
         .profile-header { background: white; border-radius: 15px; padding: 15px; display: flex; align-items: center; margin-bottom: 15px; }
         .avatar-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
         .menu-list { background: white; border-radius: 15px; overflow: hidden; margin-bottom: 15px; }
-        .menu-item-row { display: flex; align-items: center; padding: 15px; text-decoration: none; color: #000; border-bottom: 1px solid #f0f0f0; }
+        .menu-item-row { display: flex; align-items: center; padding: 15px; text-decoration: none; color: #000; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
+        .menu-header { padding: 15px 15px 5px; font-size: 13px; font-weight: 600; color: #999; text-transform: uppercase; }
+        
         .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 50px; text-align: center; }
         .empty-text { font-size: 16px; color: #000; margin-bottom: 30px; font-weight: 400; }
         .btn-blue-outline { background-color: #3390ec; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 500; cursor: pointer;}
@@ -287,15 +296,6 @@
         </div>
     </div>
 
-    <div id="floating-actions" class="floating-actions">
-        <div class="float-btn" onclick="openContact()">
-            <svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div class="float-btn" id="fav-btn" onclick="toggleFavorite()">
-            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-    </div>
-
     <div id="profile-view" class="page">
         <div class="profile-container">
             <div class="profile-header">
@@ -305,14 +305,38 @@
                     <div class="user-stats">Бонусы: 0 <span style="color:#3390ec">✨</span><br>Скидка: 0%</div>
                 </div>
             </div>
+            
             <div class="menu-list">
-                <a href="#" class="menu-item-row" onclick="openFavorites()">
+                <div class="menu-item-row" onclick="openFavorites()">
                     <span style="flex-grow:1">Избранное</span><span>›</span>
-                </a>
-                <a href="#" class="menu-item-row">
+                </div>
+                <div class="menu-item-row">
                     <span style="flex-grow:1">Мои заказы</span><span>›</span>
-                </a>
+                </div>
             </div>
+
+            <div class="menu-header">Документы</div>
+            <div class="menu-list">
+                <div class="menu-item-row" onclick="openLegal('privacy', 'profile')">
+                    <span style="flex-grow:1">Политика конфиденциальности</span><span>›</span>
+                </div>
+                <div class="menu-item-row" onclick="openLegal('personal', 'profile')">
+                    <span style="flex-grow:1">Обработка персональных данных</span><span>›</span>
+                </div>
+                <div class="menu-item-row" onclick="openLegal('offer', 'profile')">
+                    <span style="flex-grow:1">Публичная оферта</span><span>›</span>
+                </div>
+                <div class="menu-item-row" onclick="openLegal('agreement', 'profile')">
+                    <span style="flex-grow:1">Пользовательское соглашение</span><span>›</span>
+                </div>
+                <div class="menu-item-row" onclick="openLegal('cookies', 'profile')">
+                    <span style="flex-grow:1">Политика Cookies</span><span>›</span>
+                </div>
+                <div class="menu-item-row" onclick="openLegal('requisites', 'profile')">
+                    <span style="flex-grow:1">Реквизиты компании</span><span>›</span>
+                </div>
+            </div>
+
              <div class="version-text">version 12.0</div>
         </div>
     </div>
@@ -351,7 +375,29 @@
             </div>
             <div style="margin-top: 15px;">
                 <button class="btn-add-cart-large" style="height: 50px; width:100%; border-radius:12px; background:#3390ec; color:white; border:none; font-weight: 700; font-size: 16px;">Оформить заказ</button>
+                <div class="legal-note">
+                    Нажимая кнопку, вы соглашаетесь с условиями 
+                    <span class="legal-link" onclick="openLegal('offer', 'cart')">публичной оферты</span> и 
+                    <span class="legal-link" onclick="openLegal('personal', 'cart')">обработки данных</span>
+                </div>
             </div>
+        </div>
+    </div>
+
+    <div id="legal-view" class="page">
+        <div class="detail-header">
+            <div class="back-btn" onclick="closeLegal()">&#8592;</div>
+            <div id="legal-title" class="detail-title-small">Документ</div>
+        </div>
+        <div id="legal-text" class="legal-content-area"></div>
+    </div>
+
+    <div id="floating-actions" class="floating-actions">
+        <div class="float-btn" onclick="openContact()">
+            <svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="float-btn" id="fav-btn" onclick="toggleFavorite()">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
     </div>
 
@@ -419,13 +465,41 @@
             'blue': { name: 'Штаны Blue Classic', priceVal: 3200, price: '3 200 ₽', img: 'bluepants.jpg' }
         };
 
+        // --- БАЗА ДАННЫХ ДОКУМЕНТОВ ---
+        const legalDocs = {
+            'privacy': {
+                title: 'Политика конфиденциальности',
+                text: '1. Общие положения\nНастоящая политика обработки персональных данных составлена в соответствии с требованиями Федерального закона от 27.07.2006. №152-ФЗ «О персональных данных».\n\n2. Цели обработки\nМы собираем данные (имя, телефон) исключительно для обработки и доставки заказов.\n\n3. Безопасность\nМы принимаем все необходимые меры для защиты ваших данных от несанкционированного доступа.'
+            },
+            'personal': {
+                title: 'Согласие на обработку данных',
+                text: 'Оставляя заявку на сайте, вы даете согласие на обработку своих персональных данных:\n- Имя\n- Номер телефона\n- Адрес доставки\n\nЦель: регистрация, авторизация, оформление заказа и информирование о статусе доставки.'
+            },
+            'offer': {
+                title: 'Публичная оферта',
+                text: '1. Предмет договора\nПродавец обязуется передать товар в собственность Покупателя, а Покупатель обязуется принять и оплатить товар.\n\n2. Оформление заказа\nЗаказ оформляется через корзину Telegram Mini App.\n\n3. Оплата и доставка\nУсловия оплаты и доставки согласовываются при подтверждении заказа.'
+            },
+            'agreement': {
+                title: 'Пользовательское соглашение',
+                text: '1. Использование сервиса\nИспользуя данный сервис, вы соглашаетесь соблюдать правила и не нарушать законодательство РФ.\n\n2. Контент\nПользователи могут оставлять отзывы и комментарии, соблюдая нормы приличия.\n\n3. Ответственность\nАдминистрация не несет ответственности за сбои в работе сторонних сервисов.'
+            },
+            'cookies': {
+                title: 'Политика Cookies',
+                text: 'Мы используем файлы cookie для улучшения работы сервиса и аналитики (Яндекс.Метрика и др.).\nПродолжая пользоваться сервисом, вы соглашаетесь на использование cookie.'
+            },
+            'requisites': {
+                title: 'Реквизиты компании',
+                text: 'Название: ООО "БАЗАРА НОЛЬ"\nИНН: 1234567890\nОГРН: 112233445566\nАдрес: г. Москва, ул. Примерная, д. 1\nEmail: support@bazara0.ru'
+            }
+        };
+
         // --- ЗАГРУЗКА ИЗ ПАМЯТИ ---
-        // Надежная загрузка без лишних фильтров, которые могли удалять данные
-        let favorites = JSON.parse(localStorage.getItem('bazara_favorites')) || [];
+        let favorites = (JSON.parse(localStorage.getItem('bazara_favorites')) || []).filter(item => item && productsData[item]);
         let cart = JSON.parse(localStorage.getItem('bazara_cart')) || {}; 
         
         let currentOpenProductId = null;
         let currentSelectedSize = 'L'; 
+        let lastPageBeforeLegal = 'profile'; // Запоминаем откуда пришли в документы
 
         updateGlobalCartBadges();
 
@@ -434,8 +508,41 @@
             localStorage.setItem('bazara_cart', JSON.stringify(cart));
         }
 
+        // --- ЛОГИКА ДОКУМЕНТОВ ---
+        function openLegal(docKey, fromPage) {
+            const doc = legalDocs[docKey];
+            if (!doc) return;
+
+            // Запоминаем, откуда пришли, чтобы кнопка "Назад" вернула куда надо
+            lastPageBeforeLegal = fromPage;
+
+            document.getElementById('legal-title').innerText = doc.title;
+            document.getElementById('legal-text').innerText = doc.text;
+
+            hideAllPages();
+            document.getElementById('legal-view').classList.add('active');
+            
+            // Скрываем меню, если оно было
+            document.getElementById('main-nav').classList.add('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        function closeLegal() {
+            document.getElementById('legal-view').classList.remove('active');
+            
+            // Возвращаемся туда, откуда пришли
+            if (lastPageBeforeLegal === 'profile') {
+                document.getElementById('nav-profile').click();
+                document.getElementById('main-nav').classList.remove('hidden');
+            } else if (lastPageBeforeLegal === 'cart') {
+                document.getElementById('nav-cart').click();
+                document.getElementById('main-nav').classList.remove('hidden');
+            }
+        }
+
         // --- ЛОГИКА ТОВАРА ---
         function openProduct(id) {
+            document.getElementById('fav-btn').classList.remove('active');
             currentOpenProductId = id; 
             currentSelectedSize = 'L';
             const product = productsData[id];
@@ -450,32 +557,18 @@
             document.getElementById('detail-title').innerText = product.name;
             document.getElementById('detail-price-btn').innerText = product.price;
 
-            // Сброс выбора размера
             document.querySelectorAll('.size-box').forEach(el => el.classList.remove('active'));
             Array.from(document.querySelectorAll('.size-box')).find(el => el.innerText === 'L').classList.add('active');
             document.querySelector('.size-label span').innerText = 'L';
 
             switchDescTab('desc');
-
-            // --- ЖЕЛЕЗОБЕТОННАЯ ЛОГИКА СЕРДЦА ---
-            const heartBtn = document.getElementById('fav-btn');
-            // 1. Сначала полностью очищаем состояние
-            heartBtn.classList.remove('active');
-            
-            // 2. Проверяем базу данных
-            if (favorites.includes(id)) {
-                heartBtn.classList.add('active'); 
-            }
-            // -------------------------------------
-            
+            updateHeartButtonState();
             updateActionBarState(); 
             window.scrollTo(0, 0);
         }
 
         function closeProduct() {
-            // Очищаем переменную ID, чтобы не было конфликтов при быстром переходе
             currentOpenProductId = null;
-            
             document.getElementById('product-actions').classList.remove('visible');
             document.getElementById('floating-actions').classList.remove('visible');
             document.getElementById('main-nav').classList.remove('hidden');
@@ -637,24 +730,27 @@
         }
 
         // --- ИЗБРАННОЕ ---
+        function updateHeartButtonState() {
+            const btn = document.getElementById('fav-btn');
+            if (favorites.includes(currentOpenProductId)) {
+                btn.classList.add('active'); 
+            } else {
+                btn.classList.remove('active'); 
+            }
+        }
+
         function toggleFavorite() {
             const btn = document.getElementById('fav-btn');
-            
-            // Защита от дурака: если ID нет, выходим
             if (!currentOpenProductId) return;
 
             if (favorites.includes(currentOpenProductId)) {
-                // Удаляем
                 favorites = favorites.filter(id => id !== currentOpenProductId);
-                btn.classList.remove('active');
             } else {
-                // Добавляем
                 favorites.push(currentOpenProductId);
-                btn.classList.add('active');
                 if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
             }
-            // Мгновенное сохранение
             saveData();
+            updateHeartButtonState();
         }
 
         function renderFavorites() {
@@ -662,7 +758,6 @@
             const emptyState = document.getElementById('favorites-empty');
             listContainer.innerHTML = ''; 
 
-            // Показываем только те товары, которые реально существуют в productsData
             const validFavorites = favorites.filter(id => productsData[id]);
 
             if (validFavorites.length === 0) {
@@ -724,6 +819,7 @@
             document.getElementById('favorites-view').classList.remove('active');
             document.getElementById('cart-view').classList.remove('active');
             document.getElementById('product-detail-view').classList.remove('active');
+            document.getElementById('legal-view').classList.remove('active'); // Скрываем и новую страницу
         }
     </script>
 </body>
