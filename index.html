@@ -102,7 +102,7 @@
         }
         .legal-link { color: #999; text-decoration: underline; cursor: pointer; }
 
-        /* --- ПЛАВАЮЩИЕ КНОПКИ --- */
+        /* --- ПЛАВАЮЩИЕ КНОПКИ (ВОССТАНОВЛЕНЫ) --- */
         .floating-actions {
             position: fixed; bottom: 100px; right: 15px; z-index: 201;
             display: none; flex-direction: column; gap: 12px;
@@ -117,7 +117,17 @@
             transition: transform 0.1s;
         }
         .float-btn:active { transform: scale(0.95); }
-        .float-btn svg { width: 24px; height: 24px; }
+        
+        /* СТИЛИ ИКОНОК (ВОССТАНОВЛЕНЫ) */
+        .float-btn svg { 
+            width: 24px; height: 24px; 
+            stroke: #000; stroke-width: 1.5; fill: none; 
+            transition: all 0.2s; 
+        }
+        /* КРАСНОЕ СЕРДЦЕ */
+        .float-btn.active svg { 
+            fill: #ff3b30; stroke: #ff3b30; 
+        }
 
         /* --- НИЖНЯЯ ПАНЕЛЬ --- */
         .product-action-bar {
@@ -336,7 +346,7 @@
                 </div>
             </div>
 
-             <div class="version-text">version 13.1</div>
+             <div class="version-text">version 13.2</div>
         </div>
     </div>
 
@@ -396,7 +406,8 @@
             <svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
         <div id="fav-btn" class="float-btn" onclick="toggleFavorite()">
-            </div>
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
     </div>
 
     <div id="product-actions" class="product-action-bar">
@@ -473,13 +484,6 @@
             'requisites': { title: 'Реквизиты компании', text: 'Реквизиты...' }
         };
 
-        // --- ИКОНКИ СЕРДЦА (HTML СТРОКИ) ---
-        // 1. Пустое сердце (черный контур)
-        const iconHeartEmpty = `<svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
-        
-        // 2. Полное сердце (Красное, без контура или с красным контуром)
-        const iconHeartFull = `<svg viewBox="0 0 24 24" fill="#ff3b30" stroke="#ff3b30" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
-
         // --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ---
         let favorites = [];
         let cart = {};
@@ -493,8 +497,10 @@
             try {
                 const storedFav = localStorage.getItem('bazara_favorites');
                 if (storedFav) {
-                    favorites = JSON.parse(storedFav);
-                    if (!Array.isArray(favorites)) favorites = [];
+                    let parsed = JSON.parse(storedFav);
+                    if (Array.isArray(parsed)) {
+                        favorites = parsed.filter(id => productsData[id]);
+                    }
                 }
                 
                 const storedCart = localStorage.getItem('bazara_cart');
@@ -513,13 +519,17 @@
             localStorage.setItem('bazara_cart', JSON.stringify(cart));
         }
 
-        // --- ГЛАВНАЯ ФУНКЦИЯ ОТРИСОВКИ СЕРДЦА ---
-        function updateHeartIcon() {
+        // --- ФУНКЦИЯ ДЛЯ СЕРДЦА (С ЗАДЕРЖКОЙ) ---
+        function forceHeartCheck() {
             const btn = document.getElementById('fav-btn');
-            if (favorites.includes(currentOpenProductId)) {
-                btn.innerHTML = iconHeartFull;
+            // 1. Принудительно читаем из LS
+            const currentFavs = JSON.parse(localStorage.getItem('bazara_favorites')) || [];
+            
+            // 2. Если товар там есть - красим
+            if (currentFavs.includes(currentOpenProductId)) {
+                btn.classList.add('active');
             } else {
-                btn.innerHTML = iconHeartEmpty;
+                btn.classList.remove('active');
             }
         }
 
@@ -545,15 +555,15 @@
 
             switchDescTab('desc');
 
-            // !!! ВАЖНО: Рисуем правильную иконку при открытии
-            updateHeartIcon();
+            // --- ФИКС ЛОГИКИ: Сбрасываем и форсируем через 10мс ---
+            document.getElementById('fav-btn').classList.remove('active');
+            setTimeout(forceHeartCheck, 10);
             
             updateActionBarState(); 
             window.scrollTo(0, 0);
         }
 
         function closeProduct() {
-            // Просто очищаем переменную, ничего не трогаем в DOM
             currentOpenProductId = null;
             document.getElementById('product-actions').classList.remove('visible');
             document.getElementById('floating-actions').classList.remove('visible');
@@ -719,16 +729,19 @@
         function toggleFavorite() {
             if (!currentOpenProductId) return;
 
-            if (favorites.includes(currentOpenProductId)) {
-                favorites = favorites.filter(id => id !== currentOpenProductId);
+            // Читаем, меняем, сохраняем (атомарно)
+            const index = favorites.indexOf(currentOpenProductId);
+            const btn = document.getElementById('fav-btn');
+
+            if (index > -1) {
+                favorites.splice(index, 1);
+                btn.classList.remove('active');
             } else {
-                if (!favorites.includes(currentOpenProductId)) {
-                    favorites.push(currentOpenProductId);
-                    if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-                }
+                favorites.push(currentOpenProductId);
+                btn.classList.add('active');
+                if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
             }
             saveData();
-            updateHeartIcon(); // Перерисовываем кнопку
         }
 
         function renderFavorites() {
