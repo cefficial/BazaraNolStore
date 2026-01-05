@@ -119,6 +119,7 @@
         .float-btn:active { transform: scale(0.95); }
         .float-btn svg { width: 24px; height: 24px; stroke: #000; stroke-width: 1.5; fill: none; transition: all 0.2s; }
         
+        /* КРАСНОЕ СЕРДЦЕ - ГЛАВНЫЙ СТИЛЬ */
         .float-btn.active svg { fill: #ff3b30; stroke: #ff3b30; }
 
         /* --- НИЖНЯЯ ПАНЕЛЬ --- */
@@ -338,7 +339,7 @@
                 </div>
             </div>
 
-             <div class="version-text">version 12.4</div>
+             <div class="version-text">version 12.5</div>
         </div>
     </div>
 
@@ -489,9 +490,10 @@
             try {
                 const storedFav = localStorage.getItem('bazara_favorites');
                 if (storedFav) {
-                    favorites = JSON.parse(storedFav);
-                    // Очистка от дублей и проверка на существование товара
-                    favorites = [...new Set(favorites)].filter(id => productsData[id]);
+                    let parsed = JSON.parse(storedFav);
+                    if (Array.isArray(parsed)) {
+                        favorites = parsed.filter(id => productsData[id]);
+                    }
                 }
                 
                 const storedCart = localStorage.getItem('bazara_cart');
@@ -510,6 +512,18 @@
             localStorage.setItem('bazara_cart', JSON.stringify(cart));
         }
 
+        // --- ГЛАВНАЯ ФУНКЦИЯ ДЛЯ СЕРДЦА (FIX 12.5) ---
+        function forceHeartState(productId) {
+            const btn = document.getElementById('fav-btn');
+            // Сначала удаляем класс, чтобы сбросить старое состояние
+            btn.classList.remove('active');
+            
+            // Если товар в избранном - добавляем класс
+            if (favorites.includes(productId)) {
+                btn.classList.add('active');
+            }
+        }
+
         // --- ЛОГИКА ТОВАРА ---
         function openProduct(id) {
             currentOpenProductId = id; 
@@ -526,24 +540,14 @@
             document.getElementById('detail-title').innerText = product.name;
             document.getElementById('detail-price-btn').innerText = product.price;
 
-            // Сброс размера на L
             document.querySelectorAll('.size-box').forEach(el => el.classList.remove('active'));
             Array.from(document.querySelectorAll('.size-box')).find(el => el.innerText === 'L').classList.add('active');
             document.querySelector('.size-label span').innerText = 'L';
 
             switchDescTab('desc');
 
-            // --- ЖЕЛЕЗОБЕТОННАЯ ЛОГИКА СЕРДЦА (FIX 12.4) ---
-            const heartBtn = document.getElementById('fav-btn');
-            
-            // 1. Сначала ВСЕГДА выключаем сердце (сброс старого состояния)
-            heartBtn.classList.remove('active');
-            
-            // 2. Затем проверяем базу и если надо — включаем
-            if (favorites.includes(id)) {
-                heartBtn.classList.add('active'); 
-            }
-            // ---------------------------------------------------
+            // !!! ВАЖНО !!! Принудительно устанавливаем состояние сердца
+            forceHeartState(id);
             
             updateActionBarState(); 
             window.scrollTo(0, 0);
@@ -711,22 +715,23 @@
             document.getElementById('nav-cart').click();
         }
 
-        // --- ИЗБРАННОЕ (FIX 12.4) ---
+        // --- ИЗБРАННОЕ ---
         function toggleFavorite() {
-            const btn = document.getElementById('fav-btn');
             if (!currentOpenProductId) return;
 
             if (favorites.includes(currentOpenProductId)) {
                 // Удаляем
                 favorites = favorites.filter(id => id !== currentOpenProductId);
-                btn.classList.remove('active'); // Сразу гасим кнопку
             } else {
-                // Добавляем
-                favorites.push(currentOpenProductId);
-                btn.classList.add('active'); // Сразу зажигаем кнопку
-                if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+                // Добавляем (защита от дублей)
+                if (!favorites.includes(currentOpenProductId)) {
+                    favorites.push(currentOpenProductId);
+                    if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+                }
             }
             saveData();
+            // Обновляем состояние кнопки после изменения данных
+            forceHeartState(currentOpenProductId);
         }
 
         function renderFavorites() {
