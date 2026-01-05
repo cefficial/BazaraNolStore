@@ -117,9 +117,8 @@
             transition: transform 0.1s;
         }
         .float-btn:active { transform: scale(0.95); }
-        .float-btn svg { width: 24px; height: 24px; stroke: #000; stroke-width: 1.5; fill: none; transition: all 0.2s; }
-        
-        /* Убираем зависимость от CSS классов для цвета - теперь всё в JS */
+        /* SVG внутри кнопки управляется теперь через JS */
+        .float-btn svg { width: 24px; height: 24px; }
 
         /* --- НИЖНЯЯ ПАНЕЛЬ --- */
         .product-action-bar {
@@ -338,7 +337,7 @@
                 </div>
             </div>
 
-             <div class="version-text">version 12.6</div>
+             <div class="version-text">version 13.0</div>
         </div>
     </div>
 
@@ -398,8 +397,7 @@
             <svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
         <div id="fav-btn" class="float-btn" onclick="toggleFavorite()">
-            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
+            </div>
     </div>
 
     <div id="product-actions" class="product-action-bar">
@@ -476,6 +474,10 @@
             'requisites': { title: 'Реквизиты компании', text: 'Реквизиты...' }
         };
 
+        // --- ИКОНКИ СЕРДЦА (HTML) ---
+        const iconHeartEmpty = `<svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
+        const iconHeartFull = `<svg viewBox="0 0 24 24" fill="#ff3b30" stroke="#ff3b30" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
+
         // --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ---
         let favorites = [];
         let cart = {};
@@ -511,20 +513,14 @@
             localStorage.setItem('bazara_cart', JSON.stringify(cart));
         }
 
-        // --- ВИЗУАЛИЗАЦИЯ СЕРДЦА ЧЕРЕЗ JS (FIX 12.6) ---
-        function updateHeartVisuals() {
+        // --- ГЛАВНАЯ ФУНКЦИЯ ДЛЯ СЕРДЦА (РЕНДЕР HTML) ---
+        function renderHeart() {
             const btn = document.getElementById('fav-btn');
-            const icon = btn.querySelector('svg');
-            const isLiked = favorites.includes(currentOpenProductId);
-
-            if (isLiked) {
-                // Прямая заливка цветом
-                icon.style.fill = '#ff3b30';
-                icon.style.stroke = '#ff3b30';
+            // Прямая замена HTML - это надежнее всего
+            if (favorites.includes(currentOpenProductId)) {
+                btn.innerHTML = iconHeartFull;
             } else {
-                // Сброс цвета
-                icon.style.fill = 'none';
-                icon.style.stroke = '#000';
+                btn.innerHTML = iconHeartEmpty;
             }
         }
 
@@ -550,8 +546,8 @@
 
             switchDescTab('desc');
 
-            // --- ОБНОВЛЕНИЕ СЕРДЦА ---
-            updateHeartVisuals();
+            // !!! ВАЖНО !!! Рендерим сердце на основе данных
+            renderHeart();
             
             updateActionBarState(); 
             window.scrollTo(0, 0);
@@ -559,13 +555,6 @@
 
         function closeProduct() {
             currentOpenProductId = null;
-            
-            // Сбрасываем иконку сердца при закрытии, чтобы не мелькала на другом товаре
-            const btn = document.getElementById('fav-btn');
-            const icon = btn.querySelector('svg');
-            icon.style.fill = 'none';
-            icon.style.stroke = '#000';
-
             document.getElementById('product-actions').classList.remove('visible');
             document.getElementById('floating-actions').classList.remove('visible');
             document.getElementById('main-nav').classList.remove('hidden');
@@ -739,7 +728,8 @@
                 }
             }
             saveData();
-            updateHeartVisuals(); // Моментальное обновление
+            // Обновляем состояние кнопки после изменения данных
+            renderHeart();
         }
 
         function renderFavorites() {
