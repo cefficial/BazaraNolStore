@@ -117,7 +117,6 @@
             transition: transform 0.1s;
         }
         .float-btn:active { transform: scale(0.95); }
-        /* SVG внутри кнопки управляется теперь через JS */
         .float-btn svg { width: 24px; height: 24px; }
 
         /* --- НИЖНЯЯ ПАНЕЛЬ --- */
@@ -337,7 +336,7 @@
                 </div>
             </div>
 
-             <div class="version-text">version 13.0</div>
+             <div class="version-text">version 13.1</div>
         </div>
     </div>
 
@@ -474,8 +473,11 @@
             'requisites': { title: 'Реквизиты компании', text: 'Реквизиты...' }
         };
 
-        // --- ИКОНКИ СЕРДЦА (HTML) ---
+        // --- ИКОНКИ СЕРДЦА (HTML СТРОКИ) ---
+        // 1. Пустое сердце (черный контур)
         const iconHeartEmpty = `<svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
+        
+        // 2. Полное сердце (Красное, без контура или с красным контуром)
         const iconHeartFull = `<svg viewBox="0 0 24 24" fill="#ff3b30" stroke="#ff3b30" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
 
         // --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ---
@@ -491,10 +493,8 @@
             try {
                 const storedFav = localStorage.getItem('bazara_favorites');
                 if (storedFav) {
-                    let parsed = JSON.parse(storedFav);
-                    if (Array.isArray(parsed)) {
-                        favorites = parsed.filter(id => productsData[id]);
-                    }
+                    favorites = JSON.parse(storedFav);
+                    if (!Array.isArray(favorites)) favorites = [];
                 }
                 
                 const storedCart = localStorage.getItem('bazara_cart');
@@ -513,10 +513,9 @@
             localStorage.setItem('bazara_cart', JSON.stringify(cart));
         }
 
-        // --- ГЛАВНАЯ ФУНКЦИЯ ДЛЯ СЕРДЦА (РЕНДЕР HTML) ---
-        function renderHeart() {
+        // --- ГЛАВНАЯ ФУНКЦИЯ ОТРИСОВКИ СЕРДЦА ---
+        function updateHeartIcon() {
             const btn = document.getElementById('fav-btn');
-            // Прямая замена HTML - это надежнее всего
             if (favorites.includes(currentOpenProductId)) {
                 btn.innerHTML = iconHeartFull;
             } else {
@@ -546,14 +545,15 @@
 
             switchDescTab('desc');
 
-            // !!! ВАЖНО !!! Рендерим сердце на основе данных
-            renderHeart();
+            // !!! ВАЖНО: Рисуем правильную иконку при открытии
+            updateHeartIcon();
             
             updateActionBarState(); 
             window.scrollTo(0, 0);
         }
 
         function closeProduct() {
+            // Просто очищаем переменную, ничего не трогаем в DOM
             currentOpenProductId = null;
             document.getElementById('product-actions').classList.remove('visible');
             document.getElementById('floating-actions').classList.remove('visible');
@@ -728,8 +728,7 @@
                 }
             }
             saveData();
-            // Обновляем состояние кнопки после изменения данных
-            renderHeart();
+            updateHeartIcon(); // Перерисовываем кнопку
         }
 
         function renderFavorites() {
