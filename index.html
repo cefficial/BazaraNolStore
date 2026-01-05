@@ -338,7 +338,7 @@
                 </div>
             </div>
 
-             <div class="version-text">version 12.3</div>
+             <div class="version-text">version 12.4</div>
         </div>
     </div>
 
@@ -488,12 +488,18 @@
         function initApp() {
             try {
                 const storedFav = localStorage.getItem('bazara_favorites');
-                if (storedFav) favorites = JSON.parse(storedFav);
+                if (storedFav) {
+                    favorites = JSON.parse(storedFav);
+                    // Очистка от дублей и проверка на существование товара
+                    favorites = [...new Set(favorites)].filter(id => productsData[id]);
+                }
                 
                 const storedCart = localStorage.getItem('bazara_cart');
                 if (storedCart) cart = JSON.parse(storedCart);
             } catch (e) {
                 console.error('Ошибка чтения LocalStorage', e);
+                favorites = [];
+                cart = {};
             }
             updateGlobalCartBadges();
         }
@@ -502,17 +508,6 @@
         function saveData() {
             localStorage.setItem('bazara_favorites', JSON.stringify(favorites));
             localStorage.setItem('bazara_cart', JSON.stringify(cart));
-        }
-
-        // --- ФУНКЦИЯ ОТРИСОВКИ СЕРДЦА (ЕДИНЫЙ ИСТОЧНИК ПРАВДЫ) ---
-        function updateHeartUI() {
-            const btn = document.getElementById('fav-btn');
-            // Проверяем наличие в массиве
-            if (favorites.includes(currentOpenProductId)) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
         }
 
         // --- ЛОГИКА ТОВАРА ---
@@ -531,14 +526,24 @@
             document.getElementById('detail-title').innerText = product.name;
             document.getElementById('detail-price-btn').innerText = product.price;
 
+            // Сброс размера на L
             document.querySelectorAll('.size-box').forEach(el => el.classList.remove('active'));
             Array.from(document.querySelectorAll('.size-box')).find(el => el.innerText === 'L').classList.add('active');
             document.querySelector('.size-label span').innerText = 'L';
 
             switchDescTab('desc');
 
-            // !!! ВАЖНО !!! Обновляем сердце на основе данных
-            updateHeartUI();
+            // --- ЖЕЛЕЗОБЕТОННАЯ ЛОГИКА СЕРДЦА (FIX 12.4) ---
+            const heartBtn = document.getElementById('fav-btn');
+            
+            // 1. Сначала ВСЕГДА выключаем сердце (сброс старого состояния)
+            heartBtn.classList.remove('active');
+            
+            // 2. Затем проверяем базу и если надо — включаем
+            if (favorites.includes(id)) {
+                heartBtn.classList.add('active'); 
+            }
+            // ---------------------------------------------------
             
             updateActionBarState(); 
             window.scrollTo(0, 0);
@@ -706,22 +711,22 @@
             document.getElementById('nav-cart').click();
         }
 
-        // --- ИЗБРАННОЕ ---
+        // --- ИЗБРАННОЕ (FIX 12.4) ---
         function toggleFavorite() {
+            const btn = document.getElementById('fav-btn');
             if (!currentOpenProductId) return;
 
             if (favorites.includes(currentOpenProductId)) {
                 // Удаляем
                 favorites = favorites.filter(id => id !== currentOpenProductId);
+                btn.classList.remove('active'); // Сразу гасим кнопку
             } else {
-                // Добавляем (защита от дублей)
-                if (!favorites.includes(currentOpenProductId)) {
-                    favorites.push(currentOpenProductId);
-                    if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-                }
+                // Добавляем
+                favorites.push(currentOpenProductId);
+                btn.classList.add('active'); // Сразу зажигаем кнопку
+                if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
             }
             saveData();
-            updateHeartUI(); // Обновляем кнопку сразу же
         }
 
         function renderFavorites() {
