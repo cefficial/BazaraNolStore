@@ -117,12 +117,13 @@
             transition: transform 0.1s;
         }
         .float-btn:active { transform: scale(0.95); }
-        .float-btn svg { width: 24px; height: 24px; stroke: #000; stroke-width: 1.5; fill: none; transition: all 0.2s; }
         
-        /* ЦВЕТ АКТИВНОГО СЕРДЦА */
+        /* СТИЛИ ДЛЯ ИКОНКИ СЕРДЦА */
+        .float-btn svg { width: 24px; height: 24px; stroke: #000; stroke-width: 1.5; fill: none; transition: all 0.2s; }
+        /* Когда класс active добавлен - красим в красный */
         .float-btn.active svg { fill: #ff3b30; stroke: #ff3b30; }
 
-        /* --- НИЖНЯЯ ПАНЕЛЬ ТОВАРА --- */
+        /* --- НИЖНЯЯ ПАНЕЛЬ --- */
         .product-action-bar {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: white;
@@ -339,7 +340,7 @@
                 </div>
             </div>
 
-             <div class="version-text">version 12.1</div>
+             <div class="version-text">version 12.2</div>
         </div>
     </div>
 
@@ -398,7 +399,7 @@
         <div class="float-btn" onclick="openContact()">
             <svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
-        <div class="float-btn" id="fav-btn" onclick="toggleFavorite()">
+        <div id="fav-btn" class="float-btn" onclick="toggleFavorite()">
             <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
     </div>
@@ -467,7 +468,7 @@
             'blue': { name: 'Штаны Blue Classic', priceVal: 3200, price: '3 200 ₽', img: 'bluepants.jpg' }
         };
 
-        // --- БАЗА ДАННЫХ ДОКУМЕНТОВ ---
+        // БАЗА ДОКУМЕНТОВ
         const legalDocs = {
             'privacy': { title: 'Политика конфиденциальности', text: 'Текст политики...' },
             'personal': { title: 'Согласие на обработку данных', text: 'Текст согласия...' },
@@ -477,46 +478,50 @@
             'requisites': { title: 'Реквизиты компании', text: 'Реквизиты...' }
         };
 
-        // --- ЗАГРУЗКА ИЗ ПАМЯТИ ---
-        let favorites = (JSON.parse(localStorage.getItem('bazara_favorites')) || []).filter(item => item && productsData[item]);
-        let cart = JSON.parse(localStorage.getItem('bazara_cart')) || {}; 
+        // --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ---
+        let favorites = [];
+        let cart = {};
         
         let currentOpenProductId = null;
         let currentSelectedSize = 'L'; 
         let lastPageBeforeLegal = 'profile';
 
-        updateGlobalCartBadges();
+        // --- ИНИЦИАЛИЗАЦИЯ ---
+        function initApp() {
+            // Читаем из памяти
+            try {
+                const storedFav = localStorage.getItem('bazara_favorites');
+                if (storedFav) favorites = JSON.parse(storedFav);
+                
+                const storedCart = localStorage.getItem('bazara_cart');
+                if (storedCart) cart = JSON.parse(storedCart);
+            } catch (e) {
+                console.error('Ошибка чтения LocalStorage', e);
+            }
+            updateGlobalCartBadges();
+        }
+        initApp(); // Запускаем при старте
 
         function saveData() {
             localStorage.setItem('bazara_favorites', JSON.stringify(favorites));
             localStorage.setItem('bazara_cart', JSON.stringify(cart));
         }
 
-        // --- ЛОГИКА ДОКУМЕНТОВ ---
-        function openLegal(docKey, fromPage) {
-            const doc = legalDocs[docKey];
-            if (!doc) return;
-            lastPageBeforeLegal = fromPage;
-            document.getElementById('legal-title').innerText = doc.title;
-            document.getElementById('legal-text').innerText = doc.text;
-            hideAllPages();
-            document.getElementById('legal-view').classList.add('active');
-            document.getElementById('main-nav').classList.add('hidden');
-            window.scrollTo(0, 0);
-        }
-
-        function closeLegal() {
-            document.getElementById('legal-view').classList.remove('active');
-            if (lastPageBeforeLegal === 'profile') {
-                document.getElementById('nav-profile').click();
-                document.getElementById('main-nav').classList.remove('hidden');
-            } else if (lastPageBeforeLegal === 'cart') {
-                document.getElementById('nav-cart').click();
-                document.getElementById('main-nav').classList.remove('hidden');
+        // --- ФУНКЦИЯ ДЛЯ ПРИНУДИТЕЛЬНОЙ ПРОВЕРКИ СЕРДЦА ---
+        function checkAndPaintHeart() {
+            const btn = document.getElementById('fav-btn');
+            // 1. Читаем актуальное состояние из массива
+            const isLiked = favorites.includes(currentOpenProductId);
+            
+            // 2. Жестко ставим класс
+            if (isLiked) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
             }
         }
 
-        // --- ЛОГИКА ТОВАРА (ФИКС СЕРДЦА) ---
+        // --- ЛОГИКА ТОВАРА ---
         function openProduct(id) {
             currentOpenProductId = id; 
             currentSelectedSize = 'L';
@@ -538,8 +543,8 @@
 
             switchDescTab('desc');
 
-            // --- ВАЖНО: Принудительное обновление сердца ---
-            updateHeartButtonState();
+            // !!! ВАЖНО !!! ВЫЗЫВАЕМ ПРОВЕРКУ СЕРДЦА
+            checkAndPaintHeart();
             
             updateActionBarState(); 
             window.scrollTo(0, 0);
@@ -708,28 +713,22 @@
         }
 
         // --- ИЗБРАННОЕ ---
-        function updateHeartButtonState() {
-            const btn = document.getElementById('fav-btn');
-            // Простая и надежная проверка
-            if (favorites.includes(currentOpenProductId)) {
-                btn.classList.add('active'); 
-            } else {
-                btn.classList.remove('active'); 
-            }
-        }
-
         function toggleFavorite() {
             const btn = document.getElementById('fav-btn');
             if (!currentOpenProductId) return;
 
             if (favorites.includes(currentOpenProductId)) {
+                // Удаляем
                 favorites = favorites.filter(id => id !== currentOpenProductId);
+                btn.classList.remove('active');
             } else {
+                // Добавляем
                 favorites.push(currentOpenProductId);
+                btn.classList.add('active');
                 if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
             }
+            // Мгновенное сохранение
             saveData();
-            updateHeartButtonState(); // Сразу обновляем вид
         }
 
         function renderFavorites() {
@@ -768,6 +767,30 @@
             renderFavorites();
             hideAllPages();
             document.getElementById('favorites-view').classList.add('active');
+        }
+
+        // --- ДОКУМЕНТЫ ---
+        function openLegal(docKey, fromPage) {
+            const doc = legalDocs[docKey];
+            if (!doc) return;
+            lastPageBeforeLegal = fromPage;
+            document.getElementById('legal-title').innerText = doc.title;
+            document.getElementById('legal-text').innerText = doc.text;
+            hideAllPages();
+            document.getElementById('legal-view').classList.add('active');
+            document.getElementById('main-nav').classList.add('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        function closeLegal() {
+            document.getElementById('legal-view').classList.remove('active');
+            if (lastPageBeforeLegal === 'profile') {
+                document.getElementById('nav-profile').click();
+                document.getElementById('main-nav').classList.remove('hidden');
+            } else if (lastPageBeforeLegal === 'cart') {
+                document.getElementById('nav-cart').click();
+                document.getElementById('main-nav').classList.remove('hidden');
+            }
         }
 
         // --- ОБЩАЯ НАВИГАЦИЯ ---
