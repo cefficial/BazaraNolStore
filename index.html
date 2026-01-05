@@ -117,10 +117,8 @@
             transition: transform 0.1s;
         }
         .float-btn:active { transform: scale(0.95); }
-        
-        /* СТИЛИ ДЛЯ ИКОНКИ СЕРДЦА */
         .float-btn svg { width: 24px; height: 24px; stroke: #000; stroke-width: 1.5; fill: none; transition: all 0.2s; }
-        /* Когда класс active добавлен - красим в красный */
+        
         .float-btn.active svg { fill: #ff3b30; stroke: #ff3b30; }
 
         /* --- НИЖНЯЯ ПАНЕЛЬ --- */
@@ -340,7 +338,7 @@
                 </div>
             </div>
 
-             <div class="version-text">version 12.2</div>
+             <div class="version-text">version 12.3</div>
         </div>
     </div>
 
@@ -488,7 +486,6 @@
 
         // --- ИНИЦИАЛИЗАЦИЯ ---
         function initApp() {
-            // Читаем из памяти
             try {
                 const storedFav = localStorage.getItem('bazara_favorites');
                 if (storedFav) favorites = JSON.parse(storedFav);
@@ -500,21 +497,18 @@
             }
             updateGlobalCartBadges();
         }
-        initApp(); // Запускаем при старте
+        initApp(); 
 
         function saveData() {
             localStorage.setItem('bazara_favorites', JSON.stringify(favorites));
             localStorage.setItem('bazara_cart', JSON.stringify(cart));
         }
 
-        // --- ФУНКЦИЯ ДЛЯ ПРИНУДИТЕЛЬНОЙ ПРОВЕРКИ СЕРДЦА ---
-        function checkAndPaintHeart() {
+        // --- ФУНКЦИЯ ОТРИСОВКИ СЕРДЦА (ЕДИНЫЙ ИСТОЧНИК ПРАВДЫ) ---
+        function updateHeartUI() {
             const btn = document.getElementById('fav-btn');
-            // 1. Читаем актуальное состояние из массива
-            const isLiked = favorites.includes(currentOpenProductId);
-            
-            // 2. Жестко ставим класс
-            if (isLiked) {
+            // Проверяем наличие в массиве
+            if (favorites.includes(currentOpenProductId)) {
                 btn.classList.add('active');
             } else {
                 btn.classList.remove('active');
@@ -543,8 +537,8 @@
 
             switchDescTab('desc');
 
-            // !!! ВАЖНО !!! ВЫЗЫВАЕМ ПРОВЕРКУ СЕРДЦА
-            checkAndPaintHeart();
+            // !!! ВАЖНО !!! Обновляем сердце на основе данных
+            updateHeartUI();
             
             updateActionBarState(); 
             window.scrollTo(0, 0);
@@ -714,21 +708,20 @@
 
         // --- ИЗБРАННОЕ ---
         function toggleFavorite() {
-            const btn = document.getElementById('fav-btn');
             if (!currentOpenProductId) return;
 
             if (favorites.includes(currentOpenProductId)) {
                 // Удаляем
                 favorites = favorites.filter(id => id !== currentOpenProductId);
-                btn.classList.remove('active');
             } else {
-                // Добавляем
-                favorites.push(currentOpenProductId);
-                btn.classList.add('active');
-                if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+                // Добавляем (защита от дублей)
+                if (!favorites.includes(currentOpenProductId)) {
+                    favorites.push(currentOpenProductId);
+                    if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+                }
             }
-            // Мгновенное сохранение
             saveData();
+            updateHeartUI(); // Обновляем кнопку сразу же
         }
 
         function renderFavorites() {
@@ -769,7 +762,28 @@
             document.getElementById('favorites-view').classList.add('active');
         }
 
-        // --- ДОКУМЕНТЫ ---
+        // --- ОБЩАЯ НАВИГАЦИЯ ---
+        function openContact() { tg.openTelegramLink('https://t.me/dummest'); }
+
+        function switchTab(tabName, element) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            hideAllPages();
+
+            if (tabName === 'main') {
+                document.getElementById('main-view').classList.add('active');
+            } else if (tabName === 'profile') {
+                document.getElementById('profile-view').classList.add('active');
+            } else if (tabName === 'cart') {
+                document.getElementById('cart-view').classList.add('active');
+                renderCartPage(); 
+            }
+        }
+
+        function goToCatalog() {
+            document.getElementById('nav-main').click();
+        }
+
         function openLegal(docKey, fromPage) {
             const doc = legalDocs[docKey];
             if (!doc) return;
@@ -791,28 +805,6 @@
                 document.getElementById('nav-cart').click();
                 document.getElementById('main-nav').classList.remove('hidden');
             }
-        }
-
-        // --- ОБЩАЯ НАВИГАЦИЯ ---
-        function openContact() { tg.openTelegramLink('https://t.me/dummest'); }
-
-        function switchTab(tabName, element) {
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            element.classList.add('active');
-            hideAllPages();
-
-            if (tabName === 'main') {
-                document.getElementById('main-view').classList.add('active');
-            } else if (tabName === 'profile') {
-                document.getElementById('profile-view').classList.add('active');
-            } else if (tabName === 'cart') {
-                document.getElementById('cart-view').classList.add('active');
-                renderCartPage(); 
-            }
-        }
-
-        function goToCatalog() {
-            document.getElementById('nav-main').click();
         }
 
         function hideAllPages() {
