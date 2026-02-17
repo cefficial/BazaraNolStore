@@ -52,7 +52,7 @@
         .grid-price { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
         .grid-name { font-size: 13px; color: #888; line-height: 1.2; }
 
-        /* --- ДЕТАЛЬНАЯ СТРАНИЦА --- */
+        /* --- ДЕТАЛЬНАЯ СТРАНИЦА И СЛАЙДЕР --- */
         .detail-header {
             background: white; padding: 12px 15px; display: flex; align-items: center;
             position: sticky; top: 0; z-index: 101; border-bottom: 1px solid #f5f5f5;
@@ -60,7 +60,40 @@
         .back-btn { font-size: 22px; margin-right: 20px; cursor: pointer; color: #000; }
         .detail-title-small { font-weight: 600; font-size: 17px; text-transform: uppercase; }
 
-        .detail-image { width: 100%; height: auto; display: block; }
+        /* СТИЛИ СЛАЙДЕРА */
+        .slider-wrapper {
+            position: relative;
+            width: 100%;
+            background: #fff;
+            overflow: hidden;
+            aspect-ratio: 1 / 1;
+        }
+        .slider-content {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.3s ease-out;
+        }
+        .slider-content img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        .slider-nav-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            width: 36px; height: 36px; background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            z-index: 2; cursor: pointer; font-size: 18px;
+        }
+        .slider-prev { left: 10px; }
+        .slider-next { right: 10px; }
+        .slider-dots {
+            position: absolute; bottom: 15px; width: 100%;
+            display: flex; justify-content: center; gap: 6px; z-index: 2;
+        }
+        .dot { width: 7px; height: 7px; background: rgba(0, 0, 0, 0.2); border-radius: 50%; transition: 0.2s; }
+        .dot.active { background: #3390ec; transform: scale(1.3); }
 
         .detail-info-container {
             background: white; padding: 20px 15px; margin-bottom: 120px;
@@ -95,13 +128,6 @@
         .char-label { color: #888; }
         .char-val { font-weight: 500; color: #000; }
 
-        /* --- СТРАНИЦА ДОКУМЕНТОВ --- */
-        .legal-content-area {
-            background: white; padding: 20px 15px; margin-bottom: 100px;
-            font-size: 14px; line-height: 1.6; color: #333; white-space: pre-wrap;
-        }
-        .legal-link { color: #999; text-decoration: underline; cursor: pointer; }
-
         /* --- ПЛАВАЮЩИЕ КНОПКИ --- */
         .floating-actions {
             position: fixed; bottom: 100px; right: 15px; z-index: 201;
@@ -119,8 +145,6 @@
         .float-btn:active { transform: scale(0.95); }
         .float-btn svg { width: 24px; height: 24px; stroke: #000; stroke-width: 1.5; fill: none; transition: all 0.2s; }
         
-        /* Убираем зависимость от CSS классов для цвета - теперь всё в JS */
-
         /* --- НИЖНЯЯ ПАНЕЛЬ --- */
         .product-action-bar {
             position: fixed; bottom: 0; left: 0; width: 100%;
@@ -253,11 +277,11 @@
 <body>
 
     <div id="main-view" class="page active">
-    <div class="header-logo"><h2>КАТАЛОГ</h2></div>
-    <div class="main-banner">
-        <img src="img/BZR0LOGO RASTR.png" alt="Рекламный баннер">
-    </div>
-    <div class="section-title">В наличии</div>
+        <div class="header-logo"><h2>КАТАЛОГ</h2></div>
+        <div class="main-banner">
+            <img src="img/BZR0LOGO RASTR.png" alt="Рекламный баннер">
+        </div>
+        <div class="section-title">В наличии</div>
         <div class="products-grid">
             <div class="product-card" onclick="openProduct('grey')">
                 <img src="img/GREY FRONT.png" class="product-image">
@@ -282,7 +306,14 @@
             <div class="back-btn" onclick="closeProduct()">&#8592;</div>
             <div class="detail-title-small">КАТАЛОГ</div>
         </div>
-        <img id="detail-img" src="" class="detail-image">
+        
+        <div class="slider-wrapper">
+            <div class="slider-content" id="detail-slider-content"></div>
+            <div class="slider-nav-btn slider-prev" onclick="prevSlide()">❮</div>
+            <div class="slider-nav-btn slider-next" onclick="nextSlide()">❯</div>
+            <div class="slider-dots" id="detail-slider-dots"></div>
+        </div>
+
         <div class="detail-info-container">
             <div id="detail-title" class="detail-product-title"></div>
             
@@ -356,7 +387,7 @@
                 </div>
             </div>
 
-             <div class="version-text">version 12.6</div>
+             <div class="version-text">version 14.1</div>
         </div>
     </div>
 
@@ -480,27 +511,67 @@
 
         // ДАННЫЕ О ТОВАРАХ
         const productsData = {
-            'grey': { name: 'Штаны Grey Edition', priceVal: 2500, price: '2 500 ₽', img: 'greypants.jpg' },
-            'blue': { name: 'Штаны Blue Classic', priceVal: 3200, price: '3 200 ₽', img: 'bluepants.jpg' }
-        };
-
-        // БАЗА ДОКУМЕНТОВ
-        const legalDocs = {
-            'privacy': { title: 'Политика конфиденциальности', text: 'Текст политики...' },
-            'personal': { title: 'Согласие на обработку данных', text: 'Текст согласия...' },
-            'offer': { title: 'Публичная оферта', text: 'Текст оферты...' },
-            'agreement': { title: 'Пользовательское соглашение', text: 'Текст соглашения...' },
-            'cookies': { title: 'Политика Cookies', text: 'Текст cookies...' },
-            'requisites': { title: 'Реквизиты компании', text: 'Реквизиты...' }
+            'grey': { 
+                name: 'Штаны Grey Edition', 
+                priceVal: 12000, 
+                price: '12 000 ₽', 
+                images: [
+                    'img/GREY FRONT.png', 
+                    'img/GREY BACK.png', 
+                    'img/GREY BACK+FRONT.png', 
+                    'img/SIZE CHART.jpg'
+                ] 
+            },
+            'blue': { 
+                name: 'Штаны Blue Edtion', 
+                priceVal: 12000, 
+                price: '12 000 ₽', 
+                images: [
+                    'img/BLUE FRONT.png',
+                    'img/BLUE BACK.png',
+                    'img/BLUE BACK+FRONT.png',
+                    'img/SIZE CHART.jpg'
+                ] 
+            }
         };
 
         // --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ---
         let favorites = [];
         let cart = {};
+
+        let activeSlideIndex = 0; // Какой сейчас слайд по счету
+        let totalSlides = 0;      // Сколько всего фото у открытого товара
         
         let currentOpenProductId = null;
         let currentSelectedSize = 'L'; 
         let lastPageBeforeLegal = 'profile';
+
+        // --- ЛОГИКА СЛАЙДЕРА ---
+        function updateSliderPosition() {
+            const content = document.getElementById('detail-slider-content');
+            content.style.transform = `translateX(-${activeSlideIndex * 100}%)`;
+            
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, idx) => {
+                dot.classList.toggle('active', idx === activeSlideIndex);
+            });
+        }
+
+        function nextSlide() {
+            if (activeSlideIndex < totalSlides - 1) {
+                activeSlideIndex++;
+                updateSliderPosition();
+                if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
+            }
+        }
+
+        function prevSlide() {
+            if (activeSlideIndex > 0) {
+                activeSlideIndex--;
+                updateSliderPosition();
+                if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
+            }
+        }
 
         // --- ИНИЦИАЛИЗАЦИЯ ---
         function initApp() {
@@ -529,18 +600,16 @@
             localStorage.setItem('bazara_cart', JSON.stringify(cart));
         }
 
-        // --- ВИЗУАЛИЗАЦИЯ СЕРДЦА ЧЕРЕЗ JS (FIX 12.6) ---
+        // --- ВИЗУАЛИЗАЦИЯ СЕРДЦА ---
         function updateHeartVisuals() {
             const btn = document.getElementById('fav-btn');
             const icon = btn.querySelector('svg');
             const isLiked = favorites.includes(currentOpenProductId);
 
             if (isLiked) {
-                // Прямая заливка цветом
                 icon.style.fill = '#ff3b30';
                 icon.style.stroke = '#ff3b30';
             } else {
-                // Сброс цвета
                 icon.style.fill = 'none';
                 icon.style.stroke = '#000';
             }
@@ -552,33 +621,48 @@
             currentSelectedSize = 'L';
             const product = productsData[id];
 
+            // НАПОЛНЕНИЕ СЛАЙДЕРА
+            const sliderContent = document.getElementById('detail-slider-content');
+            const sliderDots = document.getElementById('detail-slider-dots');
+            sliderContent.innerHTML = '';
+            sliderDots.innerHTML = '';
+
+            activeSlideIndex = 0; 
+            totalSlides = product.images.length;
+
+            product.images.forEach((imgUrl, index) => {
+                const img = document.createElement('img');
+                img.src = imgUrl;
+                sliderContent.appendChild(img);
+                
+                const dot = document.createElement('div');
+                dot.className = index === 0 ? 'dot active' : 'dot';
+                sliderDots.appendChild(dot);
+            });
+
+            updateSliderPosition();
+
             document.getElementById('main-nav').classList.add('hidden');
             hideAllPages();
             document.getElementById('product-detail-view').classList.add('active');
             document.getElementById('product-actions').classList.add('visible');
             document.getElementById('floating-actions').classList.add('visible');
 
-            document.getElementById('detail-img').src = product.img;
             document.getElementById('detail-title').innerText = product.name;
-            document.getElementById('detail-price-btn').innerText = product.price;
+            document.getElementById('btn-price-display').innerText = product.price;
 
             document.querySelectorAll('.size-box').forEach(el => el.classList.remove('active'));
             Array.from(document.querySelectorAll('.size-box')).find(el => el.innerText === 'L').classList.add('active');
             document.querySelector('.size-label span').innerText = 'L';
 
             switchDescTab('desc');
-
-            // --- ОБНОВЛЕНИЕ СЕРДЦА ---
             updateHeartVisuals();
-            
             updateActionBarState(); 
             window.scrollTo(0, 0);
         }
 
         function closeProduct() {
             currentOpenProductId = null;
-            
-            // Сбрасываем иконку сердца при закрытии, чтобы не мелькала на другом товаре
             const btn = document.getElementById('fav-btn');
             const icon = btn.querySelector('svg');
             icon.style.fill = 'none';
@@ -703,7 +787,7 @@
                 const row = document.createElement('div');
                 row.className = 'cart-item-row';
                 row.innerHTML = `
-                    <img src="${product.img}" class="cart-thumb" onclick="openProduct('${productId}')">
+                    <img src="${product.images[0]}" class="cart-thumb" onclick="openProduct('${productId}')">
                     <div class="cart-details">
                         <div class="cart-title">${product.name}</div>
                         <div class="cart-size">Размер: ${size}</div>
@@ -757,7 +841,7 @@
                 }
             }
             saveData();
-            updateHeartVisuals(); // Моментальное обновление
+            updateHeartVisuals(); 
         }
 
         function renderFavorites() {
@@ -779,7 +863,7 @@
                     card.className = 'product-card';
                     card.onclick = () => openProduct(id);
                     card.innerHTML = `
-                        <img src="${product.img}" class="product-image">
+                        <img src="${product.images[0]}" class="product-image">
                         <div class="product-info">
                             <div class="grid-price">${product.price}</div>
                             <div class="grid-name">${product.name}</div>
@@ -820,6 +904,16 @@
             document.getElementById('nav-main').click();
         }
 
+        // БАЗА ДОКУМЕНТОВ
+        const legalDocs = {
+            'privacy': { title: 'Политика конфиденциальности', text: 'Текст политики...' },
+            'personal': { title: 'Согласие на обработку данных', text: 'Текст согласия...' },
+            'offer': { title: 'Публичная оферта', text: 'Текст оферты...' },
+            'agreement': { title: 'Пользовательское соглашение', text: 'Текст соглашения...' },
+            'cookies': { title: 'Политика Cookies', text: 'Текст cookies...' },
+            'requisites': { title: 'Реквизиты компании', text: 'Реквизиты...' }
+        };
+
         function openLegal(docKey, fromPage) {
             const doc = legalDocs[docKey];
             if (!doc) return;
@@ -854,5 +948,3 @@
     </script>
 </body>
 </html>
-
-
