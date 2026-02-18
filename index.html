@@ -47,7 +47,14 @@
             background: white; border-radius: 12px; overflow: hidden; padding-bottom: 10px;
             cursor: pointer;
         }
-        .product-image { width: 100%; height: 180px; object-fit: cover; display: block; }
+        /* ИЗМЕНЕНИЕ: contain для плитки каталога */
+        .product-image { 
+            width: 100%; 
+            height: 180px; 
+            object-fit: contain; 
+            background-color: #fff;
+            display: block; 
+        }
         .product-info { padding: 8px 10px 0; }
         .grid-price { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
         .grid-name { font-size: 13px; color: #888; line-height: 1.2; }
@@ -74,11 +81,14 @@
             height: 100%;
             transition: transform 0.3s ease-out;
         }
+        /* ИЗМЕНЕНИЕ: contain + темный фон для слайдера */
         .slider-content img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            background-color: #1a1a1a;
             flex-shrink: 0;
+            cursor: pointer;
         }
         .slider-nav-btn {
             position: absolute; top: 50%; transform: translateY(-50%);
@@ -633,6 +643,13 @@
             product.images.forEach((imgUrl, index) => {
                 const img = document.createElement('img');
                 img.src = imgUrl;
+                
+                /* ИЗМЕНЕНИЕ: Добавлен клик для открытия фото */
+                img.onclick = () => {
+                    const fullUrl = window.location.origin + '/' + imgUrl;
+                    tg.openLink(fullUrl);
+                };
+
                 sliderContent.appendChild(img);
                 
                 const dot = document.createElement('div');
