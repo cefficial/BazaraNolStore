@@ -132,26 +132,19 @@
 
         }
 
-        .slider-content {
-
-            display: flex;
-
-            width: 100%;
-
-            height: 100%;
-
-            transition: transform 0.3s ease-out;
-
-        }
-
+        .slider-content { 
+            display: flex; 
+            width: 100%; 
+            height: 100%; 
+            transition: transform 0.3s ease-out; 
+            touch-action: none; /* Запрещает браузеру мешать нашему свайпу */
+            cursor: grab;
+        } 
+        /* Добавь это сразу ниже, чтобы картинки не мешали свайпать */
         .slider-content img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            flex-shrink: 0;
+            pointer-events: none; 
             user-select: none;
             -webkit-user-drag: none;
-            pointer-events: none;
         }
         .slider-content {
             display: flex;
@@ -1050,9 +1043,13 @@
         let currentSelectedSize = 'L'; 
 
         let lastPageBeforeLegal = 'profile';
-     let isDragging = false;
+        let isDragging = false;
         let startX = 0;
         let xDiff = 0;
+        let currentTranslate = 0;
+        let prevTranslate = 0;
+     
+    
 
 
         // --- ЛОГИКА СЛАЙДЕРА ---
@@ -1118,6 +1115,35 @@
 
             }
 
+        }
+
+     function handleDragStart(e) {
+            isDragging = true;
+            startX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+            const container = document.getElementById('detail-slider-content');
+            container.style.transition = 'none';
+            prevTranslate = -activeSlideIndex * container.offsetWidth;
+        }
+
+        function handleDragMove(e) {
+            if (!isDragging) return;
+            let currentX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+            xDiff = currentX - startX;
+            const container = document.getElementById('detail-slider-content');
+            const currentTranslate = prevTranslate + xDiff;
+            container.style.transform = `translateX(${currentTranslate}px)`;
+        }
+
+        function handleDragEnd() {
+            if (!isDragging) return;
+            isDragging = false;
+            const container = document.getElementById('detail-slider-content');
+            container.style.transition = 'transform 0.3s ease-out';
+            const threshold = container.offsetWidth * 0.2; // Порог свайпа 20%
+            if (xDiff < -threshold && activeSlideIndex < totalSlides - 1) nextSlide();
+            else if (xDiff > threshold && activeSlideIndex > 0) prevSlide();
+            else updateSliderPosition();
+            xDiff = 0;
         }
 
 
@@ -1246,6 +1272,12 @@
 
 
             activeSlideIndex = 0; 
+         sliderContent.onmousedown = handleDragStart;
+            sliderContent.ontouchstart = handleDragStart;
+            window.onmousemove = handleDragMove;
+            sliderContent.ontouchmove = handleDragMove;
+            window.onmouseup = handleDragEnd;
+            sliderContent.ontouchend = handleDragEnd;
 
             totalSlides = product.images.length;
 
@@ -1847,4 +1879,5 @@
 </body>
 
 </html> 
+
 
