@@ -9,12 +9,8 @@
         /* --- БАЗОВЫЕ НАСТРОЙКИ --- */
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-            color: #000;
-            padding-bottom: 100px;
-            -webkit-tap-highlight-color: transparent;
+            margin: 0; padding: 0; background-color: #f0f0f0; color: #000;
+            padding-bottom: 100px; -webkit-tap-highlight-color: transparent;
         }
 
         .page { display: none; animation: fadeIn 0.2s ease-in-out; }
@@ -24,72 +20,34 @@
         /* --- ГЛАВНАЯ --- */
         .header-logo {
             background: white; padding: 15px; text-align: center;
-            position: sticky; top: 0; z-index: 100;
-            border-bottom: 1px solid #f0f0f0;
-            min-height: 21px;
+            position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #f0f0f0;
         }
-        .header-logo h2 { margin: 0; font-size: 17px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .header-logo h2 { margin: 0; font-size: 17px; font-weight: 600; text-transform: uppercase; }
 
-        .header-action-btn {
-            position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
-            cursor: pointer; color: #ff3b30; 
-            display: none; 
-            padding: 5px;
-        }
-        .header-action-btn:active { opacity: 0.6; }
-
-        .section-title { padding: 20px 15px 10px; font-weight: 700; font-size: 22px; }
-        
-        .products-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 10px;
-        }
-        .product-card {
-            background: white; border-radius: 12px; overflow: hidden; padding-bottom: 10px;
-            cursor: pointer;
-        }
-        /* ИЗМЕНЕНИЕ: contain для отображения всей вещи в каталоге */
-        .product-image { 
-            width: 100%; 
-            height: 180px; 
-            object-fit: contain; 
-            background-color: #fff;
-            display: block; 
-        }
+        .products-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 10px; }
+        .product-card { background: white; border-radius: 12px; overflow: hidden; padding-bottom: 10px; cursor: pointer; }
+        .product-image { width: 100%; height: 180px; object-fit: contain; background-color: #fff; display: block; }
         .product-info { padding: 8px 10px 0; }
         .grid-price { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
         .grid-name { font-size: 13px; color: #888; line-height: 1.2; }
 
-        /* --- ДЕТАЛЬНАЯ СТРАНИЦА И СЛАЙДЕР --- */
-        .detail-header {
-            background: white; padding: 12px 15px; display: flex; align-items: center;
-            position: sticky; top: 0; z-index: 101; border-bottom: 1px solid #f5f5f5;
-        }
-        .back-btn { font-size: 22px; margin-right: 20px; cursor: pointer; color: #000; }
-        .detail-title-small { font-weight: 600; font-size: 17px; text-transform: uppercase; }
-
-        /* СТИЛИ СЛАЙДЕРА */
+        /* --- СЛАЙДЕР --- */
         .slider-wrapper {
-            position: relative;
-            width: 100%;
-            background: #fff;
-            overflow: hidden;
-            aspect-ratio: 1 / 1;
+            position: relative; width: 100%; background: #fff; overflow: hidden; aspect-ratio: 1 / 1;
         }
         .slider-content {
-            display: flex;
-            width: 100%;
-            height: 100%;
+            display: flex; width: 100%; height: 100%;
             transition: transform 0.3s ease-out;
+            cursor: grab;
+            user-select: none; /* Чтобы не выделялись картинки при перетаскивании */
+            touch-action: pan-y; /* Позволяет скроллить страницу вертикально, но ловит горизонтальный свайп */
         }
-        /* ИЗМЕНЕНИЕ: object-fit: contain + фон для слайдера */
+        .slider-content:active { cursor: grabbing; }
         .slider-content img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            background-color: #1a1a1a;
-            flex-shrink: 0;
-            cursor: pointer;
+            width: 100%; height: 100%; object-fit: contain;
+            background-color: #1a1a1a; flex-shrink: 0; pointer-events: none; /* Важно для работы мышки */
         }
+        
         .slider-nav-btn {
             position: absolute; top: 50%; transform: translateY(-50%);
             width: 36px; height: 36px; background: rgba(255, 255, 255, 0.8);
@@ -105,323 +63,78 @@
         .dot { width: 7px; height: 7px; background: rgba(0, 0, 0, 0.2); border-radius: 50%; transition: 0.2s; }
         .dot.active { background: #3390ec; transform: scale(1.3); }
 
-        /* ИЗМЕНЕНИЕ: Стили для модального окна просмотра фото */
+        /* МОДАЛКА ФОТО */
         #photo-modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.95);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center;
         }
-        #photo-modal img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-        .close-photo-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            color: white;
-            font-size: 30px;
-            cursor: pointer;
-            z-index: 2001;
-            width: 44px; height: 44px;
-            display: flex; align-items: center; justify-content: center;
-        }
+        #photo-modal img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .close-photo-btn { position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer; }
 
-        .detail-info-container {
-            background: white; padding: 20px 15px; margin-bottom: 120px;
-        }
-        .detail-product-title {
-            font-size: 22px; font-weight: 700; margin-bottom: 20px; line-height: 1.2;
-        }
+        .detail-header { background: white; padding: 12px 15px; display: flex; align-items: center; border-bottom: 1px solid #f5f5f5; }
+        .back-btn { font-size: 22px; margin-right: 20px; cursor: pointer; }
+        .detail-info-container { background: white; padding: 20px 15px; margin-bottom: 120px; }
+        .detail-product-title { font-size: 22px; font-weight: 700; margin-bottom: 20px; }
 
-        .size-label { font-size: 15px; color: #000; margin-bottom: 10px; font-weight: 400; }
-        .size-label span { font-weight: 600; } 
         .size-grid { display: flex; gap: 10px; margin-bottom: 25px; }
         .size-box {
-            width: 50px; height: 35px;
-            border: 1px solid #e0e0e0; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 14px; font-weight: 600; color: #000;
-            cursor: pointer; transition: all 0.1s;
+            width: 50px; height: 35px; border: 1px solid #e0e0e0; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; font-weight: 600; cursor: pointer;
         }
         .size-box.active { border: 2px solid #3390ec; color: #3390ec; }
 
-        .stock-status { font-size: 14px; color: #000; margin-bottom: 20px; }
-        .stock-count { color: #3390ec; font-weight: 500; }
-
-        .desc-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .desc-tab-btn { padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: background 0.1s; }
-        .tab-black { background-color: #000; color: white; }
-        .tab-gray { background-color: #f0f0f0; color: #000; }
-
-        .desc-content { font-size: 14px; line-height: 1.6; color: #333; }
-        .desc-line { margin-bottom: 4px; }
-        .char-row { display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px dashed #eee; padding-bottom: 4px; }
-        .char-label { color: #888; }
-        .char-val { font-weight: 500; color: #000; }
-
-        .floating-actions {
-            position: fixed; bottom: 100px; right: 15px; z-index: 201;
-            display: none; flex-direction: column; gap: 12px;
-        }
-        .floating-actions.visible { display: flex; }
-
-        .float-btn {
-            width: 48px; height: 48px; background: white; border-radius: 50%;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-            transition: transform 0.1s;
-        }
-        .float-btn:active { transform: scale(0.95); }
-        .float-btn svg { width: 24px; height: 24px; stroke: #000; stroke-width: 1.5; fill: none; transition: all 0.2s; }
-        
         .product-action-bar {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            background: white;
-            padding: 10px 15px; box-sizing: border-box;
-            display: none; align-items: center; gap: 12px;
-            border-top: 1px solid #f0f0f0; z-index: 200;
-            padding-bottom: 25px; 
+            position: fixed; bottom: 0; left: 0; width: 100%; background: white;
+            padding: 10px 15px 25px; box-sizing: border-box; display: none; border-top: 1px solid #f0f0f0;
         }
         .product-action-bar.visible { display: flex; }
-
-        .action-main-btn-container { flex-grow: 1; height: 50px; }
-
         .btn-initial-add {
-            width: 100%; height: 100%;
-            background-color: #3390ec; color: white;
-            border: none; border-radius: 12px;
-            font-size: 16px; font-weight: 600;
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            flex-grow: 1; height: 50px; background-color: #3390ec; color: white;
+            border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer;
         }
-
-        .split-actions-container { width: 100%; height: 100%; display: none; gap: 12px; }
-        
-        .counter-block {
-            flex: 1; height: 100%;
-            background-color: #f0f0f0; border-radius: 12px;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 5px; color: #000;
-        }
-        .cnt-btn {
-            width: 40px; height: 100%; display: flex; align-items: center; justify-content: center;
-            font-size: 24px; cursor: pointer; color: #000; user-select: none;
-        }
-        .cnt-val { font-size: 18px; font-weight: 600; }
-
-        .btn-go-cart {
-            flex: 1.2; height: 100%;
-            background-color: #3390ec; color: white; 
-            border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 16px; font-weight: 600; cursor: pointer; gap: 8px;
-        }
-
-        .action-card-btn {
-            width: 64px; height: 56px;
-            background: white; border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; position: relative;
-            border: 1px solid rgba(0,0,0,0.03);
-        }
-        .action-card-btn svg { width: 22px; height: 22px; margin-bottom: 4px; stroke: #000; stroke-width: 1.8; }
-        .action-label { font-size: 10px; color: #999; font-weight: 500; }
-
-        .badge {
-            position: absolute; top: -5px; right: -5px;
-            background-color: #3390ec; color: white;
-            font-size: 11px; width: 18px; height: 18px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-weight: 700; border: 2px solid white; display: none;
-        }
-        .badge.visible { display: flex; }
-
-        .cart-item-row {
-            background: white; border-radius: 12px; padding: 10px;
-            margin-bottom: 10px; display: flex; align-items: center;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        }
-        .cart-thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; margin-right: 15px; cursor: pointer; }
-        .cart-details { flex-grow: 1; }
-        .cart-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
-        .cart-size { font-size: 12px; color: #888; margin-bottom: 4px; }
-        .cart-price { font-weight: 700; font-size: 14px; }
-        .cart-controls { display: flex; align-items: center; background: #f0f0f0; border-radius: 8px; padding: 2px; }
-        .cart-ctrl-btn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; cursor: pointer; }
-        .cart-qty { font-size: 14px; font-weight: 600; padding: 0 8px; }
-        .cart-total-block { background: white; padding: 20px; border-radius: 12px; margin-top: 20px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 18px; }
-        
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: white;
-            display: flex; justify-content: space-around; align-items: center;
-            padding: 10px 0; border-top: 1px solid #e0e0e0; z-index: 100; padding-bottom: 20px;
-        }
-        .nav-item {
-            display: flex; flex-direction: column; align-items: center;
-            color: #999; flex: 1; padding: 4px 0; cursor: pointer;
-            position: relative; 
-        }
-        .nav-item.active { color: #3390ec; }
-        .nav-icon { width: 24px; height: 24px; margin-bottom: 4px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-        .nav-text { font-size: 10px; }
-        .bottom-nav.hidden { display: none; }
-
-        .main-banner {
-            width: 100%;
-            padding: 10px 10px 0;
-            box-sizing: border-box;
-        }
-        .main-banner img {
-            width: 100%;
-            border-radius: 12px;
-            display: block;
-            object-fit: cover;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
     </style>
 </head>
 <body>
 
-    <div id="photo-modal">
-        <div class="close-photo-btn" onclick="closeFullscreen()">✕</div>
-        <img id="modal-img" src="">
-    </div>
+    <div id="photo-modal"><div class="close-photo-btn" onclick="closeFullscreen()">✕</div><img id="modal-img" src=""></div>
 
     <div id="main-view" class="page active">
         <div class="header-logo"><h2>КАТАЛОГ</h2></div>
-        <div class="main-banner">
-            <img src="img/BZR0LOGO RASTR.png" alt="Рекламный баннер">
-        </div>
-        <div class="section-title">В наличии</div>
         <div class="products-grid">
             <div class="product-card" onclick="openProduct('grey')">
                 <img src="img/GREY FRONT.png" class="product-image">
-                <div class="product-info">
-                    <div class="grid-price">12 000 ₽</div>
-                    <div class="grid-name">Тяжеловесы Grey Edition</div>
-                </div>
+                <div class="product-info"><div class="grid-price">12 000 ₽</div><div class="grid-name">Grey Edition</div></div>
             </div>
             <div class="product-card" onclick="openProduct('blue')">
                 <img src="img/BLUE FRONT.png" class="product-image">
-                <div class="product-info">
-                    <div class="grid-price">12 000 ₽</div>
-                    <div class="grid-name">Тяжеловесы Blue Edition</div>
-                </div>
+                <div class="product-info"><div class="grid-price">12 000 ₽</div><div class="grid-name">Blue Edition</div></div>
             </div>
         </div>
     </div>
 
     <div id="product-detail-view" class="page">
-        <div class="detail-header">
-            <div class="back-btn" onclick="closeProduct()">&#8592;</div>
-            <div class="detail-title-small">КАТАЛОГ</div>
-        </div>
-        
+        <div class="detail-header"><div class="back-btn" onclick="closeProduct()">&#8592;</div><div>КАТАЛОГ</div></div>
         <div class="slider-wrapper">
-            <div class="slider-content" id="detail-slider-content"></div>
+            <div class="slider-content" id="detail-slider-content" 
+                 onmousedown="dragStart(event)" ontouchstart="dragStart(event)"
+                 onmousemove="dragMove(event)" ontouchmove="dragMove(event)"
+                 onmouseup="dragEnd()" ontouchend="dragEnd()" onmouseleave="dragEnd()">
+            </div>
             <div class="slider-nav-btn slider-prev" onclick="prevSlide()">❮</div>
             <div class="slider-nav-btn slider-next" onclick="nextSlide()">❯</div>
             <div class="slider-dots" id="detail-slider-dots"></div>
         </div>
-
         <div class="detail-info-container">
             <div id="detail-title" class="detail-product-title"></div>
-            
-            <div class="size-label">Размер: <span>L</span></div>
             <div class="size-grid">
-                <div class="size-box" onclick="selectSize(this)">S</div>
-                <div class="size-box" onclick="selectSize(this)">M</div>
-                <div class="size-box active" onclick="selectSize(this)">L</div>
-                <div class="size-box" onclick="selectSize(this)">XL</div>
+                <div class="size-box" onclick="this.parentElement.querySelectorAll('.size-box').forEach(b=>b.classList.remove('active')); this.classList.add('active')">S</div>
+                <div class="size-box active">L</div>
             </div>
-
-            <div class="stock-status">В наличии: <span class="stock-count">1 шт</span></div>
-            
-            <div class="desc-tabs">
-                <button id="btn-tab-desc" class="desc-tab-btn tab-black" onclick="switchDescTab('desc')">Описание</button>
-                <button id="btn-tab-chars" class="desc-tab-btn tab-gray" onclick="switchDescTab('chars')">Характеристики</button>
-            </div>
-
-            <div id="content-desc" class="desc-content" style="display: block;">
-                <div class="desc-line">- Lacoste</div>
-                <div class="desc-line">- Размер L-XL</div>
-            </div>
-
-            <div id="content-chars" class="desc-content" style="display: none;">
-                <div class="char-row"><span class="char-label">Материал</span><span class="char-val">Хлопок</span></div>
-                <div class="char-row"><span class="char-label">Пол</span><span class="char-val">Мужской</span></div>
-                <div class="char-row"><span class="char-label">Сезон</span><span class="char-val">Мульти</span></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="profile-view" class="page">...</div>
-    <div id="favorites-view" class="page">...</div>
-    <div id="cart-view" class="page">...</div>
-    <div id="legal-view" class="page">...</div>
-
-    <div id="floating-actions" class="floating-actions">
-        <div class="float-btn" onclick="openContact()">
-            <svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div id="fav-btn" class="float-btn" onclick="toggleFavorite()">
-            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
     </div>
 
     <div id="product-actions" class="product-action-bar">
-        <div class="action-main-btn-container">
-            <button id="btn-initial" class="btn-initial-add" onclick="firstAddToCart()">
-                В корзину &nbsp;·&nbsp; <span id="btn-price-display">12 000 ₽</span>
-            </button>
-            <div id="split-controls" class="split-actions-container">
-                <div class="counter-block">
-                    <div class="cnt-btn" onclick="changeQuantity(-1)">−</div>
-                    <div class="cnt-val" id="qty-display">1</div>
-                    <div class="cnt-btn" onclick="changeQuantity(1)">+</div>
-                </div>
-                <div class="btn-go-cart" onclick="goToCartFromProduct()">
-                    <span>Корзина</span>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </div>
-            </div>
-        </div>
-        <div class="action-card-btn" onclick="goToCartFromProduct()">
-            <div id="cart-badge-prod" class="badge">0</div> 
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-            </svg>
-            <span class="action-label">Корзина</span>
-        </div>
-    </div>
-
-    <div id="main-nav" class="bottom-nav">
-        <div id="nav-main" class="nav-item active" onclick="switchTab('main', this)">
-            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-            <span class="nav-text">Главная</span>
-        </div>
-        <div id="nav-cart" class="nav-item" onclick="switchTab('cart', this)">
-            <div id="cart-badge-nav" class="badge">0</div>
-            <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-            <span class="nav-text">Корзина</span>
-        </div>
-        <div id="nav-favorites" class="nav-item" onclick="openFavorites()">
-            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-            <span class="nav-text">Избранное</span>
-        </div>
-        <div id="nav-profile" class="nav-item" onclick="switchTab('profile', this)">
-            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-            <span class="nav-text">Профиль</span>
-        </div>
+        <button class="btn-initial-add">В корзину · 12 000 ₽</button>
     </div>
 
     <script>
@@ -429,48 +142,63 @@
         tg.ready(); tg.expand();
 
         const productsData = {
-            'grey': { 
-                name: 'Штаны Grey Edition', priceVal: 12000, price: '12 000 ₽', 
-                images: ['img/GREY FRONT.png', 'img/GREY BACK.png', 'img/GREY BACK+FRONT.png', 'img/SIZE CHART.jpg'] 
-            },
-            'blue': { 
-                name: 'Штаны Blue Edtion', priceVal: 12000, price: '12 000 ₽', 
-                images: ['img/BLUE FRONT.png', 'img/BLUE BACK.png', 'img/BLUE BACK+FRONT.png', 'img/SIZE CHART.jpg'] 
-            }
+            'grey': { name: 'Grey Edition', price: '12 000 ₽', images: ['img/GREY FRONT.png', 'img/GREY BACK.png', 'img/SIZE CHART.jpg'] },
+            'blue': { name: 'Blue Edition', price: '12 000 ₽', images: ['img/BLUE FRONT.png', 'img/BLUE BACK.png', 'img/SIZE CHART.jpg'] }
         };
 
-        let favorites = []; let cart = {};
-        let activeSlideIndex = 0; let totalSlides = 0;
-        let currentOpenProductId = null; let currentSelectedSize = 'L';
+        let activeSlideIndex = 0;
+        let totalSlides = 0;
+        
+        // ПЕРЕМЕННЫЕ ДЛЯ СВАЙПА
+        let isDragging = false;
+        let startX = 0;
+        let currentTranslate = 0;
+        let prevTranslate = 0;
 
-        // ИЗМЕНЕНИЕ: Функции для внутреннего модального просмотра
-        function openFullscreen(src) {
-            document.getElementById('modal-img').src = src;
-            document.getElementById('photo-modal').style.display = 'flex';
-            if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+        function dragStart(e) {
+            isDragging = true;
+            startX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+            const content = document.getElementById('detail-slider-content');
+            content.style.transition = 'none'; // Отключаем анимацию при движении пальцем
         }
 
-        function closeFullscreen() {
-            document.getElementById('photo-modal').style.display = 'none';
+        function dragMove(e) {
+            if (!isDragging) return;
+            const currentX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+            const diff = currentX - startX;
+            const content = document.getElementById('detail-slider-content');
+            
+            // Вычисляем текущее положение в пикселях
+            const offset = -activeSlideIndex * content.offsetWidth + diff;
+            content.style.transform = `translateX(${offset}px)`;
+        }
+
+        function dragEnd() {
+            if (!isDragging) return;
+            isDragging = false;
+            const content = document.getElementById('detail-slider-content');
+            content.style.transition = 'transform 0.3s ease-out';
+
+            const movedBy = (startX - (event.type.includes('mouse') ? event.pageX : event.changedTouches[0].clientX));
+
+            // Если сдвинули больше чем на 50px — меняем слайд
+            if (movedBy > 50 && activeSlideIndex < totalSlides - 1) activeSlideIndex++;
+            else if (movedBy < -50 && activeSlideIndex > 0) activeSlideIndex--;
+
+            updateSliderPosition();
         }
 
         function updateSliderPosition() {
             const content = document.getElementById('detail-slider-content');
             content.style.transform = `translateX(-${activeSlideIndex * 100}%)`;
             const dots = document.querySelectorAll('.dot');
-            dots.forEach((dot, idx) => { dot.classList.toggle('active', idx === activeSlideIndex); });
+            dots.forEach((dot, idx) => dot.classList.toggle('active', idx === activeSlideIndex));
         }
 
-        function nextSlide() {
-            if (activeSlideIndex < totalSlides - 1) { activeSlideIndex++; updateSliderPosition(); }
-        }
-
-        function prevSlide() {
-            if (activeSlideIndex > 0) { activeSlideIndex--; updateSliderPosition(); }
-        }
+        function nextSlide() { if (activeSlideIndex < totalSlides - 1) { activeSlideIndex++; updateSliderPosition(); } }
+        function prevSlide() { if (activeSlideIndex > 0) { activeSlideIndex--; updateSliderPosition(); } }
 
         function openProduct(id) {
-            currentOpenProductId = id; currentSelectedSize = 'L';
             const product = productsData[id];
             const sliderContent = document.getElementById('detail-slider-content');
             const sliderDots = document.getElementById('detail-slider-dots');
@@ -480,7 +208,6 @@
             product.images.forEach((imgUrl, index) => {
                 const img = document.createElement('img');
                 img.src = imgUrl;
-                // ИЗМЕНЕНИЕ: Открытие в модальном окне при клике
                 img.onclick = () => openFullscreen(imgUrl);
                 sliderContent.appendChild(img);
                 const dot = document.createElement('div');
@@ -489,35 +216,22 @@
             });
 
             updateSliderPosition();
-            document.getElementById('main-nav').classList.add('hidden');
-            hideAllPages();
+            document.getElementById('main-view').classList.remove('active');
             document.getElementById('product-detail-view').classList.add('active');
             document.getElementById('product-actions').classList.add('visible');
-            document.getElementById('floating-actions').classList.add('visible');
-            document.getElementById('detail-title').innerText = product.name;
-            document.getElementById('btn-price-display').innerText = product.price;
-            window.scrollTo(0, 0);
         }
 
         function closeProduct() {
-            currentOpenProductId = null;
+            document.getElementById('product-detail-view').classList.remove('active');
             document.getElementById('product-actions').classList.remove('visible');
-            document.getElementById('floating-actions').classList.remove('visible');
-            document.getElementById('main-nav').classList.remove('hidden');
-            goToCatalog();
+            document.getElementById('main-view').classList.add('active');
         }
 
-        // Остальные функции (switchTab, goToCatalog, cart logic) остаются прежними
-        function hideAllPages() {
-            const pages = ['main-view', 'profile-view', 'favorites-view', 'cart-view', 'product-detail-view', 'legal-view'];
-            pages.forEach(p => { if(document.getElementById(p)) document.getElementById(p).classList.remove('active'); });
+        function openFullscreen(src) {
+            document.getElementById('modal-img').src = src;
+            document.getElementById('photo-modal').style.display = 'flex';
         }
-        function goToCatalog() { switchTab('main', document.getElementById('nav-main')); }
-        function switchTab(tab, el) {
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            el.classList.add('active'); hideAllPages();
-            document.getElementById(tab + '-view').classList.add('active');
-        }
+        function closeFullscreen() { document.getElementById('photo-modal').style.display = 'none'; }
     </script>
 </body>
 </html>
