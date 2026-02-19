@@ -757,7 +757,7 @@ document.querySelector('.size-label span').innerText = currentSelectedSize;;
         }
 
         function switchDescTab(tab) {
-            // Список всех ID кнопок и блоков контента
+            // Список всех твоих вкладок
             const tabs = ['desc', 'chars', 'comp', 'care'];
             
             tabs.forEach(t => {
@@ -766,9 +766,11 @@ document.querySelector('.size-label span').innerText = currentSelectedSize;;
                 
                 if (btn && content) {
                     if (t === tab) {
+                        // Делаем активную кнопку черной, а блок — видимым
                         btn.className = 'desc-tab-btn tab-black';
                         content.style.display = 'block';
                     } else {
+                        // Остальные кнопки серые, блоки скрыты
                         btn.className = 'desc-tab-btn tab-gray';
                         content.style.display = 'none';
                     }
@@ -1031,6 +1033,7 @@ document.querySelector('.size-label span').innerText = currentSelectedSize;;
     </script>
 </body>
 </html>
+
 
 
 
