@@ -143,7 +143,7 @@
         }
         .size-box.active { border: 2px solid #3390ec; color: #3390ec; }
 
-        .desc-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .desc-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
 
         .desc-tab-btn { padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: background 0.1s; }
         .tab-black { background-color: #000; color: white; }
@@ -369,6 +369,7 @@
             <div class="desc-tabs">
                 <button id="btn-tab-desc" class="desc-tab-btn tab-black" onclick="switchDescTab('desc')">Описание</button>
                 <button id="btn-tab-chars" class="desc-tab-btn tab-gray" onclick="switchDescTab('chars')">Характеристики</button>
+                <button id="btn-tab-comp" class="desc-tab-btn tab-gray" onclick="switchDescTab('comp')">Состав</button>
             </div>
 
             <div id="content-desc" class="desc-content" style="display: block;">
@@ -377,10 +378,13 @@
             </div>
 
             <div id="content-chars" class="desc-content" style="display: none;">
-                <div class="char-row"><span class="char-label">Материал</span><span class="char-val">Хлопок</span></div>
-                <div class="char-row"><span class="char-label">Пол</span><span class="char-val">Мужской</span></div>
+                <div class="char-row"><span class="char-label">Материал</span><span class="char-val">Флис</span></div>
+                <div class="char-row"><span class="char-label">Пол</span><span class="char-val">Унисекс</span></div>
                 <div class="char-row"><span class="char-label">Сезон</span><span class="char-val">Мульти</span></div>
             </div>
+            <div id="content-comp" class="desc-content" style="display: none;">
+    Плотный футер 3-х нитка, 86% хлопок, 14% флис, плотностью 485 г/м², флисовый подклад, ткань с peach-эффектом (материал с бархатистой, мягкой и приятной на ощупь поверхностью, напоминающей кожицу спелого персика).
+</div>
         </div>
     </div>
 
@@ -717,21 +721,30 @@ document.querySelector('.size-label span').innerText = currentSelectedSize;;
         }
 
         function switchDescTab(tab) {
+            // Кнопки
             const btnDesc = document.getElementById('btn-tab-desc');
             const btnChars = document.getElementById('btn-tab-chars');
+            const btnComp = document.getElementById('btn-tab-comp');
+            
+            // Контент
             const contentDesc = document.getElementById('content-desc');
             const contentChars = document.getElementById('content-chars');
+            const contentComp = document.getElementById('content-comp');
 
+            // Сбрасываем все кнопки в серый, весь контент скрываем
+            [btnDesc, btnChars, btnComp].forEach(btn => { if(btn) btn.className = 'desc-tab-btn tab-gray'; });
+            [contentDesc, contentChars, contentComp].forEach(cont => { if(cont) cont.style.display = 'none'; });
+
+            // Активируем нужную вкладку
             if (tab === 'desc') {
                 btnDesc.className = 'desc-tab-btn tab-black';
-                btnChars.className = 'desc-tab-btn tab-gray';
                 contentDesc.style.display = 'block';
-                contentChars.style.display = 'none';
-            } else {
-                btnDesc.className = 'desc-tab-btn tab-gray';
+            } else if (tab === 'chars') {
                 btnChars.className = 'desc-tab-btn tab-black';
-                contentDesc.style.display = 'none';
                 contentChars.style.display = 'block';
+            } else if (tab === 'comp') {
+                btnComp.className = 'desc-tab-btn tab-black';
+                contentComp.style.display = 'block';
             }
         }
 
@@ -990,6 +1003,7 @@ document.querySelector('.size-label span').innerText = currentSelectedSize;;
     </script>
 </body>
 </html>
+
 
 
 
