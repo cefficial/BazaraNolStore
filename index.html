@@ -326,14 +326,14 @@
                 <img src="img/GREY FRONT.png" class="product-image">
                 <div class="product-info">
                     <div class="grid-price">12 000 ₽</div>
-                    <div class="grid-name">Тяжеловесы Grey Edition</div>
+                    <div class="grid-name">Тяжеловесы Grey</div>
                 </div>
             </div>
             <div class="product-card" onclick="openProduct('blue')">
                 <img src="img/BLUE FRONT.png" class="product-image">
                 <div class="product-info">
                     <div class="grid-price">12 000 ₽</div>
-                    <div class="grid-name">Тяжеловесы Blue Edition</div>
+                    <div class="grid-name">Тяжеловесы Blue</div>
                 </div>
             </div>
         </div>
@@ -371,6 +371,7 @@
                 <button id="btn-tab-chars" class="desc-tab-btn tab-gray" onclick="switchDescTab('chars')">Характеристики</button>
                 <button id="btn-tab-comp" class="desc-tab-btn tab-gray" onclick="switchDescTab('comp')">Состав</button>
                 <button id="btn-tab-care" class="desc-tab-btn tab-gray" onclick="switchDescTab('care')">Уход</button>
+                <button id="btn-tab-delivery" class="desc-tab-btn tab-gray" onclick="switchDescTab('delivery')">Доставка</button>
             </div>
 
             <div id="content-desc" class="desc-content" style="display: block;"></div>
@@ -417,6 +418,21 @@
                     • Сушить горизонтально (не на батарее).<br>
                     • Гладить с изнанки без пара.
                 </div>
+                <div id="content-delivery" class="desc-content" style="display: none;">
+    <div class="char-row">
+        <span class="char-label">Служба</span>
+        <span class="char-val">СДЭК (до пункта выдачи)</span>
+    </div>
+    <div class="char-row">
+        <span class="char-label">География</span>
+        <span class="char-val">РФ и СНГ</span>
+    </div>
+    
+    <div style="font-size: 13px; color: #333; margin-top: 15px; line-height: 1.6; text-align: left;">
+        • <strong>Расчет:</strong> Стоимость и сроки рассчитываются индивидуально по тарифам СДЭК при оформлении заказа.<br>
+        • <strong>Отслеживание:</strong> Трек-номер придет вам в Telegram сразу после оформления.
+    </div>
+</div>
             </div>
 </div>
         </div>
@@ -588,7 +604,7 @@
         // ДАННЫЕ О ТОВАРАХ
         const productsData = {
             'grey': { 
-                name: 'Штаны Grey Edition', 
+                name: 'Тяжеловесы Grey', 
                 priceVal: 12000, 
                 price: '12 000 ₽',
                 description: `- Широкий силуэт, держащий форму;<br>- Широкие штаны из плотного футера 3-х нитки;<br>- Внутри утеплены флисом;<br>- Фиксирующий размер внутренний пояс;<br>- Два глубоких кармана спереди, один сзади;<br>- Теплоизоляционные свойства ткани обеспечивают сохранение тепла;<br>- Благодаря флису сохраняет широкий силуэт при ходьбе и не теряет форму после многократных стирок;<br>- Усиленная эластичность в шаговой зоне;<br>- Peach-эффект, который придает ткани бархатистость, мягкую и приятную на ощупь поверхность, напоминающую кожицу спелого персика.`, 
@@ -600,7 +616,7 @@
                 ] 
             },
             'blue': { 
-                name: 'Штаны Blue Edtion', 
+                name: 'Тяжеловесы Blue', 
                 priceVal: 12000, 
                 price: '12 000 ₽',
                 description: `- Широкий силуэт, держащий форму;<br>- Широкие штаны из плотного футера 3-х нитки;<br>- Внутри утеплены флисом;<br>- Фиксирующий размер внутренний пояс;<br>- Два глубоких кармана спереди, один сзади;<br>- Теплоизоляционные свойства ткани обеспечивают сохранение тепла;<br>- Благодаря флису сохраняет широкий силуэт при ходьбе и не теряет форму после многократных стирок;<br>- Усиленная эластичность в шаговой зоне;<br>- Peach-эффект, который придает ткани бархатистость, мягкую и приятную на ощупь поверхность, напоминающую кожицу спелого персика.`,
@@ -754,26 +770,24 @@ document.querySelector('.size-label span').innerText = currentSelectedSize;
         }
 
         function switchDescTab(tab) {
-            // Список всех твоих вкладок
-            const tabs = ['desc', 'chars', 'comp', 'care'];
-            
-            tabs.forEach(t => {
-                const btn = document.getElementById('btn-tab-' + t);
-                const content = document.getElementById('content-' + t);
-                
-                if (btn && content) {
-                    if (t === tab) {
-                        // Делаем активную кнопку черной, а блок — видимым
-                        btn.className = 'desc-tab-btn tab-black';
-                        content.style.display = 'block';
-                    } else {
-                        // Остальные кнопки серые, блоки скрыты
-                        btn.className = 'desc-tab-btn tab-gray';
-                        content.style.display = 'none';
-                    }
-                }
-            });
+    // Добавлен 'delivery' в список
+    const tabs = ['desc', 'chars', 'comp', 'care', 'delivery'];
+    
+    tabs.forEach(t => {
+        const btn = document.getElementById('btn-tab-' + t);
+        const content = document.getElementById('content-' + t);
+        
+        if (btn && content) {
+            if (t === tab) {
+                btn.className = 'desc-tab-btn tab-black';
+                content.style.display = 'block';
+            } else {
+                btn.className = 'desc-tab-btn tab-gray';
+                content.style.display = 'none';
+            }
         }
+    });
+}
 
         function selectSize(element) {
             document.querySelectorAll('.size-box').forEach(el => el.classList.remove('active'));
@@ -1030,6 +1044,7 @@ document.querySelector('.size-label span').innerText = currentSelectedSize;
     </script>
 </body>
 </html>
+
 
 
 
