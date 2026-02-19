@@ -337,13 +337,10 @@
         <div class="detail-info-container">
             <div id="detail-title" class="detail-product-title"></div>
             
-            <div class="size-label">Размер: <span>L</span></div>
-            <div class="size-grid">
-                <div class="size-box" onclick="selectSize(this)">S</div>
-                <div class="size-box" onclick="selectSize(this)">M</div>
-                <div class="size-box active" onclick="selectSize(this)">L</div>
-                <div class="size-box" onclick="selectSize(this)">XL</div>
-            </div>
+            <div class="size-label">Размер: <span>OneSize</span></div> 
+<div class="size-grid"> 
+    <div class="size-box active" onclick="selectSize(this)" style="width: auto; padding: 0 20px;">OneSize</div> 
+</div>
 
             <div class="stock-status">В наличии: <span class="stock-count">1 шт</span></div>
             
@@ -564,7 +561,7 @@
         let totalSlides = 0;      // Сколько всего фото у открытого товара
         
         let currentOpenProductId = null;
-        let currentSelectedSize = 'L'; 
+        let currentSelectedSize = 'OneSize';
         let lastPageBeforeLegal = 'profile';
 
         // --- ЛОГИКА СЛАЙДЕРА ---
@@ -672,9 +669,11 @@
             document.getElementById('detail-title').innerText = product.name;
             document.getElementById('btn-price-display').innerText = product.price;
 
-            document.querySelectorAll('.size-box').forEach(el => el.classList.remove('active'));
-            Array.from(document.querySelectorAll('.size-box')).find(el => el.innerText === 'L').classList.add('active');
-            document.querySelector('.size-label span').innerText = 'L';
+            currentSelectedSize = 'OneSize';
+document.querySelectorAll('.size-box').forEach(el => el.classList.remove('active')); 
+const oneSizeBtn = Array.from(document.querySelectorAll('.size-box')).find(el => el.innerText === 'OneSize');
+if (oneSizeBtn) oneSizeBtn.classList.add('active');
+document.querySelector('.size-label span').innerText = currentSelectedSize;;
 
             switchDescTab('desc');
             updateHeartVisuals();
@@ -969,6 +968,7 @@
     </script>
 </body>
 </html>
+
 
 
 
