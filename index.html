@@ -120,9 +120,6 @@
         }
         .size-box.active { border: 2px solid #3390ec; color: #3390ec; }
 
-        .stock-status { font-size: 14px; color: #000; margin-bottom: 20px; }
-        .stock-count { color: #3390ec; font-weight: 500; }
-
         .desc-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
 
         .desc-tab-btn { padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: background 0.1s; }
@@ -341,8 +338,6 @@
 <div class="size-grid"> 
     <div class="size-box active" onclick="selectSize(this)" style="width: auto; padding: 0 20px;">OneSize</div> 
 </div>
-
-            <div class="stock-status">В наличии: <span class="stock-count">1 шт</span></div>
             
             <div class="desc-tabs">
                 <button id="btn-tab-desc" class="desc-tab-btn tab-black" onclick="switchDescTab('desc')">Описание</button>
@@ -968,6 +963,7 @@ document.querySelector('.size-label span').innerText = currentSelectedSize;;
     </script>
 </body>
 </html>
+
 
 
 
