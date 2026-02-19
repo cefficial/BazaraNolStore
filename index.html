@@ -370,6 +370,7 @@
                 <button id="btn-tab-desc" class="desc-tab-btn tab-black" onclick="switchDescTab('desc')">Описание</button>
                 <button id="btn-tab-chars" class="desc-tab-btn tab-gray" onclick="switchDescTab('chars')">Характеристики</button>
                 <button id="btn-tab-comp" class="desc-tab-btn tab-gray" onclick="switchDescTab('comp')">Состав</button>
+                <button id="btn-tab-care" class="desc-tab-btn tab-gray" onclick="switchDescTab('care')">Уход</button>
             </div>
 
             <div id="content-desc" class="desc-content" style="display: block;">
@@ -387,6 +388,33 @@
         <span class="char-label">Хлопок</span>
         <span class="char-val">86%</span>
     </div>
+                <div id="content-care" class="desc-content" style="display: none;">
+    <div class="char-row">
+        <span class="char-label">Стирка</span>
+        <span class="char-val">30°C / Деликатная</span>
+    </div>
+    <div class="char-row">
+        <span class="char-label">Отжим</span>
+        <span class="char-val">до 800 об/мин</span>
+    </div>
+    <div class="char-row">
+        <span class="char-label">Глажка</span>
+        <span class="char-val">до 150°C (изнанка)</span>
+    </div>
+    <div class="char-row">
+        <span class="char-label">Химчистка</span>
+        <span class="char-val">Деликатная</span>
+    </div>
+
+    <div style="font-size: 13px; color: #333; margin-top: 15px; line-height: 1.5;">
+        <strong>Важные рекомендации:</strong><br>
+        • Перед стиркой обязательно вывернуть наизнанку.<br>
+        • Использовать средство без отбеливателей.<br>
+        • Машинная сушка запрещена. Сушить в расправленном виде на горизонтальной поверхности.<br>
+        • Не сушить на батарее и под прямыми лучами солнца.<br>
+        • Гладить строго с изнанки и без использования пара.
+    </div>
+</div>
     <div class="char-row">
         <span class="char-label">Флис</span>
         <span class="char-val">14% (485 г/м²)</span>
@@ -728,31 +756,23 @@ document.querySelector('.size-label span').innerText = currentSelectedSize;;
         }
 
         function switchDescTab(tab) {
-            // Кнопки
-            const btnDesc = document.getElementById('btn-tab-desc');
-            const btnChars = document.getElementById('btn-tab-chars');
-            const btnComp = document.getElementById('btn-tab-comp');
+            // Список всех ID кнопок и блоков контента
+            const tabs = ['desc', 'chars', 'comp', 'care'];
             
-            // Контент
-            const contentDesc = document.getElementById('content-desc');
-            const contentChars = document.getElementById('content-chars');
-            const contentComp = document.getElementById('content-comp');
-
-            // Сбрасываем все кнопки в серый, весь контент скрываем
-            [btnDesc, btnChars, btnComp].forEach(btn => { if(btn) btn.className = 'desc-tab-btn tab-gray'; });
-            [contentDesc, contentChars, contentComp].forEach(cont => { if(cont) cont.style.display = 'none'; });
-
-            // Активируем нужную вкладку
-            if (tab === 'desc') {
-                btnDesc.className = 'desc-tab-btn tab-black';
-                contentDesc.style.display = 'block';
-            } else if (tab === 'chars') {
-                btnChars.className = 'desc-tab-btn tab-black';
-                contentChars.style.display = 'block';
-            } else if (tab === 'comp') {
-                btnComp.className = 'desc-tab-btn tab-black';
-                contentComp.style.display = 'block';
-            }
+            tabs.forEach(t => {
+                const btn = document.getElementById('btn-tab-' + t);
+                const content = document.getElementById('content-' + t);
+                
+                if (btn && content) {
+                    if (t === tab) {
+                        btn.className = 'desc-tab-btn tab-black';
+                        content.style.display = 'block';
+                    } else {
+                        btn.className = 'desc-tab-btn tab-gray';
+                        content.style.display = 'none';
+                    }
+                }
+            });
         }
 
         function selectSize(element) {
@@ -1010,6 +1030,7 @@ document.querySelector('.size-label span').innerText = currentSelectedSize;;
     </script>
 </body>
 </html>
+
 
 
 
