@@ -365,6 +365,7 @@
 <div class="size-grid"> 
     <div class="size-box active" onclick="selectSize(this)" style="width: auto; padding: 0 20px;">OneSize</div> 
 </div>
+            <div id="model-stats" style="font-size: 13px; color: #888; margin-top: -15px; margin-bottom: 25px; font-weight: 400;"></div>
             
             <div class="desc-tabs">
                 <button id="btn-tab-desc" class="desc-tab-btn tab-black" onclick="switchDescTab('desc')">Описание</button>
@@ -607,6 +608,7 @@
                 name: 'Тяжеловесы Grey', 
                 priceVal: 12000, 
                 price: '12 000 ₽',
+                modelInfo: 'Параметры модели: рост 181 см, вес 75 кг',
                 description: `- Широкий силуэт, держащий форму;<br>- Широкие штаны из плотного футера 3-х нитки;<br>- Внутри утеплены флисом;<br>- Фиксирующий размер внутренний пояс;<br>- Два глубоких кармана спереди, один сзади;<br>- Теплоизоляционные свойства ткани обеспечивают сохранение тепла;<br>- Благодаря флису сохраняет широкий силуэт при ходьбе и не теряет форму после многократных стирок;<br>- Усиленная эластичность в шаговой зоне;<br>- Peach-эффект, который придает ткани бархатистость, мягкую и приятную на ощупь поверхность, напоминающую кожицу спелого персика.`, 
                 images: [
                     'img/GREY FRONT.png', 
@@ -619,6 +621,7 @@
                 name: 'Тяжеловесы Blue', 
                 priceVal: 12000, 
                 price: '12 000 ₽',
+                modelInfo: 'Параметры модели: рост 186 см, вес 82 кг',
                 description: `- Широкий силуэт, держащий форму;<br>- Широкие штаны из плотного футера 3-х нитки;<br>- Внутри утеплены флисом;<br>- Фиксирующий размер внутренний пояс;<br>- Два глубоких кармана спереди, один сзади;<br>- Теплоизоляционные свойства ткани обеспечивают сохранение тепла;<br>- Благодаря флису сохраняет широкий силуэт при ходьбе и не теряет форму после многократных стирок;<br>- Усиленная эластичность в шаговой зоне;<br>- Peach-эффект, который придает ткани бархатистость, мягкую и приятную на ощупь поверхность, напоминающую кожицу спелого персика.`,
                 images: [
                     'img/BLUE FRONT.png',
@@ -742,6 +745,7 @@
             document.getElementById('floating-actions').classList.add('visible');
 
             document.getElementById('detail-title').innerText = product.name;
+            document.getElementById('model-stats').innerText = product.modelInfo;
             document.getElementById('btn-price-display').innerText = product.price;
 
             currentSelectedSize = 'OneSize';
@@ -1044,6 +1048,7 @@ document.querySelector('.size-label span').innerText = currentSelectedSize;
     </script>
 </body>
 </html>
+
 
 
 
