@@ -311,6 +311,51 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
+/* Анимация при нажатии на любые большие кнопки */
+.btn-add-cart-large:active, .btn-initial-add:active, .btn-blue-outline:active {
+    transform: scale(0.96);
+    opacity: 0.9;
+}
+/* Плавный переход для анимации */
+.btn-add-cart-large, .btn-initial-add, .btn-blue-outline {
+    transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+/* Стили для полей ввода «как в референсе» */
+#checkout-view .input-group {
+    background: #fff;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border: 1px solid #f0f0f0;
+}
+
+#checkout-view .input-icon {
+    width: 36px;
+    height: 36px;
+    background: #fdf2f2; /* Легкий розовый оттенок как на фото */
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    font-size: 18px;
+}
+
+#checkout-view input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 15px;
+    color: #000;
+}
+
+#checkout-view input::placeholder {
+    color: #ccc;
+}
+        
     </style>
 </head>
 <body>
@@ -525,40 +570,49 @@
     </div>
 
 <div id="checkout-view" class="page">
-        <div class="detail-header">
-            <div class="back-btn" onclick="switchTab('cart', document.getElementById('nav-cart'))">&#8592;</div>
-            <div class="detail-title-small">Доставка</div>
+    <div class="detail-header">
+        <div class="back-btn" onclick="switchTab('cart', document.getElementById('nav-cart'))">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+            </svg>
+        </div>
+        <div class="detail-title-small">ДОСТАВКА</div>
+    </div>
+
+    <div style="padding: 15px; background: #f8f8f8; min-height: 100vh;">
+        <div style="display: flex; background: #eee; padding: 4px; border-radius: 10px; margin-bottom: 20px;">
+            <div style="flex: 1; background: white; padding: 8px; border-radius: 8px; text-align: center; font-size: 14px; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">📦 Доставка</div>
+            <div style="flex: 1; padding: 8px; text-align: center; font-size: 14px; color: #888;">🏪 Самовывоз</div>
         </div>
 
-        <div style="padding: 15px;">
-            <div class="input-group">
-                <div class="input-icon">👤</div>
-                <input type="text" id="checkout-fio" placeholder="ФИО">
-            </div>
+        <div class="input-group">
+            <div class="input-icon">👤</div>
+            <input type="text" id="checkout-fio" placeholder="ФИО">
+        </div>
 
-            <div class="input-group">
-                <div class="input-icon">📞</div>
-                <input type="tel" id="checkout-phone" placeholder="Телефон">
-            </div>
+        <div class="input-group">
+            <div class="input-icon">📞</div>
+            <input type="tel" id="checkout-phone" placeholder="Телефон">
+        </div>
 
-            <div class="input-group">
-                <div class="input-icon">🏠</div>
-                <input type="text" id="checkout-city" placeholder="Город и адрес доставки">
-            </div>
+        <div class="input-group">
+            <div class="input-icon">🏠</div>
+            <input type="text" id="checkout-city" placeholder="Город и адрес доставки">
+        </div>
 
-            <div class="input-group">
-                <div class="input-icon">💬</div>
-                <input type="text" id="checkout-comment" placeholder="Комментарий (необязательно)">
-            </div>
+        <div class="input-group">
+            <div class="input-icon">💬</div>
+            <input type="text" id="checkout-comment" placeholder="Комментарий">
+        </div>
 
-            <button id="btn-submit-order" class="btn-add-cart-large" onclick="finalOrderSubmit()" style="height: 50px; width:100%; border-radius:12px; background:#3390ec; color:white; border:none; font-weight: 700; font-size: 16px; margin-top: 10px;">Подтвердить заказ</button>
-            
-            <div style="font-size: 11px; color: #999; text-align: center; margin-top: 20px; line-height: 1.4; padding: 0 10px;">
-                Продолжая оформление заказа, вы соглашаетесь с 
-                <span style="color: #3390ec; cursor: pointer;" onclick="openLegal('personal', 'checkout')">Политикой обработки персональных данных</span>
-            </div>
+        <button id="btn-submit-order" class="btn-add-cart-large" onclick="finalOrderSubmit()" style="height: 55px; width:100%; border-radius:15px; background:#3390ec; color:white; border:none; font-weight: 700; font-size: 16px; margin-top: 20px; box-shadow: 0 4px 15px rgba(51, 144, 236, 0.3);">Подтвердить заказ</button>
+        
+        <div style="font-size: 11px; color: #999; text-align: center; margin-top: 25px; line-height: 1.4;">
+            Продолжая оформление заказа, вы соглашаетесь с <br>
+            <span style="color: #3390ec; text-decoration: none;" onclick="openLegal('personal', 'checkout')">Политикой обработки персональных данных</span>
         </div>
     </div>
+</div>
     
     <div id="legal-view" class="page">
         <div class="detail-header">
@@ -1121,6 +1175,7 @@ document.querySelector('.size-label span').innerText = currentSelectedSize;
     </script>
 </body>
 </html>
+
 
 
 
