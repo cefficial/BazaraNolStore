@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/@cdek-it/widget@3" type="text/javascript"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Каталог</title>
@@ -648,15 +649,17 @@
                 </div>
             </div>
 
-            <div class="k-input-group" id="group-city">
-                <div class="k-icon">
-                    <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>
-                </div>
-                <div class="k-input-wrapper">
-                    <div class="k-label">Город и адрес доставки</div>
-                    <input type="text" id="checkout-city" oninput="checkFilled('city')" placeholder="Ваш адрес">
-                </div>
-            </div>
+            <div class="k-input-group" id="group-city" style="cursor: pointer;" onclick="openCdekMap()">
+    <div class="k-icon">
+        <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>
+    </div>
+    <div class="k-input-wrapper">
+        <div class="k-label">Пункт выдачи СДЭК</div>
+        <input type="text" id="checkout-city" readonly placeholder="Нажмите, чтобы выбрать на карте">
+    </div>
+</div>
+
+<div id="cdek-map" style="display: none; width: 100%; height: 500px; border-radius: 12px; margin-bottom: 12px; border: 1px solid #ddd;"></div>
 
             <div class="k-input-group" id="group-comment">
                 <div class="k-icon">
@@ -1259,6 +1262,42 @@ document.querySelector('.size-label span').innerText = currentSelectedSize;
         }
 
         // Функция для сбора данных и отправки заказа в бот
+        let cdekWidget = null;
+
+        function openCdekMap() {
+            // Показываем блок с картой
+            document.getElementById('cdek-map').style.display = 'block';
+
+            // Если виджет еще не создавался, запускаем его
+            if (!cdekWidget) {
+                cdekWidget = new window.CDEKWidget({
+                    from: {
+                        city: 'Москва' // Укажи здесь свой город отправки
+                    },
+                    root: 'cdek-map', // ID блока из HTML выше
+                    apiKey: '', // Ключ Яндекс Карт (пока можно пустой)
+                    
+                    // ВАЖНО: это путь к твоему серверу. Пока используем тестовый путь СДЭК для проверки интерфейса
+                    servicePath: 'https://widget.cdek.ru', 
+                    
+                    onChoose(type, tariff, address) {
+                        // Эта функция сработает, когда клиент нажмет "Выбрать" на ПВЗ
+                        const cityInput = document.getElementById('checkout-city');
+                        const groupCity = document.getElementById('group-city');
+
+                        // Записываем выбранный адрес в наше поле
+                        cityInput.value = `ПВЗ: ${address.city}, ${address.address}`;
+                        groupCity.classList.add('is-filled');
+
+                        // Прячем карту обратно
+                        document.getElementById('cdek-map').style.display = 'none';
+
+                        checkAllFieldsValid(); // Зажигаем кнопку "Подтвердить заказ" синим
+                    }
+                });
+            }
+        }
+        
         function finalOrderSubmit() {
             const fio = document.getElementById('checkout-fio').value;
     const phone = document.getElementById('checkout-phone').value;
@@ -1287,6 +1326,7 @@ document.querySelector('.size-label span').innerText = currentSelectedSize;
     </script>
 </body>
 </html>
+
 
 
 
