@@ -434,9 +434,7 @@
         • <strong>Оплата:</strong> Ссылка на оплату картой придет вам в Telegram после проверки наличия товара менеджером.
     </div>
 </div>
-</div>
-    </div>
-
+            
     <div id="profile-view" class="page">
         <div class="profile-container">
             <div class="profile-header">
@@ -532,31 +530,28 @@
         </div>
 
         <div style="padding: 15px;">
-    <div class="input-group">
-        <div class="input-icon">👤</div>
-        <input type="text" id="checkout-fio" placeholder="ФИО">
-    </div>
+            <div class="input-group">
+                <div class="input-icon">👤</div>
+                <input type="text" id="checkout-fio" placeholder="ФИО">
+            </div>
 
-    <div class="input-group">
-        <div class="input-icon">📞</div>
-        <input type="tel" id="checkout-phone" placeholder="Телефон">
-    </div>
+            <div class="input-group">
+                <div class="input-icon">📞</div>
+                <input type="tel" id="checkout-phone" placeholder="Телефон">
+            </div>
 
-    <div class="input-group">
-        <div class="input-icon">🏠</div>
-        <input type="text" id="checkout-city" placeholder="Город и адрес доставки">
-    </div>
+            <div class="input-group">
+                <div class="input-icon">🏠</div>
+                <input type="text" id="checkout-city" placeholder="Город и адрес доставки">
+            </div>
 
-    <div class="input-group">
-        <div class="input-icon">💬</div>
-        <input type="text" id="checkout-comment" placeholder="Комментарий (необязательно)">
-    </div>
+            <div class="input-group">
+                <div class="input-icon">💬</div>
+                <input type="text" id="checkout-comment" placeholder="Комментарий (необязательно)">
+            </div>
 
-    <button id="btn-submit-order" class="btn-add-cart-large" onclick="finalOrderSubmit()" style="height: 50px; width:100%; border-radius:12px; background:#3390ec; color:white; border:none; font-weight: 700; font-size: 16px; margin-top: 10px;">Подтвердить заказ</button>
-</div>
-
-            <button class="btn-add-cart-large" ...>Оформить заказ</button>
-<button class="btn-add-cart-large" onclick="openCheckout()" ...>Оформить заказ</button>
+            <button id="btn-submit-order" class="btn-add-cart-large" onclick="finalOrderSubmit()" style="height: 50px; width:100%; border-radius:12px; background:#3390ec; color:white; border:none; font-weight: 700; font-size: 16px; margin-top: 10px;">Подтвердить заказ</button>
+            
             <div style="font-size: 11px; color: #999; text-align: center; margin-top: 20px; line-height: 1.4; padding: 0 10px;">
                 Продолжая оформление заказа, вы соглашаетесь с 
                 <span style="color: #3390ec; cursor: pointer;" onclick="openLegal('personal', 'checkout')">Политикой обработки персональных данных</span>
@@ -1097,21 +1092,19 @@ document.querySelector('.size-label span').innerText = currentSelectedSize;
         function finalOrderSubmit() {
             const fio = document.getElementById('checkout-fio').value;
             const phone = document.getElementById('checkout-phone').value;
-            const city = document.getElementById('checkout-city').value;
-            const point = document.getElementById('checkout-point').value;
+            const address = document.getElementById('checkout-city').value;
             const comment = document.getElementById('checkout-comment').value;
             
-            // Проверка обязательных полей
-            if (!fio || !phone || !city || !point) {
+            // Проверяем только необходимые поля
+            if (!fio || !phone || !address) {
                 alert('Пожалуйста, заполните данные для доставки');
                 return;
             }
 
-            let text = `🚀 НОВЫЙ ЗАКАЗ\n\n`;
+            let text = `💳 НОВЫЙ ЗАКАЗ (ОПЛАТА КАРТОЙ)\n\n`;
             text += `👤 Клиент: ${fio}\n`;
             text += `📞 Тел: ${phone}\n`;
-            text += `📍 Город: ${city}\n`;
-            text += `📦 ПВЗ СДЭК: ${point}\n`;
+            text += `📍 Адрес: ${address}\n`;
             if (comment) text += `💬 Комм: ${comment}\n`;
             text += `\n🛒 СОСТАВ КОРЗИНЫ:\n`;
             
@@ -1125,14 +1118,15 @@ document.querySelector('.size-label span').innerText = currentSelectedSize;
                 text += `• ${product.name} (${size}) — ${qty} шт.\n`;
             }
             
-            text += `\n💰 ИТОГО: ${total.toLocaleString()} ₽`;
+            text += `\n💰 ИТОГО К ОПЛАТЕ: ${total.toLocaleString()} ₽\n`;
+            text += `\nМенеджер свяжется с вами в ближайшее время для отправки ссылки на оплату.`;
 
-            // Эта команда отправляет текст боту и закрывает мини-приложение
             tg.sendData(text); 
         }
     </script>
 </body>
 </html>
+
 
 
 
