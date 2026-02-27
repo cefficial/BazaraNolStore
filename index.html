@@ -1019,6 +1019,9 @@ document.querySelector('.size-label span').innerText = currentSelectedSize;
         function openContact() { tg.openTelegramLink('https://t.me/dummest'); }
 
         function switchTab(tabName, element) {
+            document.getElementById('product-actions').classList.remove('visible'); // Скрыть кнопку товара
+            document.getElementById('floating-actions').classList.remove('visible'); // Скрыть сердце
+            
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             element.classList.add('active');
             hideAllPages();
@@ -1118,6 +1121,7 @@ document.querySelector('.size-label span').innerText = currentSelectedSize;
     </script>
 </body>
 </html>
+
 
 
 
