@@ -434,8 +434,9 @@
         • <strong>Оплата:</strong> Ссылка на оплату картой придет вам в Telegram после проверки наличия товара менеджером.
     </div>
 </div>
-            
-    <div id="profile-view" class="page">
+
+            </div>
+    </div> <div id="profile-view" class="page">
         <div class="profile-container">
             <div class="profile-header">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png" class="avatar-img"> 
@@ -1076,14 +1077,14 @@ document.querySelector('.size-label span').innerText = currentSelectedSize;
             document.getElementById('cart-view').classList.remove('active');
             document.getElementById('product-detail-view').classList.remove('active');
             document.getElementById('legal-view').classList.remove('active');
+            document.getElementById('checkout-view').classList.remove('active'); // Добавь эту строку
         }
 
         // Функция для открытия страницы оформления
         function openCheckout() {
             hideAllPages();
             const checkoutPage = document.getElementById('checkout-view');
-            checkoutPage.style.display = 'block'; // Принудительно включаем
-            checkoutPage.classList.add('active');
+            checkoutPage.classList.add('active'); // Убрали принудительный display:block
             document.getElementById('main-nav').classList.add('hidden');
             window.scrollTo(0, 0);
         }
@@ -1091,41 +1092,33 @@ document.querySelector('.size-label span').innerText = currentSelectedSize;
         // Функция для сбора данных и отправки заказа в бот
         function finalOrderSubmit() {
             const fio = document.getElementById('checkout-fio').value;
-            const phone = document.getElementById('checkout-phone').value;
-            const address = document.getElementById('checkout-city').value;
-            const comment = document.getElementById('checkout-comment').value;
-            
-            // Проверяем только необходимые поля
-            if (!fio || !phone || !address) {
-                alert('Пожалуйста, заполните данные для доставки');
-                return;
-            }
+    const phone = document.getElementById('checkout-phone').value;
+    const address = document.getElementById('checkout-city').value;
+    const comment = document.getElementById('checkout-comment').value;
+    
+    if (!fio || !phone || !address) {
+        alert('Пожалуйста, заполните ФИО, телефон и адрес');
+        return;
+    }
 
-            let text = `💳 НОВЫЙ ЗАКАЗ (ОПЛАТА КАРТОЙ)\n\n`;
-            text += `👤 Клиент: ${fio}\n`;
-            text += `📞 Тел: ${phone}\n`;
-            text += `📍 Адрес: ${address}\n`;
-            if (comment) text += `💬 Комм: ${comment}\n`;
-            text += `\n🛒 СОСТАВ КОРЗИНЫ:\n`;
-            
-            let total = 0;
-            for (let key in cart) {
-                const [id, size] = key.split('_');
-                const product = productsData[id];
-                const qty = cart[key];
-                const sum = product.priceVal * qty;
-                total += sum;
-                text += `• ${product.name} (${size}) — ${qty} шт.\n`;
-            }
-            
-            text += `\n💰 ИТОГО К ОПЛАТЕ: ${total.toLocaleString()} ₽\n`;
-            text += `\nМенеджер свяжется с вами в ближайшее время для отправки ссылки на оплату.`;
+    let text = `💳 ЗАКАЗ (ОПЛАТА КАРТОЙ)\n\n👤 ${fio}\n📞 ${phone}\n📍 Адрес: ${address}\n`;
+    if (comment) text += `💬 Комм: ${comment}\n`;
+    
+    let total = 0;
+    for (let key in cart) {
+        const [id, size] = key.split('_');
+        const product = productsData[id];
+        text += `• ${product.name} (${size}) — ${cart[key]} шт.\n`;
+        total += product.priceVal * cart[key];
+    }
+    text += `\n💰 ИТОГО: ${total.toLocaleString()} ₽`;
 
-            tg.sendData(text); 
+    tg.sendData(text);
         }
     </script>
 </body>
 </html>
+
 
 
 
