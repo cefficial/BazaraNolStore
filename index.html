@@ -420,23 +420,21 @@
                     • Гладить с изнанки без пара.
                 </div>
             </div>
-            <div id="content-delivery" class="desc-content" style="display: none;">
+           <div id="content-delivery" class="desc-content" style="display: none;">
     <div class="char-row">
-        <span class="char-label">Служба</span>
-        <span class="char-val">СДЭК (до пункта выдачи)</span>
+        <span class="char-label">Способ</span>
+        <span class="char-val">Курьерская доставка</span>
     </div>
     <div class="char-row">
-        <span class="char-label">География</span>
-        <span class="char-val">РФ и СНГ</span>
+        <span class="char-label">Оплата</span>
+        <span class="char-val">Банковской картой</span>
     </div>
-    
     <div style="font-size: 13px; color: #333; margin-top: 15px; line-height: 1.6; text-align: left;">
-        • <strong>Расчет:</strong> Стоимость и сроки рассчитываются индивидуально по тарифам СДЭК при оформлении заказа.<br>
-        • <strong>Отслеживание:</strong> Трек-номер придет вам в Telegram сразу после оформления.
+        • <strong>Доставка:</strong> Осуществляется по указанному адресу после подтверждения заказа.<br>
+        • <strong>Оплата:</strong> Ссылка на оплату картой придет вам в Telegram после проверки наличия товара менеджером.
     </div>
 </div>
 </div>
-        </div>
     </div>
 
     <div id="profile-view" class="page">
@@ -517,7 +515,7 @@
                 <span id="cart-total-price">0 ₽</span>
             </div>
             <div style="margin-top: 15px;">
-                <button class="btn-add-cart-large" style="height: 50px; width:100%; border-radius:12px; background:#3390ec; color:white; border:none; font-weight: 700; font-size: 16px;">Оформить заказ</button>
+                <button class="btn-add-cart-large" onclick="openCheckout()" style="height: 50px; width:100%; border-radius:12px; background:#3390ec; color:white; border:none; font-weight: 700; font-size: 16px;">Оформить заказ</button>
                 <div class="legal-note">
                     Нажимая кнопку, вы соглашаетесь с условиями 
                     <span class="legal-link" onclick="openLegal('offer', 'cart')">публичной оферты</span> и 
@@ -534,34 +532,31 @@
         </div>
 
         <div style="padding: 15px;">
-            <div class="input-group">
-                <div class="input-icon">👤</div>
-                <input type="text" id="checkout-fio" placeholder="ФИО">
-            </div>
+    <div class="input-group">
+        <div class="input-icon">👤</div>
+        <input type="text" id="checkout-fio" placeholder="ФИО">
+    </div>
 
-            <div class="input-group">
-                <div class="input-icon">📞</div>
-                <input type="tel" id="checkout-phone" placeholder="Телефон">
-            </div>
+    <div class="input-group">
+        <div class="input-icon">📞</div>
+        <input type="tel" id="checkout-phone" placeholder="Телефон">
+    </div>
 
-            <div class="input-group">
-                <div class="input-icon">🏠</div>
-                <input type="text" id="checkout-city" placeholder="Город доставки">
-            </div>
+    <div class="input-group">
+        <div class="input-icon">🏠</div>
+        <input type="text" id="checkout-city" placeholder="Город и адрес доставки">
+    </div>
 
-            <div class="input-group">
-                <div class="input-icon">📍</div>
-                <input type="text" id="checkout-point" placeholder="Пункт выдачи СДЭК">
-            </div>
+    <div class="input-group">
+        <div class="input-icon">💬</div>
+        <input type="text" id="checkout-comment" placeholder="Комментарий (необязательно)">
+    </div>
 
-            <div class="input-group">
-                <div class="input-icon">💬</div>
-                <input type="text" id="checkout-comment" placeholder="Комментарий (необязательно)">
-            </div>
+    <button id="btn-submit-order" class="btn-add-cart-large" onclick="finalOrderSubmit()" style="height: 50px; width:100%; border-radius:12px; background:#3390ec; color:white; border:none; font-weight: 700; font-size: 16px; margin-top: 10px;">Подтвердить заказ</button>
+</div>
 
             <button class="btn-add-cart-large" ...>Оформить заказ</button>
 <button class="btn-add-cart-large" onclick="openCheckout()" ...>Оформить заказ</button>
-
             <div style="font-size: 11px; color: #999; text-align: center; margin-top: 20px; line-height: 1.4; padding: 0 10px;">
                 Продолжая оформление заказа, вы соглашаетесь с 
                 <span style="color: #3390ec; cursor: pointer;" onclick="openLegal('personal', 'checkout')">Политикой обработки персональных данных</span>
@@ -1091,7 +1086,9 @@ document.querySelector('.size-label span').innerText = currentSelectedSize;
         // Функция для открытия страницы оформления
         function openCheckout() {
             hideAllPages();
-            document.getElementById('checkout-view').classList.add('active');
+            const checkoutPage = document.getElementById('checkout-view');
+            checkoutPage.style.display = 'block'; // Принудительно включаем
+            checkoutPage.classList.add('active');
             document.getElementById('main-nav').classList.add('hidden');
             window.scrollTo(0, 0);
         }
@@ -1136,6 +1133,7 @@ document.querySelector('.size-label span').innerText = currentSelectedSize;
     </script>
 </body>
 </html>
+
 
 
 
