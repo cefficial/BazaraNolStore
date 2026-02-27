@@ -527,6 +527,48 @@
         </div>
     </div>
 
+<div id="checkout-view" class="page">
+        <div class="detail-header">
+            <div class="back-btn" onclick="switchTab('cart', document.getElementById('nav-cart'))">&#8592;</div>
+            <div class="detail-title-small">Доставка</div>
+        </div>
+
+        <div style="padding: 15px;">
+            <div class="input-group">
+                <div class="input-icon">👤</div>
+                <input type="text" id="checkout-fio" placeholder="ФИО">
+            </div>
+
+            <div class="input-group">
+                <div class="input-icon">📞</div>
+                <input type="tel" id="checkout-phone" placeholder="Телефон">
+            </div>
+
+            <div class="input-group">
+                <div class="input-icon">🏠</div>
+                <input type="text" id="checkout-city" placeholder="Город доставки">
+            </div>
+
+            <div class="input-group">
+                <div class="input-icon">📍</div>
+                <input type="text" id="checkout-point" placeholder="Пункт выдачи СДЭК">
+            </div>
+
+            <div class="input-group">
+                <div class="input-icon">💬</div>
+                <input type="text" id="checkout-comment" placeholder="Комментарий (необязательно)">
+            </div>
+
+            <button class="btn-add-cart-large" ...>Оформить заказ</button>
+<button class="btn-add-cart-large" onclick="openCheckout()" ...>Оформить заказ</button>
+
+            <div style="font-size: 11px; color: #999; text-align: center; margin-top: 20px; line-height: 1.4; padding: 0 10px;">
+                Продолжая оформление заказа, вы соглашаетесь с 
+                <span style="color: #3390ec; cursor: pointer;" onclick="openLegal('personal', 'checkout')">Политикой обработки персональных данных</span>
+            </div>
+        </div>
+    </div>
+    
     <div id="legal-view" class="page">
         <div class="detail-header">
             <div class="back-btn" onclick="closeLegal()">&#8592;</div>
@@ -1045,9 +1087,56 @@ document.querySelector('.size-label span').innerText = currentSelectedSize;
             document.getElementById('product-detail-view').classList.remove('active');
             document.getElementById('legal-view').classList.remove('active');
         }
+
+        // Функция для открытия страницы оформления
+        function openCheckout() {
+            hideAllPages();
+            document.getElementById('checkout-view').classList.add('active');
+            document.getElementById('main-nav').classList.add('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        // Функция для сбора данных и отправки заказа в бот
+        function finalOrderSubmit() {
+            const fio = document.getElementById('checkout-fio').value;
+            const phone = document.getElementById('checkout-phone').value;
+            const city = document.getElementById('checkout-city').value;
+            const point = document.getElementById('checkout-point').value;
+            const comment = document.getElementById('checkout-comment').value;
+            
+            // Проверка обязательных полей
+            if (!fio || !phone || !city || !point) {
+                alert('Пожалуйста, заполните данные для доставки');
+                return;
+            }
+
+            let text = `🚀 НОВЫЙ ЗАКАЗ\n\n`;
+            text += `👤 Клиент: ${fio}\n`;
+            text += `📞 Тел: ${phone}\n`;
+            text += `📍 Город: ${city}\n`;
+            text += `📦 ПВЗ СДЭК: ${point}\n`;
+            if (comment) text += `💬 Комм: ${comment}\n`;
+            text += `\n🛒 СОСТАВ КОРЗИНЫ:\n`;
+            
+            let total = 0;
+            for (let key in cart) {
+                const [id, size] = key.split('_');
+                const product = productsData[id];
+                const qty = cart[key];
+                const sum = product.priceVal * qty;
+                total += sum;
+                text += `• ${product.name} (${size}) — ${qty} шт.\n`;
+            }
+            
+            text += `\n💰 ИТОГО: ${total.toLocaleString()} ₽`;
+
+            // Эта команда отправляет текст боту и закрывает мини-приложение
+            tg.sendData(text); 
+        }
     </script>
 </body>
 </html>
+
 
 
 
